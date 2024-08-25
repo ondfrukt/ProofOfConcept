@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "configurations.h"
+#include <Adafruit_MCP23X17.h>
 
 void setup() {
   Serial.begin(115200);
@@ -16,9 +17,9 @@ void SHKRead() {
   for (int i = 0; i < numberOfLines; i++) {
     int reading = digitalRead(SHKPins[i]);
 
-    if (reading != hookStates[i] && (currentMillis - lastDebounceTime[i] > hookDebounceDelay)) {
+    if (reading != hookStates[i] && (currentMillis - lastSHKDebounceTime[i] > hookDebounceDelay)) {
       hookStates[i] = reading;
-      lastDebounceTime[i] = currentMillis;
+      lastSHKDebounceTime[i] = currentMillis;
     }
   }
 }

@@ -44,12 +44,12 @@ const uint8_t FR_4 = GPB5;
 #define NUM_INPUTS 4
 
 // Array to store the pin numbers for each input
-const uint8_t inputPins[NUM_INPUTS] = {SHK_1, SHK_2, SHK_3, SHK_4};
+const uint8_t SHKPins[NUM_INPUTS] = {SHK_1, SHK_2, SHK_3, SHK_4};
 
 // Arrays to store debounce-related information for each input
-unsigned long lastDebounceTime[NUM_INPUTS] = {0};  // Last time the input was toggled
-int lastInputState[NUM_INPUTS] = {LOW};            // Previous input state
-int inputState[NUM_INPUTS] = {LOW};                // Current debounced input state
+unsigned long lastSHKDebounceTime[NUM_INPUTS] = {0};  // Last time the input was toggled
+int lastSHKInputState[NUM_INPUTS] = {LOW};            // Previous input state
+int SHKState[NUM_INPUTS] = {LOW};                // Current debounced input state
 
 // SHK Debounce time in milliseconds
 uint8_t SHKDebouncing = 50;

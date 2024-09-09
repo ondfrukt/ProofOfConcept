@@ -1,3 +1,5 @@
+#ifndef CONFIG_H
+#define CONFIG_H
 #include <Arduino.h>
 
 // Setting up MCP for KS083F
@@ -36,7 +38,6 @@ const uint8_t SHK_4 = GPB7;
 const uint8_t RM_4 = GPB6;
 const uint8_t FR_4 = GPB5;
 
-
 // -----------------SHK--------------------------
 
 // Define the number of digital inputs we want to read
@@ -56,4 +57,4 @@ uint8_t SHKDebouncing = 50;
 // MCP adress
 uint8_t mcp2_address = 0;
 
-
+#endif

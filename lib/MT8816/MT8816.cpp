@@ -9,7 +9,6 @@ MT8816::MT8816(uint8_t mcp_address,
                uint8_t strobe, uint8_t data, uint8_t reset, uint8_t cs)
 {
     mcp1_address = mcp_address;
-
     // Creating a vector of the address pins
     _ax_pins[0] = ax0;
     _ax_pins[1] = ax1;

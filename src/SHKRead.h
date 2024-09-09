@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Adafruit_MCP23X17.h>
-
+#include "config.h"
 
 void setupSHKPins() {
   // Initialize all input pins as INPUT_PULLUP

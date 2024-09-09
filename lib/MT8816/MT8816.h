@@ -17,8 +17,8 @@ class MT8816
     void disconnect(uint8_t x, uint8_t y);
     bool getConnection(int x, int y);
   private:
-    Adafruit_MCP23X17 _mcp;
-    uint8_t _mcp_address;
+    Adafruit_MCP23X17 mcp1;
+    uint8_t mcp1_address;
     uint8_t _ax_pins[4];  // AX0-AX3
     uint8_t _ay_pins[3];  // AY0-AY2
     uint8_t _strobe_pin;

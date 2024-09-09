@@ -8,7 +8,7 @@ MT8816::MT8816(uint8_t mcp_address,
                uint8_t ay0, uint8_t ay1, uint8_t ay2,
                uint8_t strobe, uint8_t data, uint8_t reset, uint8_t cs)
 {
-    _mcp_address = mcp_address;
+    mcp1_address = mcp_address;
 
     // Creating a vector of the address pins
     _ax_pins[0] = ax0;
@@ -29,17 +29,14 @@ MT8816::MT8816(uint8_t mcp_address,
         connections[i][j] = false;
         }
     }
-
-
 }
-
 
 void MT8816::begin()
 {
     Wire.begin();
 
     // Testing MCP address
-    if (!_mcp.begin_I2C(_mcp_address)) {
+    if (!mcp1.begin_I2C(mcp1_address)) {
         Serial.println("MCP23017 initialization failed. Check connections and address.");
         return;
     }
@@ -47,23 +44,23 @@ void MT8816::begin()
 
     // Configure address pins
     for (int i = 0; i < 4; ++i) {
-        _mcp.pinMode(_ax_pins[i], OUTPUT);
+        mcp1.pinMode(_ax_pins[i], OUTPUT);
     }
     for (int i = 0; i < 3; ++i) {
-        _mcp.pinMode(_ay_pins[i], OUTPUT);
+        mcp1.pinMode(_ay_pins[i], OUTPUT);
     }
 
     // Configure programming pins 
-    _mcp.pinMode(_strobe_pin, OUTPUT);
-    _mcp.pinMode(_data_pin, OUTPUT);
-    _mcp.pinMode(_reset_pin, OUTPUT);
-    _mcp.pinMode(_cs_pin, OUTPUT);
+    mcp1.pinMode(_strobe_pin, OUTPUT);
+    mcp1.pinMode(_data_pin, OUTPUT);
+    mcp1.pinMode(_reset_pin, OUTPUT);
+    mcp1.pinMode(_cs_pin, OUTPUT);
 
     // Set initial values
-    _mcp.digitalWrite(_strobe_pin, LOW);
-    _mcp.digitalWrite(_data_pin, LOW);
-    _mcp.digitalWrite(_reset_pin, HIGH);
-    _mcp.digitalWrite(_cs_pin, HIGH);
+    mcp1.digitalWrite(_strobe_pin, LOW);
+    mcp1.digitalWrite(_data_pin, LOW);
+    mcp1.digitalWrite(_reset_pin, HIGH);
+    mcp1.digitalWrite(_cs_pin, HIGH);
 
     // Reset MCP
     reset();
@@ -74,24 +71,24 @@ void MT8816::begin()
 void MT8816::reset()
 {   
     // Pulse the reset pin to reset the IC
-    _mcp.digitalWrite(_reset_pin, LOW);
+    mcp1.digitalWrite(_reset_pin, LOW);
     delayMicroseconds(10);
-    _mcp.digitalWrite(_reset_pin, HIGH);
+    mcp1.digitalWrite(_reset_pin, HIGH);
     delay(100);  
-    _mcp.digitalWrite(_reset_pin, LOW);
+    mcp1.digitalWrite(_reset_pin, LOW);
     Serial.println("MT8816 reset performed.");
 }
 
 void MT8816::connect(uint8_t x, uint8_t y)
 {
     setAddress(x, y);
-    _mcp.digitalWrite(_data_pin, HIGH);
+    mcp1.digitalWrite(_data_pin, HIGH);
     delay(10);  // Short delay to ensure data pin is stable
     strobe();
     connections[x][y] = true;
 
     setAddress(y, x);
-    _mcp.digitalWrite(_data_pin, HIGH);
+    mcp1.digitalWrite(_data_pin, HIGH);
     delay(10);  // Short delay to ensure data pin is stable
     strobe();
     connections[y][x] = true;
@@ -101,13 +98,13 @@ void MT8816::connect(uint8_t x, uint8_t y)
 void MT8816::disconnect(uint8_t x, uint8_t y)
 {
     setAddress(x, y);
-    _mcp.digitalWrite(_data_pin, LOW);
+    mcp1.digitalWrite(_data_pin, LOW);
     delay(10);  // Short delay to ensure data pin is stable
     strobe();
     connections[x][y] = false;
 
     setAddress(y, x);
-    _mcp.digitalWrite(_data_pin, LOW);
+    mcp1.digitalWrite(_data_pin, LOW);
     delay(10);  // Short delay to ensure data pin is stable
     strobe();
     connections[y][x] = false;
@@ -128,19 +125,19 @@ void MT8816::setAddress(uint8_t x, uint8_t y)
 {
     for (int i = 0; i < 4; ++i) {
         bool bit = (x >> i) & 0x01;
-        _mcp.digitalWrite(_ax_pins[i], bit);
+        mcp1.digitalWrite(_ax_pins[i], bit);
     }
 
     for (int i = 0; i < 3; ++i) {
         bool bit = (y >> i) & 0x01;
-        _mcp.digitalWrite(_ay_pins[i], bit);
+        mcp1.digitalWrite(_ay_pins[i], bit);
     }
 }
 
 void MT8816::strobe()
 {
-    _mcp.digitalWrite(_strobe_pin, HIGH);
+    mcp1.digitalWrite(_strobe_pin, HIGH);
     delayMicroseconds(5);
-    _mcp.digitalWrite(_strobe_pin, LOW);
+    mcp1.digitalWrite(_strobe_pin, LOW);
     delayMicroseconds(5);
 }

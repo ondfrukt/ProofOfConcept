@@ -11,7 +11,6 @@ void setup() {
   }
 }
 
-
 void SHKRead() {
   unsigned long currentMillis = millis();
   for (int i = 0; i < numberOfLines; i++) {

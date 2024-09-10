@@ -5,46 +5,50 @@
 Adafruit_MCP23X17 mcp_ks083f;
 
 void setupSHKPins() {
-  // Initiate MCP for K
+
+  // Initiate MCP for KS830F
+  if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
+      Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
+      while(1);
+  }
+
+  Serial.println("MCP for KSF083f initialized successfully.");
+
   for (int i = 0; i < NUM_INPUTS; i++) {
         mcp_ks083f.pinMode(SHKPins[i], INPUT_PULLUP);
   }
-  if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
-        Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
-        return;
-  }
-    Serial.println("MCP for KSF083f initialized successfully.");
-  Wire.begin();
 }
 
 // Function to read and debounce digital inputs
 void readSHK() {
-  unsigned long currentTime = millis();
-  // Iterate through all inputs
-  for (int i = 0; i < NUM_INPUTS; i++) {
-    // Read the current state of the input
-    int reading = mcp_ks083f.digitalRead(SHKPins[i]);
 
-    // Check if the input has changed
-    if (reading != lastSHKInputState[i]) {
-      // Reset the debouncing timer
-      lastSHKDebounceTime[i] = currentTime;
-    }
+  uint32_t currentTime = millis();
+  if (currentTime - lastSHKDebounceTime < SHKDebouncing) {
+    return; // Not enough time has passed, skip this read
+  }
+  // Reading all GPIO pins in MCP_KS083F
+  uint16_t mcpState = mcp_ks083f.readGPIOAB();
+
+  uint8_t newSHKState = 0;
+  bool changed = false;
+
+// Process only the specific SHK inputs
+  for (int i = 0; i < NUM_INPUTS; i++) {
+    bool pinState = bitRead(mcpState, SHKPins[i]);
+    bitWrite(newSHKState, i, pinState);
     
-    // If enough time has passed since the last change
-    if ((currentTime - lastSHKDebounceTime[i]) > SHKDebouncing) {
-      // If the input state has changed
-      if (reading != SHKState[i]) {
-        SHKState[i] = reading;  // Update the input state
-        
-        // Print the new state for debugging
-        Serial.print("Input ");
-        Serial.print(i);
-        Serial.print(" changed to: ");
-        Serial.println(SHKState[i]);
-      }
+    if (bitRead(SHKState, i) != pinState) {
+      changed = true;
+      Serial.print(F("SHK Input "));
+      Serial.print(i);
+      Serial.print(F(" changed to: "));
+      Serial.println(pinState);
     }
-    // Save the current reading for the next loop iteration
-    lastSHKInputState[i] = reading;
+  }
+  
+  if (changed) {
+    lastSHKDebounceTime = currentTime;
+    SHKState = newSHKState;
+    stateChanged = true;
   }
 }

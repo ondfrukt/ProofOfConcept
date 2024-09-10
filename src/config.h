@@ -48,11 +48,11 @@ const uint8_t FR_4 = GPB5;
 const uint8_t SHKPins[NUM_INPUTS] = {SHK_1, SHK_2, SHK_3, SHK_4};
 
 // Arrays to store debounce-related information for each input
-unsigned long lastSHKDebounceTime[NUM_INPUTS] = {0};  // Last time the input was toggled
-int lastSHKInputState[NUM_INPUTS] = {LOW};            // Previous input state
-int SHKState[NUM_INPUTS] = {LOW};                     // Current debounced input state
 
-// SHK Debounce time in milliseconds
+volatile uint8_t SHKState = 0;           // Current SHK States
+volatile bool stateChanged = false;      
+unsigned int lastSHKDebounceTime = 0;    // Last time the input was toggled
+
 uint8_t SHKDebouncing = 50;
 
 #endif

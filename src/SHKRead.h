@@ -2,32 +2,28 @@
 #include <Adafruit_MCP23X17.h>
 #include "config.h"
 
-Adafruit_MCP23X17 mcp2;
+Adafruit_MCP23X17 mcp_ks083f;
 
 void setupSHKPins() {
-  // Initialize all input pins as INPUT_PULLUP
-    for (int i = 0; i < NUM_INPUTS; i++) {
-        mcp2.pinMode(SHKPins[i], INPUT_PULLUP);
-    }
-    
-  // Seting up MCP GPOI expander for KSF083F
-  
-  if (!mcp2.begin_I2C(mcp2_address)) {
-        Serial.println("MCP23017 for KSF083f initialization failed. Check connections and address.");
+  // Initiate MCP for K
+  for (int i = 0; i < NUM_INPUTS; i++) {
+        mcp_ks083f.pinMode(SHKPins[i], INPUT_PULLUP);
+  }
+  if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
+        Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
         return;
-    }
-    Serial.println("MCP23017 for KSF083f initialized successfully.");
+  }
+    Serial.println("MCP for KSF083f initialized successfully.");
   Wire.begin();
 }
 
 // Function to read and debounce digital inputs
 void readSHK() {
   unsigned long currentTime = millis();
-  
   // Iterate through all inputs
   for (int i = 0; i < NUM_INPUTS; i++) {
     // Read the current state of the input
-    int reading = mcp2.digitalRead(SHKPins[i]);
+    int reading = mcp_ks083f.digitalRead(SHKPins[i]);
 
     // Check if the input has changed
     if (reading != lastSHKInputState[i]) {

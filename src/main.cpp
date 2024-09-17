@@ -2,7 +2,7 @@
 #include "config.h"
 #include "hookChange.h"
 #include "SHKRead.h"
-#include "actions.h"
+#include "lineAction.h"
 
 LineSystem lineSystem;
 Adafruit_MCP23X17 mcp_ks083f;

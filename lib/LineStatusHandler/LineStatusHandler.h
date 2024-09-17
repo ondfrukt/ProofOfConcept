@@ -27,7 +27,7 @@ struct Line {
     int line_number;                    // Identifier for the line (0-7)
     statuses currentStatus;             // Current status of the line
     statuses previousStatus;             // Previus status for the line
-    unsigned long int lastTimeChanged = 0;  // Timestampe for last change
+    unsigned long int lineTimer = 0;  // Timestampe for last change
 };
 
 class LineSystem {
@@ -40,7 +40,7 @@ public:
     // Display the status of all lines
     statuses getPreviousLineStatus(int line);
     // Display the status of all lines
-    long unsigned int getLastTimeChanged(int line);
+    long unsigned int lineTimer(int line);
     // Display the status of all lines
     void displayAllLineStatuses();
     

@@ -1,7 +1,8 @@
 #include <Arduino.h>
 #include "config.h"
-#include "hookChange"
+#include "hookChange.h"
 #include "SHKRead.h"
+#include "actions.h"
 
 LineSystem lineSystem;
 Adafruit_MCP23X17 mcp_ks083f;

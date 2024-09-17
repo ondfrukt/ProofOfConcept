@@ -1,24 +1,28 @@
+#ifndef hookChange_h
+#define hookCange_h
+
 #include <Arduino.h>
 #include "config.h"
+#include "actions.h"
 
 void hookChange(int line, HookState newHookState ){
 
   // -------------  Hook OFF -------------------
   if (newHookState == HOOK_OFF){
 
-    // idle --- > Ready
+    // --- > Ready
     if (lineSystem.getCurrentLineStatus(line) == line_idle){
       lineSystem.setLineStatus(line, line_ready);
       Serial.print("Line "); Serial.print(line); Serial.println(" Ready");
-      // CODE
+      lineAction(line, line_ready);
       return;
     }
 
-    // incoming ---> connected
+    // ---> connected
     if (lineSystem.getCurrentLineStatus(line) == line_incoming){
       lineSystem.setLineStatus(line, line_connected);
       Serial.print("Line "); Serial.print(line); Serial.println(" Connected");
-      // CODE
+      lineAction(line, line_connected);
       return;
     }
   }
@@ -38,7 +42,7 @@ void hookChange(int line, HookState newHookState ){
       
       lineSystem.setLineStatus(line, line_idle);
       Serial.print("Line "); Serial.print(line); Serial.println(" Idle");
-      // CODE
+      lineAction(line, line_idle);
       return;
     }
 
@@ -46,8 +50,10 @@ void hookChange(int line, HookState newHookState ){
     if (CurrentLineStatus == line_ringing){
       lineSystem.setLineStatus(line, line_idle);
       Serial.print("Line "); Serial.print(line); Serial.println(" Idle");
-      // CODE
+      lineAction(line, line_disconnected);
       return;
     }
   }
 };
+
+#endif

@@ -14,7 +14,7 @@ void LineSystem::setLineStatus(int lineNumber, statuses new_status) {
     if (lineNumber >= 0 && lineNumber < 8) {
         lineArray[lineNumber].previousStatus = lineArray[lineNumber].currentStatus;
         lineArray[lineNumber].currentStatus = new_status;
-        lineArray[lineNumber].lastTimeChanged = millis();
+        lineArray[lineNumber].lineTimer = millis();
     } else {
         Serial.println("Invalid line number!");
     }
@@ -36,9 +36,9 @@ statuses LineSystem::getPreviousLineStatus(int lineNumber) {
     return line_idle;  // Return default state for invalid line
 }
 
-long unsigned int LineSystem::getLastTimeChanged(int lineNumber) {
+long unsigned int LineSystem::lineTimer(int lineNumber) {
     if (lineNumber >= 0 && lineNumber < 8) {
-        return lineArray[lineNumber].lastTimeChanged;
+        return lineArray[lineNumber].lineTimer;
     }
     Serial.println("Invalid line number!");
     return 0;

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-// Enum representing all possible statuses of a line
+// Enum representing all possible statuses of a line 
 enum statuses {
     line_idle,           // Line is not in use
     line_ready,          // Dial tone is playing, waiting for input

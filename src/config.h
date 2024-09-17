@@ -1,6 +1,13 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef config_h
+#define config_h
 #include <Arduino.h>
+#include <MT8816.h>
+#include <LineStatusHandler.h>
+#include <Adafruit_MCP23X17.h>
+
+extern LineSystem lineSystem;
+extern MT8816 matrix;
+extern Adafruit_MCP23X17 mcp_ks083f;
 
 // Number of lines
 #define NUM_INPUTS 4
@@ -54,5 +61,11 @@ volatile bool stateChanged = false;
 unsigned int lastSHKDebounceTime = 0;    // Last time the input was toggled
 
 uint8_t SHKDebouncing = 50;
+
+
+enum HookState {
+  HOOK_ON,
+  HOOK_OFF
+  };
 
 #endif

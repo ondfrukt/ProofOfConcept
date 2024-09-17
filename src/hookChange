@@ -1,0 +1,11 @@
+#include <Arduino.h>
+#include "config.h"
+
+void hookChange(int line, HookState newHookState ){
+
+if (newHookState == HOOK_OFF && lineSystem.getCurrentLineStatus(line) == line_idle){
+  
+}
+
+
+};

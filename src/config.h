@@ -6,8 +6,9 @@
 #include <Adafruit_MCP23X17.h>
 
 extern LineSystem lineSystem;
-extern MT8816 matrix;
 extern Adafruit_MCP23X17 mcp_ks083f;
+// extern MT8816 matrix;
+
 
 // Number of lines
 #define NUM_INPUTS 4

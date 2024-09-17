@@ -3,9 +3,10 @@
 
 void hookChange(int line, HookState newHookState ){
 
-if (newHookState == HOOK_OFF && lineSystem.getCurrentLineStatus(line) == line_idle){
-  
-}
+  if (newHookState == HOOK_OFF && lineSystem.getCurrentLineStatus(line) == line_idle){
+    lineSystem.setLineStatus(line, statuses new_status)
+
+  }
 
 
 };

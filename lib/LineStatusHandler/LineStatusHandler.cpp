@@ -36,13 +36,14 @@ statuses LineSystem::getPreviousLineStatus(int lineNumber) {
     return line_idle;  // Return default state for invalid line
 }
 
-long unsigned int LineSystem::lineTimer(int lineNumber) {
+long unsigned int LineSystem::getLineTimer(int lineNumber) {
     if (lineNumber >= 0 && lineNumber < 8) {
         return lineArray[lineNumber].lineTimer;
     }
     Serial.println("Invalid line number!");
     return 0;
 }
+
 
 void LineSystem::displayAllLineStatuses() {
     for (int i = 0; i < 8; ++i) {
@@ -51,6 +52,13 @@ void LineSystem::displayAllLineStatuses() {
         Serial.print(": ");
         Serial.println(this->getStatusString(lineArray[i].currentStatus));
     }
+}
+
+void LineSystem::setLineTimerFlag(int line) {
+    lineTimerFlags |= (1 << line);
+}
+void LineSystem::clearLineTimerFlag(int line) {
+    lineTimerFlags &= ~(1 << line);
 }
 
 const __FlashStringHelper* LineSystem::getStatusString(statuses status) {

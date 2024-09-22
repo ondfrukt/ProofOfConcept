@@ -49,6 +49,13 @@ const uint8_t SHK_4 = GPB7;
 const uint8_t RM_4 = GPB6;
 const uint8_t FR_4 = GPB5;
 
+// --------------Timers--------------------------
+
+unsigned long statusTimer_Ready = 30000; // 30 seconds
+unsigned long statusTimer_Dialing = 5000; // 5 seconds
+unsigned long statusTimer_Ringing = 5000; // 5 seconds
+
+
 
 // -----------------SHK--------------------------
 

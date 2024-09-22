@@ -79,4 +79,13 @@ void lineAction(int line, statuses newLineStatus){
 
 }
 
+
+
+void timerChecker(int line){
+  statuses status = lineSystem.getCurrentLineStatus(line);
+  unsigned long int timer = lineSystem.getLineTimer(line);
+  
+
+}
+
 #endif

@@ -32,6 +32,9 @@ struct Line {
 
 class LineSystem {
 public:
+
+    byte lineTimerFlags;
+
     LineSystem();
     // Set the status of a specific line
     void setLineStatus(int line, statuses new_status);
@@ -40,9 +43,13 @@ public:
     // Display the status of all lines
     statuses getPreviousLineStatus(int line);
     // Display the status of all lines
-    long unsigned int lineTimer(int line);
+    long unsigned int getLineTimer(int line);
     // Display the status of all lines
     void displayAllLineStatuses();
+    // Marking a lines timer as active
+    void setLineTimerFlag (int line);
+    // Clear line timer flag
+    void clearLineTimerFlag (int line);
     
 private:
     Line lineArray[8];  // Array to hold 8 lines

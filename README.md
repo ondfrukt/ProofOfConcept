@@ -5,6 +5,7 @@ This project aims to create an analog phone exchange for analog phones, supporti
 
 phone statuses
 
-| column 1 | column 2 |
-| d------a | d------2 |
+| Phone status | Hook status |
+| ------------ | ----------- |
+| idle         | ON          |
 

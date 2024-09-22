@@ -9,7 +9,6 @@ enum statuses {
     line_ready,          // Dial tone is playing, waiting for input
     line_pulse_dialing,  // Old-style rotary dialing in progress
     line_tone_dialing,   // Modern touch-tone dialing in progress
-    line_connecting,     // Attempting to establish a connection
     line_busy,           // Receiving busy signal
     line_fail,           // Line failed to connect
     line_ringing,        // Line is ringing (outgoing call)

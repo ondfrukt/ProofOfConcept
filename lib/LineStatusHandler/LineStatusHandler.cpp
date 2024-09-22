@@ -68,7 +68,6 @@ const __FlashStringHelper* LineSystem::getStatusString(statuses status) {
         case line_ready: return F("Ready");
         case line_pulse_dialing: return F("Pulse Dialing");
         case line_tone_dialing: return F("Tone Dialing");
-        case line_connecting: return F("Connecting");
         case line_busy: return F("Busy");
         case line_fail: return F("Fail");
         case line_ringing: return F("Ringing");

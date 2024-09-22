@@ -27,11 +27,6 @@ void lineAction(int line, statuses newLineStatus){
     return;
   }
 
-  if (newLineStatus == line_connecting){
-    //Action
-    return;
-  }
-
   if (newLineStatus == line_connected){
     //Action
     return;

@@ -9,8 +9,8 @@ Tone - if a tone is played to the line due to the status
 
 
 | Phone status  | Function                              | Hook | Timer | Audio | Tone |
-| ------------- | ------------------------------------- | ---- | ----- |---| | 
-| idle          | Line is not in use                    | ON   | No    |  |
+| ------------- | ------------------------------------- | ---- | ----- |-------|------| 
+| idle          | Line is not in use                    | ON   | No    |
 | ready         | Line is ready, waiting for inputs     | OFF  | Yes   |
 | puls_dialing  | Rotary dialing in progress            | OFF  | Yes   |
 | tone_dialing  | Tuch-tone dialing in progress         | OFF  | Yes   |

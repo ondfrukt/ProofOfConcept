@@ -23,17 +23,18 @@ enum statuses {
 
 // Structure representing a single line
 struct Line {
-    int line_number;                    // Identifier for the line (0-7)
-    statuses currentStatus;             // Current status of the line
-    statuses previousStatus;             // Previus status for the line
-    unsigned long int lineTimer = 0;  // Timestampe for last change
+    int line_number;                        // Identifier for the line (0-7)
+    statuses currentStatus;                 // Current status of the line
+    statuses previousStatus;                // Previus status for the line
+    unsigned int lineTimerLimit = 0;        // Current limit for the line timer
+    unsigned long int lineTimerStart = 0;   // Start time for the line
 };
 
 class LineSystem {
 public:
-
+    // Binary 8-bit to store if a timer is active due to each line
     byte lineTimerFlags;
-
+    // Constructor
     LineSystem();
     // Set the status of a specific line
     void setLineStatus(int line, statuses new_status);
@@ -41,15 +42,23 @@ public:
     statuses getCurrentLineStatus(int line);
     // Display the status of all lines
     statuses getPreviousLineStatus(int line);
-    // Display the status of all lines
-    long unsigned int getLineTimer(int line);
+
     // Display the status of all lines
     void displayAllLineStatuses();
     // Marking a lines timer as active
     void setLineTimerFlag (int line);
     // Clear line timer flag
     void clearLineTimerFlag (int line);
-    
+
+    // Set the timer limit for a specific line
+    void setLineTimerLimit(int line, long unsigned int limit);
+    // Get the timer limit for a specific line
+    long unsigned int getLineTimerLimit(int line);
+    // Start line timer
+    void startLineTimer(int line);
+    // Get timer start time for a specific line
+    long unsigned int getLineTimerStart(int line);
+
 private:
     Line lineArray[8];  // Array to hold 8 lines
     // Helper function to convert status enum to string

@@ -4,7 +4,9 @@
 #include <Arduino.h>
 #include "config.h"
 
-// Function to initialize and configure SHK pins
+
+
+// Function to setup SHK pins with the MCP_KS083F
 void setupSHKPins() {
 
   // Initialize MCP for KS830F
@@ -16,10 +18,11 @@ void setupSHKPins() {
   Serial.println("MCP for KSF083f initialized successfully.");
 
   // Set all SHK pins as inputs with internal pull-up resistors
-  for (int i = 0; i < NUM_INPUTS; i++) {
+  for (int i = 0; i < activeLines; i++) {
     mcp_ks083f.pinMode(SHKPins[i], INPUT_PULLUP);
   }
 }
+
 
 // Function to read and debounce digital inputs
 void readSHK() {
@@ -37,7 +40,7 @@ void readSHK() {
   bool changed = false;
 
   // Process only the specific SHK inputs
-  for (int i = 0; i < NUM_INPUTS; i++) {
+  for (int i = 0; i < activeLines; i++) {
     bool pinState = bitRead(mcpState, SHKPins[i]);
     bitWrite(newSHKState, i, pinState);
     

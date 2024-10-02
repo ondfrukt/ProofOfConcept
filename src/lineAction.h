@@ -4,11 +4,12 @@
 #include <Arduino.h>
 #include "config.h"
 
-
+// Function to determine the action to take based on the new line status
 void lineAction(int line, statuses newLineStatus){
 
   if (newLineStatus == line_idle){
     //Action
+
     return;
   }
 
@@ -71,16 +72,37 @@ void lineAction(int line, statuses newLineStatus){
     //Action
     return;
   }
+}
 
+// Function to determine the action to take based on the line status due to a timer expiration
+void lineTimerExpired(int line){
+  lineSystem.clearLineTimerFlag(line);
+  statuses currentStatus = lineSystem.getCurrentLineStatus(line);
+  if (
+    currentStatus == line_ready ||
+    currentStatus == line_pulse_dialing ||
+    currentStatus == line_tone_dialing ||
+    currentStatus == line_fail ||
+    currentStatus == line_busy ||
+    currentStatus == line_disconnected ){
+
+    lineSystem.setLineStatus(line, line_timeout);
+    lineAction(line, line_timeout);
+    return;
+  }
+
+  if (currentStatus == line_timeout) {
+    lineSystem.setLineStatus(line, line_abandoned);
+    lineAction(line, line_abandoned);
+    return;
+  } 
+  if (currentStatus == line_incoming) {
+    lineSystem.setLineStatus(line, line_idle);
+    lineAction(line, line_idle);
+    return;
+  }
 }
 
 
-
-void timerChecker(int line){
-  statuses status = lineSystem.getCurrentLineStatus(line);
-  unsigned long int timer = lineSystem.getLineTimer(line);
-  
-
-}
 
 #endif

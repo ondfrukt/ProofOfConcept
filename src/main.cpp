@@ -14,22 +14,23 @@ void setup() {
   setupSHKPins();
 }
 
-void loop() {
-  readSHK();
-
-  // Checking if a timer is activ on a line
-  if (lineSystem.lineTimerFlags != 0){
-    for (int i=0; i < 8; i++){
-      if (lineSystem.lineTimerFlags & (1 << i)){
-        timerChecker(i);
+// Function to check line timers
+void lineTimerCheck() {
+  for (int i = 0; i < activeLines; i++) {
+    if (bitRead(lineTimerFlags, i) == 1) {
+      if (millis() - lineSystem.getLineTimerStart(i) > lineSystem.getLineTimerLimit(i)) {
+        lineTimerExpired(i);
       }
     }
   }
+}
 
+void loop() {
 
+  readSHK();
 
-
-
-
+  if (lineTimerFlags != 0) {
+    lineTimerCheck();
+  }
   delay(1);
 }

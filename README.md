@@ -1,13 +1,16 @@
 # Phone exchange - Proof of concept
-
 This project aims to create an analog phone exchange for analog phones, supporting both pulse dialing and tone dialing.
 
+## Phone statuses
 
-phone statuses
+Timer - If the new status initiate a timer
+Audio -  If a audio is played to the line due to the status
+Tone - if a tone is played to the line due to the status 
 
-| Phone status  | Function                              | Hook | Timer | Audio |
-| ------------- | ------------------------------------- | ---- | ----- |---|
-| idle          | Line is not in use                    | ON   | No    |  |
+
+| Phone status  | Function                              | Hook | Timer | Audio | Tone |
+| ------------- | ------------------------------------- | ---- | ----- |-------|------| 
+| idle          | Line is not in use                    | ON   | No    |
 | ready         | Line is ready, waiting for inputs     | OFF  | Yes   |
 | puls_dialing  | Rotary dialing in progress            | OFF  | Yes   |
 | tone_dialing  | Tuch-tone dialing in progress         | OFF  | Yes   |

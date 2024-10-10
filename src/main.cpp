@@ -14,7 +14,7 @@ void setup() {
   setupSHKPins();
 }
 
-// Function to check line timers
+// Function to handle line timer expiration
 void lineTimerCheck() {
   for (int i = 0; i < activeLines; i++) {
     if (bitRead(lineTimerFlags, i) == 1) {
@@ -26,9 +26,8 @@ void lineTimerCheck() {
 }
 
 void loop() {
-
   readSHK();
-
+  // Check if any line timers is active
   if (lineTimerFlags != 0) {
     lineTimerCheck();
   }

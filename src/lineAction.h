@@ -5,104 +5,110 @@
 #include "config.h"
 
 // Function to determine the action to take based on the new line status
-void lineAction(int line, statuses newLineStatus){
+void lineAction(int line, statuses newLineStatus) {
+  switch (newLineStatus) {
+    case line_idle:
+      // Action
+      break;
 
-  if (newLineStatus == line_idle){
-    //Action
+    case line_ready:
+      // Action
+      break;
 
-    return;
-  }
+    case line_tone_dialing:
+      // Action
+      break;
 
-  if (newLineStatus == line_ready){
-    //Action
-    return;
-  }
+    case line_pulse_dialing:
+      // Action
+      break;
 
-  if (newLineStatus == line_tone_dialing){
-    //Action
-    return;
-  }
+    case line_connected:
+      // Action
+      break;
 
-  if (newLineStatus == line_pulse_dialing){
-    //Action
-    return;
-  }
+    case line_disconnected:
+      // Action
+      break;
 
-  if (newLineStatus == line_connected){
-    //Action
-    return;
-  }
+    case line_incoming:
+      // Action
+      break;
 
-  if (newLineStatus == line_disconnected){
-    //Action
-    return;
-  }
+    case line_ringing:
+      // Action
+      break;
 
-  if (newLineStatus == line_incoming){
-    //Action
-    return;
-  }
+    case line_timeout:
+      // Action
+      break;
 
-  if (newLineStatus == line_ringing){
-    //Action
-    return;
-  }
+    case line_abandoned:
+      // Action
+      break;
 
-  if (newLineStatus == line_timeout){
-    //Action
-    return;
-  }
+    case line_busy:
+      // Action
+      break;
 
-  if (newLineStatus == line_abandoned){
-    //Action
-    return;
-  }
+    case line_fail:
+      // Action
+      break;
 
-  if (newLineStatus == line_busy){
-    //Action
-    return;
-  }
+    case line_operator:
+      // Action
+      break;
 
-  if (newLineStatus == line_fail){
-    //Action
-    return;
-  }
-
-  if (newLineStatus == line_operator){
-    //Action
-    return;
+    default:
+      // Handle unexpected status
+      break;
   }
 }
+
+// Function to handle line timer expiration
+
 
 // Function to determine the action to take based on the line status due to a timer expiration
-void lineTimerExpired(int line){
+void lineTimerExpired(int line) {
   lineSystem.clearLineTimerFlag(line);
   statuses currentStatus = lineSystem.getCurrentLineStatus(line);
-  if (
-    currentStatus == line_ready ||
-    currentStatus == line_pulse_dialing ||
-    currentStatus == line_tone_dialing ||
-    currentStatus == line_fail ||
-    currentStatus == line_busy ||
-    currentStatus == line_disconnected ){
 
-    lineSystem.setLineStatus(line, line_timeout);
-    lineAction(line, line_timeout);
-    return;
-  }
+  switch (currentStatus) {
+    case line_ready:
+    case line_pulse_dialing:
+    case line_tone_dialing:
+    case line_fail:
+    case line_busy:
+    case line_disconnected:
+      lineSystem.setLineStatus(line, line_timeout);
+      lineAction(line, line_timeout);
+      break;
 
-  if (currentStatus == line_timeout) {
-    lineSystem.setLineStatus(line, line_abandoned);
-    lineAction(line, line_abandoned);
-    return;
-  } 
-  if (currentStatus == line_incoming) {
-    lineSystem.setLineStatus(line, line_idle);
-    lineAction(line, line_idle);
-    return;
+    case line_timeout:
+      lineSystem.setLineStatus(line, line_abandoned);
+      lineAction(line, line_abandoned);
+      break;
+
+    case line_incoming:
+      lineSystem.setLineStatus(line, line_idle);
+      lineAction(line, line_idle);
+      break;
+
+    default:
+      // Handle unexpected status if necessary
+      break;
   }
 }
 
+void lineTimerCheck() {
+  for (int i = 0; i < activeLines; i++) {
+    if (bitRead(lineTimerFlags, i) == 1) {
+      if (millis() - lineSystem.getLineTimerStart(i) > lineSystem.getLineTimerLimit(i)) {
+        lineTimerExpired(i);
+      }
+    }
+  }
+}
 
 
 #endif

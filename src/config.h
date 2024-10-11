@@ -70,9 +70,8 @@ volatile uint8_t SHKState = 0;           // Current SHK States
 volatile bool stateChanged = false;      
 unsigned int lastSHKDebounceTime = 0;    // Last time the input was toggled
 
+// Debouncing time in milliseconds
 uint8_t SHKDebouncing = 50;
-
-
 
 enum HookState {
   HOOK_ON,

@@ -25,7 +25,7 @@ void setupSHKPins() {
 
 
 // Function to read and debounce digital inputs
-void readSHK() {
+void SHKRead() {
   uint32_t currentTime = millis();  // Get the current time in milliseconds
 
   // Skip this read if the time since the last debounce is not enough
@@ -41,19 +41,19 @@ void readSHK() {
 
   // Process only the specific SHK inputs
   for (int i = 0; i < activeLines; i++) {
-    bool pinState = bitRead(mcpState, SHKPins[i]);
-    bitWrite(newSHKState, i, pinState);
+    bool pinRead = bitRead(mcpState, SHKPins[i]);
+    bitWrite(newSHKState, i, pinRead);
     
     // Check if the current SHK input state has changed
-    if (bitRead(SHKState, i) != pinState) {
+    if (bitRead(SHKState, i) != pinRead) {
       changed = true;
     }
 
     // If the state has changed, trigger the appropriate function
-    if (bitRead(SHKState, i) == 1 && pinState == 0) {
+    if (bitRead(SHKState, i) == 1 && pinRead == 0) {
       hookChange(i, HOOK_OFF); // Call function for hook off
     }
-    if (bitRead(SHKState, i) == 0 && pinState == 1) {
+    if (bitRead(SHKState, i) == 0 && pinRead == 1) {
       hookChange(i, HOOK_ON); // Call function for hook on
     }
   }

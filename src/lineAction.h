@@ -5,7 +5,7 @@
 #include "config.h"
 
 // Function to determine the action to take based on the new line status
-void lineAction(int line, statuses newLineStatus) {
+void lineAction(int line, lineStatuses newLineStatus) {
   switch (newLineStatus) {
     case line_idle:
       // Action
@@ -70,8 +70,8 @@ void lineAction(int line, statuses newLineStatus) {
 
 // Function to determine the action to take based on the line status due to a timer expiration
 void lineTimerExpired(int line) {
-  lineSystem.clearLineTimerFlag(line);
-  statuses currentStatus = lineSystem.getCurrentLineStatus(line);
+  lineSystem.stopLineTimer(line);
+  uint32_t currentStatus = lineSystem.lineVector[line].currentStatus;
 
   switch (currentStatus) {
     case line_ready:
@@ -103,7 +103,7 @@ void lineTimerExpired(int line) {
 void lineTimerCheck() {
   for (int i = 0; i < activeLines; i++) {
     if (bitRead(lineTimerFlags, i) == 1) {
-      if (millis() - lineSystem.getLineTimerStart(i) > lineSystem.getLineTimerLimit(i)) {
+      if (millis() - lineSystem.lineVector[i].lineTimerStart > lineSystem.lineVector[i].lineTimerLimit) {
         lineTimerExpired(i);
       }
     }

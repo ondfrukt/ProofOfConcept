@@ -1,100 +1,60 @@
 #include "LineStatusHandler.h"
+#include <Arduino.h>
+#include <vector>
 
 // Constructor
-LineSystem::LineSystem() {
-    // Initialize all lines to idle state
+LineSystem::LineSystem(int activeLines) {
+    lineVector.resize(activeLines);
     for (int i = 0; i < 8; ++i) {
-        lineArray[i].line_number = i;
-        lineArray[i].currentStatus = line_idle;
+        lineVector[i].line_number = i;
     }
 }
 
 // Set the status of a specific line
-void LineSystem::setLineStatus(int lineNumber, statuses new_status) {
-    if (lineNumber >= 0 && lineNumber < 8) {
-        lineArray[lineNumber].previousStatus = lineArray[lineNumber].currentStatus;
-        lineArray[lineNumber].currentStatus = new_status;
-        lineArray[lineNumber].lineTimerLimit = 0;
+void LineSystem::setLineStatus(int lineNumber, uint32_t new_status) {
+    if (lineNumber >= 0 && lineNumber < lineVector.size()) {
+        lineVector[lineNumber].previousStatus = lineVector[lineNumber].currentStatus;
+        lineVector[lineNumber].currentStatus = new_status;
+        lineVector[lineNumber].lineTimerLimit = 0;
+        lineVector[lineNumber].lineTimerActive = false;
     } else {
         Serial.println("Invalid line number!");
     }
 }
 
-// Get the current status of a specific line
-statuses LineSystem::getCurrentLineStatus(int lineNumber) {
-    if (lineNumber >= 0 && lineNumber < 8) {
-        return lineArray[lineNumber].currentStatus;
-    }
-    Serial.println("Invalid line number!");
-    return line_idle;  // Return default state for invalid line
-}
-
-// Display the status of all lines
-statuses LineSystem::getPreviousLineStatus(int lineNumber) {
-    if (lineNumber >= 0 && lineNumber < 8) {
-        return lineArray[lineNumber].previousStatus;
-    }
-    Serial.println("Invalid line number!");
-    return line_idle;  // Return default state for invalid line
-}
-
-// Set the timer limit for a specific line
-void LineSystem::setLineTimerLimit(int lineNumber, long unsigned int limit) {
-    if (lineNumber >= 0 && lineNumber < 8) {
-        lineArray[lineNumber].lineTimerLimit = limit;
-    } else {
-        Serial.println("Invalid line number!");
-    }
-}
 
 // Start line timer
 void LineSystem::startLineTimer(int lineNumber) {
-    if (lineNumber >= 0 && lineNumber < 8) {
-        lineArray[lineNumber].lineTimerStart = millis();
+    if (lineNumber >= 0 && lineNumber < lineVector.size()) {
+        lineVector[lineNumber].lineTimerStart = millis();
+        lineVector[lineNumber].lineTimerActive = true;
     } else {
         Serial.println("Invalid line number!");
     }
 }
 
-// Get timer start time for a specific line
-long unsigned int LineSystem::getLineTimerStart(int lineNumber) {
-    if (lineNumber >= 0 && lineNumber < 8) {
-        return lineArray[lineNumber].lineTimerStart;
+// Stops and celear line timer
+void LineSystem::stopLineTimer(int lineNumber) {
+    if (lineNumber >= 0 && lineNumber < lineVector.size()) {
+        lineVector[lineNumber].lineTimerActive = false;
+        lineVector[lineNumber].lineTimerStart = 0;
+    } else {
+        Serial.println("Invalid line number!");
     }
-    Serial.println("Invalid line number!");
-    return 0;
-}
-
-// Set the timer limit for a specific line
-long unsigned int LineSystem::getLineTimerLimit(int lineNumber) {
-    if (lineNumber >= 0 && lineNumber < 8) {
-        return lineArray[lineNumber].lineTimerLimit;
-    }
-    Serial.println("Invalid line number!");
-    return 0;
 }
 
 // Display the status of all lines
 void LineSystem::displayAllLineStatuses() {
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < lineVector.size(); ++i) {
         Serial.print("Line ");
-        Serial.print(lineArray[i].line_number);
+        Serial.print(lineVector[i].line_number);
         Serial.print(": ");
-        Serial.println(this->getStatusString(lineArray[i].currentStatus));
+        Serial.println(this->getStatusString(static_cast<lineStatuses>(lineVector[i].currentStatus)));
     }
 }
 
-// Marking a lines timer as active
-void LineSystem::setLineTimerFlag(int line) {
-    lineTimerFlags |= (1 << line);
-}
-// Clear line timer flag
-void LineSystem::clearLineTimerFlag(int line) {
-    lineTimerFlags &= ~(1 << line);
-}
-
 // Helper function to convert status enum to string
-const __FlashStringHelper* LineSystem::getStatusString(statuses status) {
+const __FlashStringHelper* LineSystem::getStatusString(lineStatuses status) {
     // Convert enum to string representation
     switch(status) {
         case line_idle: return F("Idle");

@@ -1,12 +1,9 @@
 #include <Arduino.h>
+#include "main.h"
 #include "config.h"
 #include "hookChange.h"
 #include "SHKRead.h"
 #include "lineAction.h"
-
-LineSystem lineSystem;
-Adafruit_MCP23X17 mcp_ks083f;
-// MT8816 matrix;
 
 void setup() {
   Serial.begin(115200);
@@ -25,6 +22,19 @@ void loop() {
     lineTimerCheck();
   }
 
+// loop over all lines and check if a status is not equal to idle
+  for (int i = 0; i < activeLines; i++) {
+    if (lineSystem.lineVector[i].currentStatus != line_idle) {
+      // If the line is not idle, check if the line timer is active
+      if (lineSystem.lineVector[i].lineTimerActive == true) {
+        // If the line timer is active, check if the timer has expired
+        if (millis() - lineSystem.lineVector[i].lineTimerStart > lineSystem.lineVector[i].lineTimerLimit) {
+          // If the timer has expired, trigger the appropriate action in lineAction()
+          lineTimerExpired(i);
+        }
+      }
+  }
+  }
 
 
 

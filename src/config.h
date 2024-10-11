@@ -5,13 +5,16 @@
 #include <LineStatusHandler.h>
 #include <Adafruit_MCP23X17.h>
 
-// Defining objects
-extern LineSystem lineSystem;
-extern Adafruit_MCP23X17 mcp_ks083f;
-// extern MT8816 matrix;
 
 // Number of lines
 const int activeLines = 4;
+
+// Defining objects
+LineSystem lineSystem(activeLines);
+Adafruit_MCP23X17 mcp_ks083f;
+// extern MT8816 matrix;
+
+
 
 // Defining MCP pins
 const int GPA0 = 0;

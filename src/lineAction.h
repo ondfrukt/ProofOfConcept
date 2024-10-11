@@ -71,7 +71,7 @@ void lineAction(int line, lineStatuses newLineStatus) {
 // Function to determine the action to take based on the line status due to a timer expiration
 void lineTimerExpired(int line) {
   lineSystem.stopLineTimer(line);
-  uint32_t currentStatus = lineSystem.lineVector[line].currentStatus;
+  uint32_t currentStatus = lineSystem.lineVector[line].currentLineStatus;
 
   switch (currentStatus) {
     case line_ready:
@@ -97,16 +97,6 @@ void lineTimerExpired(int line) {
     default:
       // Handle unexpected status if necessary
       break;
-  }
-}
-
-void lineTimerCheck() {
-  for (int i = 0; i < activeLines; i++) {
-    if (bitRead(lineTimerFlags, i) == 1) {
-      if (millis() - lineSystem.lineVector[i].lineTimerStart > lineSystem.lineVector[i].lineTimerLimit) {
-        lineTimerExpired(i);
-      }
-    }
   }
 }
 

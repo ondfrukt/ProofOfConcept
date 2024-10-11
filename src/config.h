@@ -59,8 +59,6 @@ unsigned long statusTimer_Ready = 30000; // 30 seconds
 unsigned long statusTimer_Dialing = 5000; // 5 seconds
 unsigned long statusTimer_Ringing = 5000; // 5 seconds
 
-// lineTimerFlags
-uint8_t lineTimerFlags = 0;
 
 // -----------------SHK--------------------------
 
@@ -74,11 +72,7 @@ volatile bool stateChanged = false;
 unsigned int lastSHKDebounceTime = 0;    // Last time the input was toggled
 
 // Debouncing time in milliseconds
-uint8_t SHKDebouncing = 50;
+uint8_t SHKDebouncingTime = 150;
 
-enum HookState {
-  HOOK_ON,
-  HOOK_OFF
-  };
 
 #endif

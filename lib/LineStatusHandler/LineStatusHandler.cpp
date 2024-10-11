@@ -13,8 +13,8 @@ LineSystem::LineSystem(int activeLines) {
 // Set the status of a specific line
 void LineSystem::setLineStatus(int lineNumber, uint32_t new_status) {
     if (lineNumber >= 0 && lineNumber < lineVector.size()) {
-        lineVector[lineNumber].previousStatus = lineVector[lineNumber].currentStatus;
-        lineVector[lineNumber].currentStatus = new_status;
+        lineVector[lineNumber].previousLineStatus = lineVector[lineNumber].currentLineStatus;
+        lineVector[lineNumber].currentLineStatus = new_status;
         lineVector[lineNumber].lineTimerLimit = 0;
         lineVector[lineNumber].lineTimerActive = false;
     } else {
@@ -49,7 +49,7 @@ void LineSystem::displayAllLineStatuses() {
         Serial.print("Line ");
         Serial.print(lineVector[i].line_number);
         Serial.print(": ");
-        Serial.println(this->getStatusString(static_cast<lineStatuses>(lineVector[i].currentStatus)));
+        Serial.println(this->getStatusString(static_cast<lineStatuses>(lineVector[i].currentLineStatus)));
     }
 }
 

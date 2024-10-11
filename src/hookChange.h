@@ -6,13 +6,13 @@
 #include "lineAction.h"
 
 // Function to handle changes in hook state
-void hookChange(int line, HookState newHookState) {
+void hookChange(int line, hookStatuses newHookState) {
 
   // ------------- Hook OFF -------------------
-  if (newHookState == HOOK_OFF) {
+  if (newHookState == hook_off) {
 
     // ---> Ready
-    if (lineSystem.lineVector[line].currentStatus == line_idle) {
+    if (lineSystem.lineVector[line].currentLineStatus == line_idle) {
       lineSystem.setLineStatus(line, line_ready);
       Serial.print("Line "); Serial.print(line); Serial.println(" Ready");
       lineAction(line, line_ready);
@@ -20,7 +20,7 @@ void hookChange(int line, HookState newHookState) {
     }
 
     // ---> Connected
-    if (lineSystem.lineVector[line].currentStatus == line_incoming) {
+    if (lineSystem.lineVector[line].currentLineStatus == line_incoming) {
       lineSystem.setLineStatus(line, line_connected);
       Serial.print("Line "); Serial.print(line); Serial.println(" Connected");
       lineAction(line, line_connected);
@@ -29,8 +29,8 @@ void hookChange(int line, HookState newHookState) {
   }
 
   // ------------- Hook ON -------------------
-  if (newHookState == HOOK_ON) {
-    uint32_t currentLineStatus = lineSystem.lineVector[line].currentStatus;
+  if (newHookState == hook_on) {
+    uint32_t currentLineStatus = lineSystem.lineVector[line].currentLineStatus;
 
     // ---> Idle
     if (

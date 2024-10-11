@@ -4,6 +4,12 @@
 #include <Arduino.h>
 #include <vector>
 
+// Enum representing all possible statuses of the hook
+enum hookStatuses {
+    hook_off,
+    hook_on
+};
+
 // Enum representing all possible statuses of a line 
 enum lineStatuses {
     line_idle,           // Line is not in use
@@ -25,11 +31,15 @@ enum lineStatuses {
 // Structure representing a single line
 struct lineStruct {
     int line_number;                        // Identifier for the line (0-7)
-    uint32_t currentStatus;                 // Current status of the line
-    uint32_t previousStatus;                // Previus status for the line
+    hookStatuses hookStatus;                      // Flag to indicate the status of the hook. false = on, true = off
+    unsigned int long lastSHKBounceTime;    // Last time the SHK pin changed state
+    uint8_t currentSHKState;                // Current state of the SHK pin (0 = hook on, 1 = hook off)
+
+    uint32_t currentLineStatus;             // Current status of the line
+    uint32_t previousLineStatus;            // Previus status for the line
     unsigned int lineTimerLimit = 0;        // Current limit for the line timer
     unsigned long int lineTimerStart = 0;   // Start time for the line
-    bool lineTimerActive = false;               // Flag to indicate if the timer is active
+    bool lineTimerActive = false;           // Flag to indicate if the line timer is active
 };
 
 class LineSystem {

@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <vector>
+#include <string>
 
 // Enum representing all possible statuses of the hook
 enum hookStatuses {
@@ -31,15 +32,23 @@ enum lineStatuses {
 // Structure representing a single line
 struct lineStruct {
     int line_number;                        // Identifier for the line (0-7)
-    hookStatuses hookStatus;                      // Flag to indicate the status of the hook. false = on, true = off
-    unsigned int long lastSHKBounceTime;    // Last time the SHK pin changed state
-    uint8_t currentSHKState;                // Current state of the SHK pin (0 = hook on, 1 = hook off)
-
     uint32_t currentLineStatus;             // Current status of the line
     uint32_t previousLineStatus;            // Previus status for the line
+
+    hookStatuses hookStatus;                // Flag to indicate the status of the hook. false = on, true = off
+    uint8_t SHKState;                       // Current state of the SHK pin (0 = hook on, 1 = hook off)
+    unsigned int long lastSHKBounceTime;    // Last time the SHK pin changed state
+
+    bool pulsing = false;                   // Flag to indicate if the line is currently pulsing
+    int pulsCount = 0;                      // Count number of pulses
+    String diledDigits = "";           // String to store the dialed digits
+    unsigned long edgeTimestamp;            // Timstamp for the last edge
+    
     unsigned int lineTimerLimit = 0;        // Current limit for the line timer
     unsigned long int lineTimerStart = 0;   // Start time for the line
     bool lineTimerActive = false;           // Flag to indicate if the line timer is active
+
+    
 };
 
 class LineSystem {
@@ -53,6 +62,7 @@ public:
     void displayAllLineStatuses();
     void startLineTimer(int line);
     void stopLineTimer(int line);
+    void newDigitReceived(int line, char digit);
     bool allLinesIdle;
 
 private:

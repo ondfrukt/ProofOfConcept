@@ -37,9 +37,9 @@ void SHKRead() {
     auto& lineData = lineSystem.lineVector[line]; // Get a reference to the current line data
 
     // Controlls if the current SHK input state has changed. If true, the current SHK state is updated and the last bounce time is updated
-    if (lineData.currentSHKState != pinRead) {
+    if (lineData.SHKState != pinRead) {
       lineData.lastSHKBounceTime = currentTime; 
-      lineData.currentSHKState = pinRead;
+      lineData.SHKState = pinRead;
       continue; // Skip the rest of the for-loop
     }
 

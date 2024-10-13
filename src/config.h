@@ -12,6 +12,9 @@ const int activeLines = 4;
 // Defining objects
 LineSystem lineSystem(activeLines);
 Adafruit_MCP23X17 mcp_ks083f;
+
+
+
 // extern MT8816 matrix;
 
 
@@ -64,6 +67,7 @@ unsigned long statusTimer_Ringing = 5000; // 5 seconds
 
 // Array to store the pin numbers for each input
 const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
+
 
 // Arrays to store debounce-related information for each input
 

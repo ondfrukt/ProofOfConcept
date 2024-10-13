@@ -63,6 +63,10 @@ void LineSystem::displayAllLineStatuses() {
     }
 }
 
+void LineSystem::newDigitReceived(int line, char digit) {
+   lineVector[line].diledDigits += digit;
+  }
+
 // Helper function to convert status enum to string
 const __FlashStringHelper* LineSystem::getStatusString(lineStatuses status) {
     // Convert enum to string representation

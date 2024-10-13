@@ -4,6 +4,9 @@
 #include "hookChange.h"
 #include "SHKRead.h"
 #include "lineAction.h"
+#include "pulsHandler.h"
+
+
 
 void setup() {
   Serial.begin(115200);
@@ -31,16 +34,13 @@ void loop() {
           }
         }
 
-      // Check if the line status is ready to receive digits
-      if (lineData.currentLineStatus == line_ready){
-
+        // Check if the line status is ready to receive digits
+        if (lineData.currentLineStatus == line_ready && lineData.currentLineStatus == line_pulse_dialing) {
+          pulseHandler(SHKPins[i]);
+          }
         }
-
-
-
       }
     }
-  }
 
   delay(1);
 }

@@ -41,7 +41,7 @@ struct lineStruct {
 
     bool pulsing = false;                   // Flag to indicate if the line is currently pulsing
     int pulsCount = 0;                      // Count number of pulses
-    String diledDigits = "";           // String to store the dialed digits
+    String diledDigits = "";                // String to store the dialed digits
     unsigned long edgeTimestamp;            // Timstamp for the last edge
     
     unsigned int lineTimerLimit = 0;        // Current limit for the line timer
@@ -55,14 +55,16 @@ class LineSystem {
 public:
     // Constructor
     LineSystem(int activeLines);
+    String phoneBook[8];
 
     // Vector to store line information
     std::vector<lineStruct> lineVector;
     void setLineStatus(int line, uint32_t new_status);
     void displayAllLineStatuses();
-    void startLineTimer(int line);
+    void startLineTimer(int line, unsigned int limit);
     void stopLineTimer(int line);
     void newDigitReceived(int line, char digit);
+    void setNewPhoneNumber(int line, String newNumber);
     bool allLinesIdle;
 
 private:

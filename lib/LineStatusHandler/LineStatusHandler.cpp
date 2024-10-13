@@ -1,12 +1,14 @@
 #include "LineStatusHandler.h"
 #include <Arduino.h>
 #include <vector>
+#include <string>
 
 // Constructor
 LineSystem::LineSystem(int activeLines) {
     lineVector.resize(activeLines);
     for (int i = 0; i < 8; ++i) {
         lineVector[i].line_number = i;
+        phoneBook[i] = String(i+1); // First line has 1 as phone number
     }
 }
 
@@ -33,8 +35,17 @@ void LineSystem::setLineStatus(int lineNumber, uint32_t new_status) {
     allLinesIdle = true;
 }
 
+// Change number to a specific line
+void LineSystem::setNewPhoneNumber(int line, String newNumber) {
+    if (line >= 0 && line < lineVector.size()) {
+        phoneBook[line] = newNumber;
+    } else {
+        Serial.println("Invalid line number!");
+    }
+}
+
 // Start line timer
-void LineSystem::startLineTimer(int lineNumber) {
+void LineSystem::startLineTimer(int lineNumber, unsigned int limit) {
     if (lineNumber >= 0 && lineNumber < lineVector.size()) {
         lineVector[lineNumber].lineTimerStart = millis();
         lineVector[lineNumber].lineTimerActive = true;
@@ -65,6 +76,7 @@ void LineSystem::displayAllLineStatuses() {
 
 void LineSystem::newDigitReceived(int line, char digit) {
    lineVector[line].diledDigits += digit;
+   lineVector[line].lineTimerStart = 0;
   }
 
 // Helper function to convert status enum to string

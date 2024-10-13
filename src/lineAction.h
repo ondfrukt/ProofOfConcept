@@ -4,8 +4,13 @@
 #include <Arduino.h>
 #include "config.h"
 
+void ring(int line) {
+  Serial.println("Ringing line " + String(line + 1));
+}
+
 // Function to determine the action to take based on the new line status
 void lineAction(int line, lineStatuses newLineStatus) {
+  
   switch (newLineStatus) {
     case line_idle:
       // Action
@@ -17,10 +22,12 @@ void lineAction(int line, lineStatuses newLineStatus) {
 
     case line_tone_dialing:
       // Action
+      lineSystem.startLineTimer(line, statusTimer_toneDialing);
       break;
 
     case line_pulse_dialing:
       // Action
+      lineSystem.startLineTimer(line, statusTimer_pulsDialing);
       break;
 
     case line_connected:
@@ -36,7 +43,14 @@ void lineAction(int line, lineStatuses newLineStatus) {
       break;
 
     case line_ringing:
-      // Action
+      lineSystem.startLineTimer(line, statusTimer_Ringing);
+      dialedDigits = lineSystem.lineVector[line].diledDigits;
+      for (int i = 0; i < activeLines; i++) {
+        // Check if the diled digits match a number in the phonebook and the line is idle
+        if (dialedDigits == lineSystem.phoneBook[i] && lineSystem.lineVector[i].currentLineStatus == line_idle) {
+          ring(i);
+        }
+      }
       break;
 
     case line_timeout:
@@ -48,10 +62,12 @@ void lineAction(int line, lineStatuses newLineStatus) {
       break;
 
     case line_busy:
+      lineSystem.lineVector[line].diledDigits = "";
       // Action
       break;
 
     case line_fail:
+      lineSystem.lineVector[line].diledDigits = "";
       // Action
       break;
 
@@ -65,9 +81,6 @@ void lineAction(int line, lineStatuses newLineStatus) {
   }
 }
 
-// Function to handle line timer expiration
-
-
 // Function to determine the action to take based on the line status due to a timer expiration
 void lineTimerExpired(int line) {
   lineSystem.stopLineTimer(line);
@@ -75,8 +88,6 @@ void lineTimerExpired(int line) {
 
   switch (currentStatus) {
     case line_ready:
-    case line_pulse_dialing:
-    case line_tone_dialing:
     case line_fail:
     case line_busy:
     case line_disconnected:
@@ -92,6 +103,11 @@ void lineTimerExpired(int line) {
     case line_incoming:
       lineSystem.setLineStatus(line, line_idle);
       lineAction(line, line_idle);
+      break;
+
+    case line_pulse_dialing:
+    case line_tone_dialing:
+      lineAction(line, line_ringing);
       break;
 
     default:

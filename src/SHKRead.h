@@ -4,12 +4,8 @@
 #include <Arduino.h>
 #include "config.h"
 
-
-
 // Function to setup SHK pins with the MCP_KS083F
 void setupSHKPins() {
-
-
 
   // Initialize MCP for KS830F
   if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
@@ -31,26 +27,34 @@ void SHKRead() {
   uint16_t mcpState = mcp_ks083f.readGPIOAB();
   unsigned long currentTime = millis();
 
-  // Loop through all active lines and store the current SHK state in pinRead
+  // Loop through all active lines and store the current SHK state in currentSHKReading
   for (int line = 0; line < activeLines; line++) {
-    bool pinRead = bitRead(mcpState, SHKPins[line]);
+    
+    // Check if the line is pulsing, if true, skip the rest of the for-loop and continue with the next line
+    if (lineSystem.lineVector[line].pulsing = true) {
+      continue;
+
+    bool currentSHKReading = bitRead(mcpState, SHKPins[line]);
     auto& lineData = lineSystem.lineVector[line]; // Get a reference to the current line data
 
     // Controlls if the current SHK input state has changed. If true, the current SHK state is updated and the last bounce time is updated
-    if (lineData.SHKState != pinRead) {
-      lineData.lastSHKBounceTime = currentTime; 
-      lineData.SHKState = pinRead;
+    if (lineData.SHKState != currentSHKReading) {
+      lineSystem.lineVector[line].lastSHKBounceTime = currentTime; 
+      lineSystem.lineVector[line].SHKState = currentSHKReading;
       continue; // Skip the rest of the for-loop
     }
 
     // Controlls if the debouncing time has passed, which means that the SHK state has changed and is stable
     if ((currentTime - lineData.lastSHKBounceTime) > SHKDebouncingTime) {
-      if (lineData.hookStatus == hook_on && pinRead == 1) {
+
+      // If the debouncing time has passed, the SHK state has clearly changed and is stable and hook status can be updated
+      if (lineData.hookStatus == hook_on && currentSHKReading == 1) {
         lineSystem.lineVector[line].hookStatus = hook_off;
         hookChange(line, hook_off);
-      } else if (lineData.hookStatus == hook_off && pinRead == 0) {
+      } else if (lineData.hookStatus == hook_off && currentSHKReading == 0) {
         lineSystem.lineVector[line].hookStatus = hook_on;
         hookChange(line, hook_on);
+        }
       }
     }
   }

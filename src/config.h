@@ -8,16 +8,13 @@
 
 // Number of lines
 const int activeLines = 4;
+String dialedDigits; // Declare the variable outside the switch statement
 
 // Defining objects
 LineSystem lineSystem(activeLines);
 Adafruit_MCP23X17 mcp_ks083f;
 
-
-
 // extern MT8816 matrix;
-
-
 
 // Defining MCP pins
 const int GPA0 = 0;
@@ -61,19 +58,13 @@ const uint8_t FR_4 = GPB5;
 unsigned long statusTimer_Ready = 30000; // 30 seconds
 unsigned long statusTimer_Dialing = 5000; // 5 seconds
 unsigned long statusTimer_Ringing = 5000; // 5 seconds
-
+unsigned long statusTimer_pulsDialing = 5000; // 0 seconds
+unsigned long statusTimer_toneDialing = 5000; // 0 seconds
 
 // -----------------SHK--------------------------
 
 // Array to store the pin numbers for each input
 const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
-
-
-// Arrays to store debounce-related information for each input
-
-volatile uint8_t SHKState = 0;           // Current SHK States
-volatile bool stateChanged = false;      
-unsigned int lastSHKDebounceTime = 0;    // Last time the input was toggled
 
 // Debouncing time in milliseconds
 uint8_t SHKDebouncingTime = 150;

@@ -20,8 +20,18 @@ void LineSystem::setLineStatus(int lineNumber, uint32_t new_status) {
     } else {
         Serial.println("Invalid line number!");
     }
-}
 
+    // Check one or more lines are 
+    for (int i = 0; i < lineVector.size(); ++i) {
+        if (lineVector[i].currentLineStatus != line_idle) {
+            allLinesIdle = false;
+            return;
+        }
+    }
+
+    // If all lines are idle, set the flag to true
+    allLinesIdle = true;
+}
 
 // Start line timer
 void LineSystem::startLineTimer(int lineNumber) {

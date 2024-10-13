@@ -53,6 +53,7 @@ public:
     void displayAllLineStatuses();
     void startLineTimer(int line);
     void stopLineTimer(int line);
+    bool allLinesIdle;
 
 private:
     // Helper function to convert status enum to string

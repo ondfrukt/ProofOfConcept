@@ -9,6 +9,8 @@
 // Function to setup SHK pins with the MCP_KS083F
 void setupSHKPins() {
 
+
+
   // Initialize MCP for KS830F
   if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
     Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
@@ -23,36 +25,32 @@ void setupSHKPins() {
   }
 }
 
+// Function to read and debounce digital inputs from SHK pins
+void SHKRead() {
+  // Reads all GPIO pins in MCP_KS083F and stores the result in a 16-bit variable
+  uint16_t mcpState = mcp_ks083f.readGPIOAB();
+  unsigned long currentTime = millis();
 
-// Function to read and debounce digital inputs
-void SHKRead(int line) {
-  static uint32_t lastReadTime = 0;
-  uint32_t currentTime = millis();  // Get the current time in milliseconds
-
-  // Only read the MCP state if enough time has passed since the last read
-  if (currentTime - lastReadTime >= SHKReadInterval) {
-    lastReadTime = currentTime;
-
-    // Read all GPIO pins in MCP_KS083F
-    uint16_t mcpState = mcp_ks083f.readGPIOAB();
+  // Loop through all active lines and store the current SHK state in pinRead
+  for (int line = 0; line < activeLines; line++) {
     bool pinRead = bitRead(mcpState, SHKPins[line]);
+    auto& lineData = lineSystem.lineVector[line]; // Get a reference to the current line data
 
-    // Check if the current SHK input state has changed
-    if (lineSystem.lineVector[line].currentSHKState != pinRead) {
-      lineSystem.lineVector[line].lastSHKBounceTime = currentTime;
-      lineSystem.lineVector[line].currentSHKState = pinRead;  // Update the current state
+    // Controlls if the current SHK input state has changed. If true, the current SHK state is updated and the last bounce time is updated
+    if (lineData.currentSHKState != pinRead) {
+      lineData.lastSHKBounceTime = currentTime; 
+      lineData.currentSHKState = pinRead;
+      continue; // Skip the rest of the for-loop
     }
 
-    // Check if the debounce time has passed
-    if ((currentTime - lineSystem.lineVector[line].lastSHKBounceTime) > SHKDebouncingTime) {
-      // If the state has changed, trigger the appropriate function
-      if (bitRead(SHKState, line) == 1 && pinRead == 0) {
+    // Controlls if the debouncing time has passed, which means that the SHK state has changed and is stable
+    if ((currentTime - lineData.lastSHKBounceTime) > SHKDebouncingTime) {
+      if (lineData.hookStatus == hook_on && pinRead == 1) {
         lineSystem.lineVector[line].hookStatus = hook_off;
-        hookChange(line, hook_off); // Call function for hook off
-      }
-      if (bitRead(SHKState, line) == 0 && pinRead == 1) {
+        hookChange(line, hook_off);
+      } else if (lineData.hookStatus == hook_off && pinRead == 0) {
         lineSystem.lineVector[line].hookStatus = hook_on;
-        hookChange(line, hook_on); // Call function for hook on
+        hookChange(line, hook_on);
       }
     }
   }

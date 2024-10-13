@@ -13,24 +13,34 @@ void setup() {
 
 void loop() {
 
-
+  
   //Reads SHK pins and triggers hookChange() if a change is detected. HookChange() will trigger lineAction() if a change is detected.
-  for (int i = 0; i < activeLines; i++) {
-    SHKRead(i);
-  }
+  SHKRead();
 
-  // loop over all lines and check if a status is not equal to idle
-  // If not idle, check if the line timer is active
-  // If active, check if the timer has expired
-  for (int i = 0; i < activeLines; i++) {
-    if (lineSystem.lineVector[i].currentLineStatus != line_idle) {
-      if (lineSystem.lineVector[i].lineTimerActive == true) {
-        if (millis() - lineSystem.lineVector[i].lineTimerStart > lineSystem.lineVector[i].lineTimerLimit) {
-          lineTimerExpired(i);
+  // Check if one or more lines are =! idle
+  if (lineSystem.allLinesIdle == false) {
+    for (int i = 0; i < activeLines; i++) {
+      auto& lineData = lineSystem.lineVector[i];
+      // Check if the line status is not idle
+      if (lineData.currentLineStatus != line_idle) {
+        // Check if the line timer is active
+        if (lineData.lineTimerActive) {
+          // if the line timer has expired, trigger lineTimerExpired()
+          if (millis() - lineData.lineTimerStart > lineData.lineTimerLimit) {
+            lineTimerExpired(i);
+          }
         }
+
+      // Check if the line status is ready to receive digits
+      if (lineData.currentLineStatus == line_ready){
+
+        }
+
+
+
       }
     }
   }
-  delay(1);
 
+  delay(1);
 }

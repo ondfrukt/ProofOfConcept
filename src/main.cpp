@@ -6,12 +6,14 @@
 #include "lineAction.h"
 #include "pulsHandler.h"
 
-
-
 void setup() {
   Serial.begin(115200);
+  Serial.println("Setup started");
   Wire.begin();
+
+  i2CScanner();
   setupSHKPins();
+  Serial.println("Setup complete");
 }
 
 void loop() {

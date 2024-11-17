@@ -29,12 +29,13 @@ void SHKRead() {
 
   // Loop through all active lines and store the current SHK state in currentSHKReading
   for (int line = 0; line < activeLines; line++) {
-    
     // Check if the line is pulsing, if true, skip the rest of the for-loop and continue with the next line
-    if (lineSystem.lineVector[line].pulsing = true) {
+    if (lineSystem.lineVector[line].pulsing == true) {
       continue;
-
+    }
+    // Read the current SHK state from the MCP
     bool currentSHKReading = bitRead(mcpState, SHKPins[line]);
+    // Get a reference to the current line data
     auto& lineData = lineSystem.lineVector[line]; // Get a reference to the current line data
 
     // Controlls if the current SHK input state has changed. If true, the current SHK state is updated and the last bounce time is updated
@@ -46,7 +47,6 @@ void SHKRead() {
 
     // Controlls if the debouncing time has passed, which means that the SHK state has changed and is stable
     if ((currentTime - lineData.lastSHKBounceTime) > SHKDebouncingTime) {
-
       // If the debouncing time has passed, the SHK state has clearly changed and is stable and hook status can be updated
       if (lineData.hookStatus == hook_on && currentSHKReading == 1) {
         lineSystem.lineVector[line].hookStatus = hook_off;
@@ -54,8 +54,8 @@ void SHKRead() {
       } else if (lineData.hookStatus == hook_off && currentSHKReading == 0) {
         lineSystem.lineVector[line].hookStatus = hook_on;
         hookChange(line, hook_on);
+        Serial.print("Line "); Serial.print(line); Serial.println(" Hook ON");
         }
-      }
     }
   }
 }

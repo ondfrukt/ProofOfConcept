@@ -14,6 +14,7 @@ void hookChange(int line, hookStatuses newHookState) {
     // ---> Ready
     if (lineSystem.lineVector[line].currentLineStatus == line_idle) {
       lineSystem.setLineStatus(line, line_ready);
+      Serial.print("\r");
       Serial.print("Line "); Serial.print(line); Serial.println(" Ready");
       lineAction(line, line_ready);
       return;
@@ -22,6 +23,7 @@ void hookChange(int line, hookStatuses newHookState) {
     // ---> Connected
     if (lineSystem.lineVector[line].currentLineStatus == line_incoming) {
       lineSystem.setLineStatus(line, line_connected);
+      Serial.print("\r");
       Serial.print("Line "); Serial.print(line); Serial.println(" Connected");
       lineAction(line, line_connected);
       return;
@@ -30,18 +32,22 @@ void hookChange(int line, hookStatuses newHookState) {
 
   // ------------- Hook ON -------------------
   if (newHookState == hook_on) {
+    Serial.print("\r");
+    Serial.print("Line "); Serial.print(line); Serial.println(" Hook OFF");
     uint32_t currentLineStatus = lineSystem.lineVector[line].currentLineStatus;
-
     // ---> Idle
     if (
+      currentLineStatus == line_ready || 
       currentLineStatus == line_connected || 
       currentLineStatus == line_disconnected || 
       currentLineStatus == line_abandoned || 
       currentLineStatus == line_busy ||
       currentLineStatus == line_fail ||
       currentLineStatus == line_timeout) {
+
       
       lineSystem.setLineStatus(line, line_idle);
+      Serial.print("\r");
       Serial.print("Line "); Serial.print(line); Serial.println(" Idle");
       lineAction(line, line_idle);
       return;
@@ -50,6 +56,7 @@ void hookChange(int line, hookStatuses newHookState) {
     // ---> Disconnected
     if (currentLineStatus == line_ringing) {
       lineSystem.setLineStatus(line, line_disconnected);
+      Serial.print("\r");
       Serial.print("Line "); Serial.print(line); Serial.println(" Disconnected");
       lineAction(line, line_disconnected);
       return;

@@ -35,20 +35,23 @@ const int GPB6 = 14;
 const int GPB7 = 15;
 
 // MCP adresses
-uint8_t mcp_mt8816_address = 0;
-uint8_t mcp_ks083f_address = 1;
+uint8_t mcp_mt8816_address = 0x23;
+uint8_t mcp_ks083f_address = 0x26;
 
 // KS083F pins setup
 const uint8_t SHK_1 = GPA3;
 const uint8_t RM_1 = GPA4;
 const uint8_t FR_1 = GPA5;
+
 const uint8_t SHK_2 = GPA0;
 const uint8_t RM_2 = GPA1;
 const uint8_t FR_2 = GPA2;
+
 const uint8_t SHK_3 = GPB4;
 const uint8_t RM_3 = GPB3;
-const uint8_t FR_3 = GPB2;
-const uint8_t SHK_4 = GPB7;
+const uint8_t FR_3 = GPB7;
+
+const uint8_t SHK_4 = GPB2;
 const uint8_t RM_4 = GPB6;
 const uint8_t FR_4 = GPB5;
 
@@ -68,6 +71,45 @@ const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
 
 // Debouncing time in milliseconds
 uint8_t SHKDebouncingTime = 150;
+
+
+void i2CScanner() {
+  // Scan for I2C devices
+  byte error, address;
+  int nDevices;
+
+  Serial.println("Scanning...");
+
+  nDevices = 0;
+  for (address = 1; address < 127; address++ ) {
+    // The i2c_scanner uses the return value of
+    // the Write.endTransmisstion to see if
+    // a device did acknowledge to the address.
+    Wire.beginTransmission(address);
+    error = Wire.endTransmission();
+
+    if (error == 0) {
+      Serial.print("I2C device found at address 0x");
+      if (address < 16) {
+        Serial.print("0");
+      }
+      Serial.print(address, HEX);
+      Serial.println("  !");
+      nDevices++;
+    } else if (error == 4) {
+      Serial.print("Unknown error at address 0x");
+      if (address < 16) {
+        Serial.print("0");
+      }
+      Serial.println(address, HEX);
+    }
+  }
+  if (nDevices == 0) {
+    Serial.println("No I2C devices found\n");
+  } else {
+    Serial.println("Scanning done\n");
+  }
+}
 
 
 #endif

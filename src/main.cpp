@@ -25,7 +25,7 @@ void loop() {
   // Check if one or more lines are =! idle
   if (lineSystem.allLinesIdle == false) {
     for (int i = 0; i < activeLines; i++) {
-      auto& lineData = lineSystem.lineVector[i];
+      auto& lineData = lineSystem.lineArray[i];
       // Check if the line status is not idle
       if (lineData.currentLineStatus != line_idle) {
         // Check if the line timer is active

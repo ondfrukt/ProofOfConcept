@@ -47,13 +47,13 @@ const uint8_t SHK_2 = GPA0;
 const uint8_t RM_2 = GPA1;
 const uint8_t FR_2 = GPA2;
 
-const uint8_t SHK_3 = GPB4;
+const uint8_t SHK_3 = GPB5;
 const uint8_t RM_3 = GPB3;
 const uint8_t FR_3 = GPB7;
 
 const uint8_t SHK_4 = GPB2;
 const uint8_t RM_4 = GPB6;
-const uint8_t FR_4 = GPB5;
+const uint8_t FR_4 = GPB4;
 
 
 // --------------Timers--------------------------

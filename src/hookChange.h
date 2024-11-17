@@ -10,9 +10,10 @@ void hookChange(int line, hookStatuses newHookState) {
 
   // ------------- Hook OFF -------------------
   if (newHookState == hook_off) {
+    Serial.print("Line "); Serial.print(line); Serial.println(" Hook OFF");
 
     // ---> Ready
-    if (lineSystem.lineVector[line].currentLineStatus == line_idle) {
+    if (lineSystem.lineArray[line].currentLineStatus == line_idle) {
       lineSystem.setLineStatus(line, line_ready);
       Serial.print("\r");
       Serial.print("Line "); Serial.print(line); Serial.println(" Ready");
@@ -21,7 +22,7 @@ void hookChange(int line, hookStatuses newHookState) {
     }
 
     // ---> Connected
-    if (lineSystem.lineVector[line].currentLineStatus == line_incoming) {
+    if (lineSystem.lineArray[line].currentLineStatus == line_incoming) {
       lineSystem.setLineStatus(line, line_connected);
       Serial.print("\r");
       Serial.print("Line "); Serial.print(line); Serial.println(" Connected");
@@ -32,9 +33,8 @@ void hookChange(int line, hookStatuses newHookState) {
 
   // ------------- Hook ON -------------------
   if (newHookState == hook_on) {
-    Serial.print("\r");
-    Serial.print("Line "); Serial.print(line); Serial.println(" Hook OFF");
-    uint32_t currentLineStatus = lineSystem.lineVector[line].currentLineStatus;
+    Serial.print("Line "); Serial.print(line); Serial.println(" Hook ON");
+    uint32_t currentLineStatus = lineSystem.lineArray[line].currentLineStatus;
     // ---> Idle
     if (
       currentLineStatus == line_ready || 

@@ -1,43 +1,53 @@
 #include "LineStatusHandler.h"
 #include <Arduino.h>
-#include <vector>
-#include <string>
+#include <string.h>
+
+#define MAX_LINES 8 // Max antal linjer som stöds
+
+// LineStatus struct
+struct LineStatus {
+    int line_number = 0;
+    uint32_t currentLineStatus = 0;
+    uint32_t previousLineStatus = 0;
+    unsigned long lineTimerStart = 0;
+    unsigned int lineTimerLimit = 0;
+    bool lineTimerActive = false;
+    String diledDigits;
+};
+
 
 // Constructor
 LineSystem::LineSystem(int activeLines) {
-    lineVector.resize(activeLines);
-    for (int i = 0; i < 8; ++i) {
-        lineVector[i].line_number = i;
-        phoneBook[i] = String(i+1); // First line has 1 as phone number
+    for (int i = 0; i < activeLines && i < MAX_LINES; ++i) {
+        lineArray[i].line_number = i;
+        phoneBook[i] = String(i + 1); // Första linjen får 1 som telefonnummer
     }
 }
 
 // Set the status of a specific line
 void LineSystem::setLineStatus(int lineNumber, uint32_t new_status) {
-    if (lineNumber >= 0 && lineNumber < lineVector.size()) {
-        lineVector[lineNumber].previousLineStatus = lineVector[lineNumber].currentLineStatus;
-        lineVector[lineNumber].currentLineStatus = new_status;
-        lineVector[lineNumber].lineTimerLimit = 0;
-        lineVector[lineNumber].lineTimerActive = false;
+    if (lineNumber >= 0 && lineNumber < MAX_LINES) {
+        lineArray[lineNumber].previousLineStatus = lineArray[lineNumber].currentLineStatus;
+        lineArray[lineNumber].currentLineStatus = new_status;
+        lineArray[lineNumber].lineTimerLimit = 0;
+        lineArray[lineNumber].lineTimerActive = false;
     } else {
         Serial.println("Invalid line number!");
     }
 
-    // Check one or more lines are 
-    for (int i = 0; i < lineVector.size(); ++i) {
-        if (lineVector[i].currentLineStatus != line_idle) {
+    // Kontrollera om alla linjer är inaktiva
+    allLinesIdle = true;
+    for (int i = 0; i < MAX_LINES; ++i) {
+        if (lineArray[i].currentLineStatus != line_idle) {
             allLinesIdle = false;
             return;
         }
     }
-
-    // If all lines are idle, set the flag to true
-    allLinesIdle = true;
 }
 
 // Change number to a specific line
 void LineSystem::setNewPhoneNumber(int line, String newNumber) {
-    if (line >= 0 && line < lineVector.size()) {
+    if (line >= 0 && line < MAX_LINES) {
         phoneBook[line] = newNumber;
     } else {
         Serial.println("Invalid line number!");
@@ -46,19 +56,20 @@ void LineSystem::setNewPhoneNumber(int line, String newNumber) {
 
 // Start line timer
 void LineSystem::startLineTimer(int lineNumber, unsigned int limit) {
-    if (lineNumber >= 0 && lineNumber < lineVector.size()) {
-        lineVector[lineNumber].lineTimerStart = millis();
-        lineVector[lineNumber].lineTimerActive = true;
+    if (lineNumber >= 0 && lineNumber < MAX_LINES) {
+        lineArray[lineNumber].lineTimerStart = millis();
+        lineArray[lineNumber].lineTimerLimit = limit;
+        lineArray[lineNumber].lineTimerActive = true;
     } else {
         Serial.println("Invalid line number!");
     }
 }
 
-// Stops and celear line timer
+// Stops and clears line timer
 void LineSystem::stopLineTimer(int lineNumber) {
-    if (lineNumber >= 0 && lineNumber < lineVector.size()) {
-        lineVector[lineNumber].lineTimerActive = false;
-        lineVector[lineNumber].lineTimerStart = 0;
+    if (lineNumber >= 0 && lineNumber < MAX_LINES) {
+        lineArray[lineNumber].lineTimerActive = false;
+        lineArray[lineNumber].lineTimerStart = 0;
     } else {
         Serial.println("Invalid line number!");
     }
@@ -66,23 +77,27 @@ void LineSystem::stopLineTimer(int lineNumber) {
 
 // Display the status of all lines
 void LineSystem::displayAllLineStatuses() {
-    for (int i = 0; i < lineVector.size(); ++i) {
+    for (int i = 0; i < MAX_LINES; ++i) {
         Serial.print("Line ");
-        Serial.print(lineVector[i].line_number);
+        Serial.print(lineArray[i].line_number);
         Serial.print(": ");
-        Serial.println(this->getStatusString(static_cast<lineStatuses>(lineVector[i].currentLineStatus)));
+        Serial.println(this->getStatusString(static_cast<lineStatuses>(lineArray[i].currentLineStatus)));
     }
 }
 
+// Process a new digit for a specific line
 void LineSystem::newDigitReceived(int line, char digit) {
-   lineVector[line].diledDigits += digit;
-   lineVector[line].lineTimerStart = 0;
-  }
+    if (line >= 0 && line < MAX_LINES) {
+        lineArray[line].diledDigits += digit;
+        lineArray[line].lineTimerStart = 0;
+    } else {
+        Serial.println("Invalid line number!");
+    }
+}
 
 // Helper function to convert status enum to string
 const __FlashStringHelper* LineSystem::getStatusString(lineStatuses status) {
-    // Convert enum to string representation
-    switch(status) {
+    switch (status) {
         case line_idle: return F("Idle");
         case line_ready: return F("Ready");
         case line_pulse_dialing: return F("Pulse Dialing");

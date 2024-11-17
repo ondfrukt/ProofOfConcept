@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "MT8816.h"
 #include <Wire.h>
-#include <iostream>
 
 MT8816::MT8816(uint8_t mcp_address, 
                uint8_t ax0, uint8_t ax1, uint8_t ax2, uint8_t ax3,
@@ -115,7 +114,12 @@ bool MT8816::getConnection(int x, int y) {
         return connections[x][y];
     } else {
         // Handle invalid coordinates, e.g., by returning a default value or throwing an exception
-        std::cerr << "Error: Invalid coordinates (" << x << ", " << y << ")." << std::endl;
+
+        Serial.print("Error: Invalid coordinates (");
+        Serial.print(x);
+        Serial.print(", ");
+        Serial.print(y);
+        Serial.println(").");
         return false;
     }
 }

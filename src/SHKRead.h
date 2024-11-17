@@ -12,13 +12,13 @@ void setupSHKPins() {
     Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
     while(1);  // Stay in an infinite loop if initialization fails
   }
-
   Serial.println("MCP for KSF083f initialized successfully.");
 
   // Set all SHK pins as inputs with internal pull-up resistors
   for (int i = 0; i < activeLines; i++) {
     mcp_ks083f.pinMode(SHKPins[i], INPUT_PULLUP);
   }
+  
 }
 
 // Function to read and debounce digital inputs from SHK pins
@@ -30,18 +30,19 @@ void SHKRead() {
   // Loop through all active lines and store the current SHK state in currentSHKReading
   for (int line = 0; line < activeLines; line++) {
     // Check if the line is pulsing, if true, skip the rest of the for-loop and continue with the next line
-    if (lineSystem.lineVector[line].pulsing == true) {
+    if (lineSystem.lineArray[line].pulsing == true) {
       continue;
     }
     // Read the current SHK state from the MCP
     bool currentSHKReading = bitRead(mcpState, SHKPins[line]);
+
     // Get a reference to the current line data
-    auto& lineData = lineSystem.lineVector[line]; // Get a reference to the current line data
+    auto& lineData = lineSystem.lineArray[line]; // Get a reference to the current line data
 
     // Controlls if the current SHK input state has changed. If true, the current SHK state is updated and the last bounce time is updated
     if (lineData.SHKState != currentSHKReading) {
-      lineSystem.lineVector[line].lastSHKBounceTime = currentTime; 
-      lineSystem.lineVector[line].SHKState = currentSHKReading;
+      lineSystem.lineArray[line].lastSHKBounceTime = currentTime; 
+      lineSystem.lineArray[line].SHKState = currentSHKReading;
       continue; // Skip the rest of the for-loop
     }
 
@@ -49,12 +50,11 @@ void SHKRead() {
     if ((currentTime - lineData.lastSHKBounceTime) > SHKDebouncingTime) {
       // If the debouncing time has passed, the SHK state has clearly changed and is stable and hook status can be updated
       if (lineData.hookStatus == hook_on && currentSHKReading == 1) {
-        lineSystem.lineVector[line].hookStatus = hook_off;
+        lineSystem.lineArray[line].hookStatus = hook_off;
         hookChange(line, hook_off);
       } else if (lineData.hookStatus == hook_off && currentSHKReading == 0) {
-        lineSystem.lineVector[line].hookStatus = hook_on;
+        lineSystem.lineArray[line].hookStatus = hook_on;
         hookChange(line, hook_on);
-        Serial.print("Line "); Serial.print(line); Serial.println(" Hook ON");
         }
     }
   }

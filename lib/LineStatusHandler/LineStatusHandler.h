@@ -2,8 +2,10 @@
 #define LineStatusHandler_h
 
 #include <Arduino.h>
-#include <vector>
-#include <string>
+#include <string.h>
+
+// Max antal linjer som stöds
+#define MAX_LINES 8
 
 // Enum representing all possible statuses of the hook
 enum hookStatuses {
@@ -11,7 +13,7 @@ enum hookStatuses {
     hook_on
 };
 
-// Enum representing all possible statuses of a line 
+// Enum representing all possible statuses of a line
 enum lineStatuses {
     line_idle,           // Line is not in use
     line_ready,          // Dial tone is playing, waiting for input
@@ -33,42 +35,45 @@ enum lineStatuses {
 struct lineStruct {
     int line_number;                        // Identifier for the line (0-7)
     uint32_t currentLineStatus;             // Current status of the line
-    uint32_t previousLineStatus;            // Previus status for the line
+    uint32_t previousLineStatus;            // Previous status for the line
 
-    hookStatuses hookStatus;                // Flag to indicate the status of the hook. false = on, true = off
+    hookStatuses hookStatus;                // Status of the hook (hook on/off)
     uint8_t SHKState;                       // Current state of the SHK pin (0 = hook on, 1 = hook off)
-    unsigned int long lastSHKBounceTime;    // Last time the SHK pin changed state
+    unsigned long lastSHKBounceTime;        // Last time the SHK pin changed state
 
     bool pulsing = false;                   // Flag to indicate if the line is currently pulsing
     int pulsCount = 0;                      // Count number of pulses
     String diledDigits = "";                // String to store the dialed digits
-    unsigned long edgeTimestamp;            // Timstamp for the last edge
+    unsigned long edgeTimestamp;            // Timestamp for the last edge
     
     unsigned int lineTimerLimit = 0;        // Current limit for the line timer
-    unsigned long int lineTimerStart = 0;   // Start time for the line
+    unsigned long lineTimerStart = 0;       // Start time for the line timer
     bool lineTimerActive = false;           // Flag to indicate if the line timer is active
-
-    
 };
 
+// LineSystem-klass
 class LineSystem {
 public:
     // Constructor
     LineSystem(int activeLines);
-    String phoneBook[8];
 
-    // Vector to store line information
-    std::vector<lineStruct> lineVector;
+    // Telefonbok för linjer
+    String phoneBook[MAX_LINES];
+
+    // Array för att lagra linjeinformation
+    lineStruct lineArray[MAX_LINES];
+
     void setLineStatus(int line, uint32_t new_status);
     void displayAllLineStatuses();
     void startLineTimer(int line, unsigned int limit);
     void stopLineTimer(int line);
     void newDigitReceived(int line, char digit);
     void setNewPhoneNumber(int line, String newNumber);
+
     bool allLinesIdle;
 
 private:
-    // Helper function to convert status enum to string
+    // Hjälpfunktion för att konvertera status enum till sträng
     const __FlashStringHelper* getStatusString(lineStatuses status);
 };
 

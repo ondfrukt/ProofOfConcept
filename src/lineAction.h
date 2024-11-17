@@ -44,10 +44,10 @@ void lineAction(int line, lineStatuses newLineStatus) {
 
     case line_ringing:
       lineSystem.startLineTimer(line, statusTimer_Ringing);
-      dialedDigits = lineSystem.lineVector[line].diledDigits;
+      dialedDigits = lineSystem.lineArray[line].diledDigits;
       for (int i = 0; i < activeLines; i++) {
         // Check if the diled digits match a number in the phonebook and the line is idle
-        if (dialedDigits == lineSystem.phoneBook[i] && lineSystem.lineVector[i].currentLineStatus == line_idle) {
+        if (dialedDigits == lineSystem.phoneBook[i] && lineSystem.lineArray[i].currentLineStatus == line_idle) {
           ring(i);
         }
       }
@@ -62,12 +62,12 @@ void lineAction(int line, lineStatuses newLineStatus) {
       break;
 
     case line_busy:
-      lineSystem.lineVector[line].diledDigits = "";
+      lineSystem.lineArray[line].diledDigits = "";
       // Action
       break;
 
     case line_fail:
-      lineSystem.lineVector[line].diledDigits = "";
+      lineSystem.lineArray[line].diledDigits = "";
       // Action
       break;
 
@@ -84,7 +84,7 @@ void lineAction(int line, lineStatuses newLineStatus) {
 // Function to determine the action to take based on the line status due to a timer expiration
 void lineTimerExpired(int line) {
   lineSystem.stopLineTimer(line);
-  uint32_t currentStatus = lineSystem.lineVector[line].currentLineStatus;
+  uint32_t currentStatus = lineSystem.lineArray[line].currentLineStatus;
 
   switch (currentStatus) {
     case line_ready:

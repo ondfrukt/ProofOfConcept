@@ -10,7 +10,7 @@ const unsigned pulseGapMax = 60;
 
 void pulseHandler(int line) {
   bool currentSHKReading = mcp_ks083f.digitalRead(SHKPins[line]);
-  auto& lineData = lineSystem.lineVector[line];
+  auto& lineData = lineSystem.lineArray[line];
   bool lastSHKState = lineData.SHKState;
   unsigned long lastSHKDebounceTime = lineData.lastSHKBounceTime;
   unsigned long edgeTimeStamp = lineData.edgeTimestamp;
@@ -18,8 +18,8 @@ void pulseHandler(int line) {
   
   // If SHK state has changed, update the last bounce time and the current SHK state and return
   if(currentSHKReading != lastSHKState) {
-    lineSystem.lineVector[line].SHKState = currentSHKReading;
-    lineSystem.lineVector[line].lastSHKBounceTime = currentTime;
+    lineSystem.lineArray[line].SHKState = currentSHKReading;
+    lineSystem.lineArray[line].lastSHKBounceTime = currentTime;
     return;
   }
 
@@ -40,19 +40,19 @@ void pulseHandler(int line) {
   
   // Falling edge
   if(!currentSHKReading && !pulsing) {
-    lineSystem.lineVector[line].pulsing = true;
-    lineSystem.lineVector[line].edgeTimestamp = currentTime;
+    lineSystem.lineArray[line].pulsing = true;
+    lineSystem.lineArray[line].edgeTimestamp = currentTime;
     return;
   }
 
   // Rising edge
   if(currentSHKReading && pulsing){
-    lineSystem.lineVector[line].pulsing = false;
-    lineSystem.lineVector[line].pulsCount++;
-    lineSystem.lineVector[line].edgeTimestamp = currentTime;
+    lineSystem.lineArray[line].pulsing = false;
+    lineSystem.lineArray[line].pulsCount++;
+    lineSystem.lineArray[line].edgeTimestamp = currentTime;
     
     // If the line is not dialing, set the line status to pulse dialing and trigger the dialingStartedCallback
-    if(currentLineStatus =! line_pulse_dialing){ 
+    if(currentLineStatus != line_pulse_dialing){ 
       lineSystem.setLineStatus(line, line_pulse_dialing);
     }
     return;
@@ -65,10 +65,10 @@ void pulseHandler(int line) {
     // and trigger the digitReceivedCallback
   
   if(currentSHKReading && !pulsing && gap > pulseGapMax){
-    char digit = String(lineSystem.lineVector[line].pulsCount % 10)[0];
+    char digit = String(lineSystem.lineArray[line].pulsCount % 10)[0];
     pulsing = false;
-    lineSystem.lineVector[line].pulsCount = 0;
-    lineSystem.lineVector[line].edgeTimestamp = 0;
+    lineSystem.lineArray[line].pulsCount = 0;
+    lineSystem.lineArray[line].edgeTimestamp = 0;
     lineSystem.newDigitReceived(line, digit);
     return;
   }

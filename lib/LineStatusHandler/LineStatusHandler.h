@@ -7,7 +7,7 @@
 // Max antal linjer som stöds
 #define MAX_LINES 8
 
-// Enum representing all possible statuses of the hook
+
 enum hookStatuses {
     hook_off,
     hook_on

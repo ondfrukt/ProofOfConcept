@@ -6,12 +6,6 @@
 
 void ring(int line) {
   Serial.println("Ringing line " + String(line + 1));
-
-
-
-
-
-
 }
 
 // Function to determine the action to take based on the new line status
@@ -28,15 +22,12 @@ void lineAction(int line, lineStatuses newLineStatus) {
 
     case line_tone_dialing:
       // Action
-      lineSystem.startLineTimer(line, statusTimer_toneDialing);
+      Line[line].startLineTimer(statusTimer_toneDialing);
       break;
 
     case line_pulse_dialing:
       // Action
-      lineSystem.startLineTimer(line, statusTimer_pulsDialing);
-
-
-      
+      Line[line].startLineTimer(statusTimer_pulsDialing);
       break;
 
     case line_connected:
@@ -52,11 +43,11 @@ void lineAction(int line, lineStatuses newLineStatus) {
       break;
 
     case line_ringing:
-      lineSystem.startLineTimer(line, statusTimer_Ringing);
-      dialedDigits = lineSystem.lineArray[line].diledDigits;
+      Line[line].startLineTimer(statusTimer_Ringing);
+      dialedDigits = Line[line].dialedDigits;
       for (int i = 0; i < activeLines; i++) {
         // Check if the diled digits match a number in the phonebook and the line is idle
-        if (dialedDigits == lineSystem.phoneBook[i] && lineSystem.lineArray[i].currentLineStatus == line_idle) {
+        if (dialedDigits == Line[i].phoneNumber && Line[i].currentLineStatus == line_idle) {
           ring(i);
         }
       }
@@ -71,12 +62,12 @@ void lineAction(int line, lineStatuses newLineStatus) {
       break;
 
     case line_busy:
-      lineSystem.lineArray[line].diledDigits = "";
+      Line[line].dialedDigits = '\0';
       // Action
       break;
 
     case line_fail:
-      lineSystem.lineArray[line].diledDigits = "";
+      Line[line].dialedDigits = '\0';
       // Action
       break;
 
@@ -92,25 +83,25 @@ void lineAction(int line, lineStatuses newLineStatus) {
 
 // Function to determine the action to take based on the line status due to a timer expiration
 void lineTimerExpired(int line) {
-  lineSystem.stopLineTimer(line);
-  uint32_t currentStatus = lineSystem.lineArray[line].currentLineStatus;
+  Line[line].stopLineTimer();
+  uint32_t currentStatus = Line[line].currentLineStatus;
 
   switch (currentStatus) {
     case line_ready:
     case line_fail:
     case line_busy:
     case line_disconnected:
-      lineSystem.setLineStatus(line, line_timeout);
+      Line[line].setLineStatus(line_timeout);
       lineAction(line, line_timeout);
       break;
 
     case line_timeout:
-      lineSystem.setLineStatus(line, line_abandoned);
+      Line[line].setLineStatus(line_abandoned);
       lineAction(line, line_abandoned);
       break;
 
     case line_incoming:
-      lineSystem.setLineStatus(line, line_idle);
+      Line[line].setLineStatus(line_idle);
       lineAction(line, line_idle);
       break;
 

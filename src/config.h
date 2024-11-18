@@ -2,19 +2,26 @@
 #define config_h
 #include <Arduino.h>
 #include <MT8816.h>
-#include <LineStatusHandler.h>
+#include <LineHandler.h>
 #include <Adafruit_MCP23X17.h>
 
 
 // Number of lines
 const int activeLines = 4;
-String dialedDigits; // Declare the variable outside the switch statement
+// Defining line objects
+LineHandler Line[4] = { 
+  LineHandler(0), 
+  LineHandler(1), 
+  LineHandler(2), 
+  LineHandler(3) 
+};
 
-// Defining objects
-LineSystem lineSystem(activeLines);
+// Defining MCP23017 objects
 Adafruit_MCP23X17 mcp_ks083f;
+// MT8816 matrix;
 
-// extern MT8816 matrix;
+// Variable to store the dialed digits
+char dialedDigits;
 
 // Defining MCP pins
 const int GPA0 = 0;
@@ -72,7 +79,7 @@ const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
 // Debouncing time in milliseconds
 uint8_t SHKDebouncingTime = 150;
 
-
+// -----------------I2C Scanner------------------
 void i2CScanner() {
   // Scan for I2C devices
   byte error, address;
@@ -110,6 +117,24 @@ void i2CScanner() {
     Serial.println("Scanning done\n");
   }
 }
+
+// Function to check if all lines are idle
+bool allLinesIdle() {
+  for (int i = 0; i < activeLines; i++) {
+    if (Line[i].currentLineStatus != line_idle) {
+      return false;  // Returnera false om någon linje inte är idle
+    }
+  }
+  return true;  // Om vi har kommit hit så är alla linjer idle
+}
+
+
+
+
+
+
+
+
 
 
 #endif

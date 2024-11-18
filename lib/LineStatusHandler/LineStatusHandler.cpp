@@ -12,7 +12,7 @@ struct LineStatus {
     unsigned long lineTimerStart = 0;
     unsigned int lineTimerLimit = 0;
     bool lineTimerActive = false;
-    String diledDigits;
+    String dialedDigits;
 };
 
 

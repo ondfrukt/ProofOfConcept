@@ -5,6 +5,7 @@
 #include "SHKRead.h"
 #include "lineAction.h"
 #include "pulsHandler.h"
+#include "LineHandler.h"
 
 void setup() {
   Serial.begin(115200);
@@ -24,22 +25,20 @@ void loop() {
   SHKRead();
 
   // Check if one or more lines are not idle
-  if (lineSystem.allLinesIdle == false) {
+  if (allLinesIdle() == false) {
     for (int i = 0; i < activeLines; i++) {
-      auto& lineData = lineSystem.lineArray[i];
-      
       // Check if the line status is not idle
-      if (lineData.currentLineStatus != line_idle) {
+      if (Line[i].currentLineStatus != line_idle) {
         // Check if the line timer is active
-        if (lineData.lineTimerActive) {
+        if (Line[i].lineTimerActive) {
           // if the line timer has expired, trigger lineTimerExpired()
-          if (millis() - lineData.lineTimerStart > lineData.lineTimerLimit) {
+          if (millis() - Line[i].lineTimerStart > Line[i].lineTimerLimit) {
             lineTimerExpired(i);
           }
         }
 
         // Check if the line is ready or pulse dialing
-        if (lineData.currentLineStatus == line_ready || lineData.currentLineStatus == line_pulse_dialing) {
+        if (Line[i].currentLineStatus == line_ready || Line[i].currentLineStatus == line_pulse_dialing) {
         //Serial.print("Current SHK state: ");Serial.println(lineData.SHKState);
         pulseHandler(i);
         }

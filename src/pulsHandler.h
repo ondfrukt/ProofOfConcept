@@ -7,72 +7,67 @@
 const unsigned pulseGapMin = 10;
 const unsigned pulseGapMax = 60;
 
-void pulseHandler(int line) {
-  // Först, validera line-parametern för att undvika buffer overflow
-  if (line < 0 || line >= activeLines) {  // MAX_LINES bör definieras i config.h
-    Serial.println(F("Invalid line number in pulseHandler"));
-    return;
-  }
+void pulseHandler(int i) {
 
   // State change detection med debounce
-  if (lineSystem.lineArray[line].SHKState != lineSystem.lineArray[line].lastSHKState) {
+  if (Line[i].SHKState != Line[i].previousSHKState) {
     Serial.println("Edge detected");
-    lineSystem.lineArray[line].lastSHKBounceTime = millis();
-    lineSystem.lineArray[line].edgeTimestamp = millis();
-    Serial.print("Line "); Serial.print(line); Serial.print(" Pulsing: "); Serial.println(lineSystem.lineArray[line].pulsing);
+    Line[i].lastSHKBounceTime = millis();
+    Line[i].edgeTimestamp = millis();
+    Serial.print("i "); Serial.print(i); Serial.print(" Pulsing: "); Serial.println(Line[i].pulsing);
     return;
   }
 
   // Debounce check
-  if ((millis() - lineSystem.lineArray[line].lastSHKBounceTime) < pulseGapMin) {
+  if ((millis() - Line[i].lastSHKBounceTime) < pulseGapMin) {
     return;
   }
 
   // Beräkna gap om edgeTimeStamp är satt
-  unsigned gap = lineSystem.lineArray[line].edgeTimestamp ? millis() - lineSystem.lineArray[line].edgeTimestamp : 0;
+  unsigned gap = Line[i].edgeTimestamp ? millis() - Line[i].edgeTimestamp : 0;
 
-  if (lineSystem.lineArray[line].SHKState && lineSystem.lineArray[line].lastSHKState && gap <= pulseGapMax) {
+  if (Line[i].SHKState && Line[i].previousSHKState && gap <= pulseGapMax) {
     return;
   }
 
-  if (!lineSystem.lineArray[line].SHKState && !lineSystem.lineArray[line].lastSHKState) {
+  if (!Line[i].SHKState && !Line[i].previousSHKState) {
     return;
   }
 
   // Falling edge detection
-  if (!lineSystem.lineArray[line].SHKState && !lineSystem.lineArray[line].pulsing) {
-    Serial.print("Line "); Serial.print(line); Serial.println(" falling edge detected");
-    lineSystem.lineArray[line].pulsing = true;
-    Serial.print("Line "); Serial.print(line); Serial.println(" pulsing");
-    lineSystem.lineArray[line].edgeTimestamp = millis();
+  if (!Line[i].SHKState && !Line[i].pulsing) {
+    Serial.print("i "); Serial.print(i); Serial.println(" falling edge detected");
+    Line[i].pulsing = true;
+    Serial.print("i "); Serial.print(i); Serial.println(" pulsing");
+    Line[i].edgeTimestamp = millis();
     return;
   }
 
   // Rising edge detection
-  if (lineSystem.lineArray[line].SHKState && lineSystem.lineArray[line].pulsing) {
-    Serial.print("Line "); Serial.print(line); Serial.println(" rising edge detected");
-    lineSystem.lineArray[line].pulsing = false;
-    lineSystem.lineArray[line].pulsCount++;
-    Serial.print("Line "); Serial.print(line); Serial.print(" pulse count: "); Serial.println(lineSystem.lineArray[line].pulsCount);
-    lineSystem.lineArray[line].edgeTimestamp = millis();
+  if (Line[i].SHKState && Line[i].pulsing) {
+    Serial.print("i "); Serial.print(i); Serial.println(" rising edge detected");
+    Line[i].pulsing = false;
+    Line[i].pulsCount++;
+    Serial.print("i "); Serial.print(i); Serial.print(" pulse count: "); Serial.println(Line[i].pulsCount);
+    Line[i].edgeTimestamp = millis();
 
-    if (lineSystem.lineArray[line].currentLineStatus != line_pulse_dialing) {
-      lineSystem.setLineStatus(line, line_pulse_dialing);
+    if (Line[i].currentLineStatus != line_pulse_dialing) {
+      Line[i].setLineStatus(line_pulse_dialing);
     }
     return;
   }
 
   // Digit completion detection
-  if (lineSystem.lineArray[line].SHKState && !lineSystem.lineArray[line].pulsing && gap > pulseGapMax) {
-    uint8_t pulseValue = lineSystem.lineArray[line].pulsCount % 10;
+  if (Line[i].SHKState && !Line[i].pulsing && gap > pulseGapMax) {
+    uint8_t pulseValue = Line[i].pulsCount % 10;
     char digit = pulseValue;  // Säkrare än String conversion
 
-    lineSystem.lineArray[line].pulsing = false;
-    lineSystem.lineArray[line].pulsCount = 0;
-    lineSystem.lineArray[line].edgeTimestamp = millis();
+    Line[i].pulsing = false;
+    Line[i].pulsCount = 0;
+    Line[i].edgeTimestamp = millis();
 
     // Notify system of new digit
-    lineSystem.newDigitReceived(line, digit);
+    Line[i].newDigitReceived(digit);
     return;
   }
 }

@@ -6,6 +6,12 @@
 
 void ring(int line) {
   Serial.println("Ringing line " + String(line + 1));
+
+
+
+
+
+
 }
 
 // Function to determine the action to take based on the new line status
@@ -28,6 +34,9 @@ void lineAction(int line, lineStatuses newLineStatus) {
     case line_pulse_dialing:
       // Action
       lineSystem.startLineTimer(line, statusTimer_pulsDialing);
+
+
+      
       break;
 
     case line_connected:

@@ -37,14 +37,15 @@ struct lineStruct {
     uint32_t currentLineStatus;             // Current status of the line
     uint32_t previousLineStatus;            // Previous status for the line
 
-    hookStatuses hookStatus;                // Status of the hook (hook on/off)
-    uint8_t SHKState;                       // Current state of the SHK pin (0 = hook on, 1 = hook off)
-    unsigned long lastSHKBounceTime;        // Last time the SHK pin changed state
+    hookStatuses hookStatus = hook_on;      // Status of the hook (hook on/off)
+    uint8_t SHKState = 0;                   // Current state of the SHK pin (0 = hook on, 1 = hook off)
+    uint8_t lastSHKState = 0;               // Last state of the SHK pin                  
+    unsigned long lastSHKBounceTime = 0;    // Last time the SHK pin changed state
 
     bool pulsing = false;                   // Flag to indicate if the line is currently pulsing
     int pulsCount = 0;                      // Count number of pulses
     String diledDigits = "";                // String to store the dialed digits
-    unsigned long edgeTimestamp;            // Timestamp for the last edge
+    unsigned long edgeTimestamp = 0;        // Timestamp for the last edge
     
     unsigned int lineTimerLimit = 0;        // Current limit for the line timer
     unsigned long lineTimerStart = 0;       // Start time for the line timer

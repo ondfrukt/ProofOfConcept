@@ -21,6 +21,9 @@ LineSystem::LineSystem(int activeLines) {
     for (int i = 0; i < activeLines && i < MAX_LINES; ++i) {
         lineArray[i].line_number = i;
         phoneBook[i] = String(i + 1); // Första linjen får 1 som telefonnummer
+        lineArray[i].currentLineStatus = line_idle;
+        lineArray[i].previousLineStatus = line_idle;
+
     }
 }
 
@@ -35,12 +38,18 @@ void LineSystem::setLineStatus(int lineNumber, uint32_t new_status) {
         Serial.println("Invalid line number!");
     }
 
+    // Printing new status
+    Serial.print("Line ");
+    Serial.print(lineNumber);
+    Serial.print(" status changed to: ");
+    Serial.println(this->getStatusString(static_cast<lineStatuses>(new_status)));
+
     // Kontrollera om alla linjer är inaktiva
     allLinesIdle = true;
     for (int i = 0; i < MAX_LINES; ++i) {
         if (lineArray[i].currentLineStatus != line_idle) {
             allLinesIdle = false;
-            return;
+            break;
         }
     }
 }

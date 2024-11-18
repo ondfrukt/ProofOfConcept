@@ -7,68 +7,71 @@
 const unsigned pulseGapMin = 10;
 const unsigned pulseGapMax = 60;
 
-
 void pulseHandler(int line) {
-  bool currentSHKReading = mcp_ks083f.digitalRead(SHKPins[line]);
-  auto& lineData = lineSystem.lineArray[line];
-  bool lastSHKState = lineData.SHKState;
-  unsigned long lastSHKDebounceTime = lineData.lastSHKBounceTime;
-  unsigned long edgeTimeStamp = lineData.edgeTimestamp;
-  unsigned long currentTime = millis();
-  
-  // If SHK state has changed, update the last bounce time and the current SHK state and return
-  if(currentSHKReading != lastSHKState) {
-    lineSystem.lineArray[line].SHKState = currentSHKReading;
-    lineSystem.lineArray[line].lastSHKBounceTime = currentTime;
+  // Först, validera line-parametern för att undvika buffer overflow
+  if (line < 0 || line >= activeLines) {  // MAX_LINES bör definieras i config.h
+    Serial.println(F("Invalid line number in pulseHandler"));
     return;
   }
 
-  // If the debouncing time has passed, the SHK state has changed and is stable. Else, return
-  if((currentTime - lastSHKDebounceTime) < pulseGapMin) return;
+  // State change detection med debounce
+  if (lineSystem.lineArray[line].SHKState != lineSystem.lineArray[line].lastSHKState) {
+    Serial.println("Edge detected");
+    lineSystem.lineArray[line].lastSHKBounceTime = millis();
+    lineSystem.lineArray[line].edgeTimestamp = millis();
+    Serial.print("Line "); Serial.print(line); Serial.print(" Pulsing: "); Serial.println(lineSystem.lineArray[line].pulsing);
+    return;
+  }
 
-  // If edgeTimeStamp is not 0, calculate the gap between the current time and the edgeTimeStamp. Else, set gap to 0
-  unsigned gap = edgeTimeStamp ? currentTime - edgeTimeStamp : 0;
+  // Debounce check
+  if ((millis() - lineSystem.lineArray[line].lastSHKBounceTime) < pulseGapMin) {
+    return;
+  }
 
-  // SHK pin is high and unchanged, skip until longer gap between digits
-  if(currentSHKReading && lastSHKState && gap <= pulseGapMax) return;
-  // SHK pin is low and unchanged, skip always
-  if(!currentSHKReading && !lastSHKState) return;
+  // Beräkna gap om edgeTimeStamp är satt
+  unsigned gap = lineSystem.lineArray[line].edgeTimestamp ? millis() - lineSystem.lineArray[line].edgeTimestamp : 0;
 
-  // If the line is pulsing it means that the SHK pin is currently low and the line is pulsing
-  bool pulsing = lineData.pulsing;
-  uint32_t currentLineStatus = lineData.currentLineStatus;
-  
-  // Falling edge
-  if(!currentSHKReading && !pulsing) {
+  if (lineSystem.lineArray[line].SHKState && lineSystem.lineArray[line].lastSHKState && gap <= pulseGapMax) {
+    return;
+  }
+
+  if (!lineSystem.lineArray[line].SHKState && !lineSystem.lineArray[line].lastSHKState) {
+    return;
+  }
+
+  // Falling edge detection
+  if (!lineSystem.lineArray[line].SHKState && !lineSystem.lineArray[line].pulsing) {
+    Serial.print("Line "); Serial.print(line); Serial.println(" falling edge detected");
     lineSystem.lineArray[line].pulsing = true;
-    lineSystem.lineArray[line].edgeTimestamp = currentTime;
+    Serial.print("Line "); Serial.print(line); Serial.println(" pulsing");
+    lineSystem.lineArray[line].edgeTimestamp = millis();
     return;
   }
 
-  // Rising edge
-  if(currentSHKReading && pulsing){
+  // Rising edge detection
+  if (lineSystem.lineArray[line].SHKState && lineSystem.lineArray[line].pulsing) {
+    Serial.print("Line "); Serial.print(line); Serial.println(" rising edge detected");
     lineSystem.lineArray[line].pulsing = false;
     lineSystem.lineArray[line].pulsCount++;
-    lineSystem.lineArray[line].edgeTimestamp = currentTime;
-    
-    // If the line is not dialing, set the line status to pulse dialing and trigger the dialingStartedCallback
-    if(currentLineStatus != line_pulse_dialing){ 
+    Serial.print("Line "); Serial.print(line); Serial.print(" pulse count: "); Serial.println(lineSystem.lineArray[line].pulsCount);
+    lineSystem.lineArray[line].edgeTimestamp = millis();
+
+    if (lineSystem.lineArray[line].currentLineStatus != line_pulse_dialing) {
       lineSystem.setLineStatus(line, line_pulse_dialing);
     }
     return;
   }
 
-  // If the SHK pin is high and not pulsing and the gap between the current time and the edgeTimeStamp is greater than the pulseGapMax, 
-    // set the pulsing flag to false, 
-    // set the pulsCount to 0, 
-    // set the edgeTimeStamp to 0 
-    // and trigger the digitReceivedCallback
-  
-  if(currentSHKReading && !pulsing && gap > pulseGapMax){
-    char digit = String(lineSystem.lineArray[line].pulsCount % 10)[0];
-    pulsing = false;
+  // Digit completion detection
+  if (lineSystem.lineArray[line].SHKState && !lineSystem.lineArray[line].pulsing && gap > pulseGapMax) {
+    uint8_t pulseValue = lineSystem.lineArray[line].pulsCount % 10;
+    char digit = pulseValue;  // Säkrare än String conversion
+
+    lineSystem.lineArray[line].pulsing = false;
     lineSystem.lineArray[line].pulsCount = 0;
-    lineSystem.lineArray[line].edgeTimestamp = 0;
+    lineSystem.lineArray[line].edgeTimestamp = millis();
+
+    // Notify system of new digit
     lineSystem.newDigitReceived(line, digit);
     return;
   }

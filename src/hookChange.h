@@ -5,18 +5,20 @@
 #include "config.h"
 #include "lineAction.h"
 
+
+
+
+// Read SHK pins and trigger hookChange() if one or more lines are off-hook
+
 // Function to handle changes in hook state
 void hookChange(int line, hookStatuses newHookState) {
-
   // ------------- Hook OFF -------------------
   if (newHookState == hook_off) {
-    Serial.print("Line "); Serial.print(line); Serial.println(" Hook OFF");
+    //Serial.print("Line "); Serial.print(line); Serial.println(" Hook OFF");
 
     // ---> Ready
     if (lineSystem.lineArray[line].currentLineStatus == line_idle) {
       lineSystem.setLineStatus(line, line_ready);
-      Serial.print("\r");
-      Serial.print("Line "); Serial.print(line); Serial.println(" Ready");
       lineAction(line, line_ready);
       return;
     }
@@ -24,8 +26,6 @@ void hookChange(int line, hookStatuses newHookState) {
     // ---> Connected
     if (lineSystem.lineArray[line].currentLineStatus == line_incoming) {
       lineSystem.setLineStatus(line, line_connected);
-      Serial.print("\r");
-      Serial.print("Line "); Serial.print(line); Serial.println(" Connected");
       lineAction(line, line_connected);
       return;
     }
@@ -33,7 +33,7 @@ void hookChange(int line, hookStatuses newHookState) {
 
   // ------------- Hook ON -------------------
   if (newHookState == hook_on) {
-    Serial.print("Line "); Serial.print(line); Serial.println(" Hook ON");
+    //Serial.print("Line "); Serial.print(line); Serial.println(" Hook ON");
     uint32_t currentLineStatus = lineSystem.lineArray[line].currentLineStatus;
     // ---> Idle
     if (
@@ -47,8 +47,6 @@ void hookChange(int line, hookStatuses newHookState) {
 
       
       lineSystem.setLineStatus(line, line_idle);
-      Serial.print("\r");
-      Serial.print("Line "); Serial.print(line); Serial.println(" Idle");
       lineAction(line, line_idle);
       return;
     }
@@ -56,10 +54,24 @@ void hookChange(int line, hookStatuses newHookState) {
     // ---> Disconnected
     if (currentLineStatus == line_ringing) {
       lineSystem.setLineStatus(line, line_disconnected);
-      Serial.print("\r");
-      Serial.print("Line "); Serial.print(line); Serial.println(" Disconnected");
       lineAction(line, line_disconnected);
       return;
+    }
+  }
+}
+
+// Function to set correct hook status on boot
+void setupHookChecker(){
+  Serial.println("Initial hook statuses");
+  uint16_t mcpState = mcp_ks083f.readGPIOAB();
+  for (int i = 0; i < activeLines; i++) {
+    bool currentSHKReading = bitRead(mcpState, SHKPins[i]);
+    if (currentSHKReading == 0) {
+      lineSystem.lineArray[i].hookStatus = hook_on;
+      Serial.print("Line "); Serial.print(i); Serial.println(" Hook ON");
+    } else {
+      lineSystem.lineArray[i].hookStatus = hook_off;
+      Serial.print("Line "); Serial.print(i); Serial.println(" Hook OFF");
     }
   }
 }

@@ -1,6 +1,8 @@
 # Phone exchange - Proof of concept
 This project aims to create an analog phone exchange for analog phones, supporting both pulse dialing and tone dialing.
 
+This is a learning project and my personal introduction to programming, arduino and electronics. It might end up with a pile of electronic scrap and hundreds of unused disfunctional lines of code, but it will result in a lot of knowledge and a steep learning curve.
+
 ## Phone statuses
 Every phone is assigned a status for each moment, depending on how the phone is operated.
 

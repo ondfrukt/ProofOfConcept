@@ -3,6 +3,15 @@ This project aims to create an analog phone exchange for analog phones, supporti
 
 This is a learning project and my personal introduction to programming, arduino and electronics. It might end up with a pile of electronic scrap and hundreds of unused disfunctional lines of code, but it will result in a lot of knowledge and a steep learning curve.
 
+The project is coded in C++ and will use a microcontroller with wifi so that the exchange system can be govern or controlled externaly.
+I'm using the [KS0835F](docs/KS0835F.pdf) modules for each phone line to monitor if the Phone hook is on or off. Them modul also generates the ring pulses to the line. A MT8816 will handle all Ain and Aout connections so that a single line is only connected to one lime at the time. The setup neads many GPIO-pins so a bucnh of MCP23017 vill be added.
+
+A typical procedure of the system will be as shown below. A more detailed flowshart can be found [hear](docs/PhoneStatusflowshart.drawio.png)
+- A hook is lifted, and the status of the line changes from "idle" to "ready."
+- A phone number is dialed using pulse dialing or DTMF tones, and the digits are captured by the microcontroller.
+- Ring pulses are generated for the dialed line. Once the hook is picked up, the audio lines are connected using the MT8816.
+- One of the phone hooks is put down, ending the call. The audio connection is broken, and the statuses are updated accordingly.
+
 ## Phone statuses
 Every phone is assigned a status for each moment, depending on how the phone is operated.
 

@@ -15,10 +15,10 @@ A typical procedure of the system will be as shown below. A more detailed flowsh
 ## Phone statuses
 Every phone is assigned a status for each moment, depending on how the phone is operated.
 
-Hook - If the phone hook is on or off due to the status
-Timer - If the new status initiate a timer
-Audio -  If a audio is played to the line due to the status (might not be implemented)
-Tone - if a tone is played to the line due to the status (might not be implemented)
+- Hook - If the phone hook is on or off due to the status
+- Timer - If the new status initiate a timer
+- Audio -  If a audio is played to the line due to the status (might not be implemented)
+- Tone - if a tone is played to the line due to the status (might not be implemented)
 
 
 | Phone status  | Function                              | Hook | Timer | Audio | Tone |

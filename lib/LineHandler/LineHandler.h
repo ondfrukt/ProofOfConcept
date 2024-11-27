@@ -3,9 +3,15 @@
 
 #include <Arduino.h>
 #include <string.h>
+#include "../src/lineStatuses.h"
 
 // Max antal linjer som stöds
 #define MAX_LINES 8
+
+enum lineStatuses;
+enum hookStatuses;
+
+
 
 // LineSystem-klass
 class LineHandler {

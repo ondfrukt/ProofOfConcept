@@ -10,13 +10,14 @@ void setupSHKPins() {
   // Initialize MCP for KS830F
   if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
     Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
-    while(1);  // Stay in an infinite loop if initialization fails
+    //while(1);  // Stay in an infinite loop if initialization fails
+    return;
   }
   Serial.println("MCP for KSF083f initialized successfully.");
 
   // Set all SHK pins as inputs with internal pull-up resistors
-  for (int i = 0; i < activeLines; i++) {
-    mcp_ks083f.pinMode(SHKPins[i], INPUT_PULLUP);
+  for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
+    mcp_ks083f.pinMode(SHKPins[pinIndex], INPUT_PULLUP);
   }
   
 }
@@ -35,31 +36,33 @@ void SHKRead() {
 
 
   // Loop through all active is and store the current SHK state in currentSHKReading
-  for (int i = 0; i < activeLines; i++) {
+  for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
 
-    Line[i].previousSHKState = Line[i].SHKState;
-    Line[i].SHKState = bitRead(mcpState, SHKPins[i]);
+    Line[pinIndex].previousSHKState = Line[pinIndex].SHKState;
+    Line[pinIndex].SHKState = bitRead(mcpState, SHKPins[pinIndex]);
 
-    // Check if the i is pulsing, if true, skip the rest of the for-loop and continue with the next i
-    if (Line[i].pulsing == true) {
+    // Check if the pinIndex is pulsing, if true, skip the rest of the for-loop and continue with the next pinIndex
+    if (Line[pinIndex].pulsing == true) {
       continue;
     }
 
     // Controlls if the current SHK input state has changed. If true, the current SHK state is updated and the last bounce time is updated
-    if (Line[i].SHKState != Line[i].previousSHKState) {
-      Line[i].lastSHKBounceTime = currentTime;
+    if (Line[pinIndex].SHKState != Line[pinIndex].previousSHKState) {
+      Line[pinIndex].lastSHKBounceTime = currentTime;
       continue; // Skip the rest of the for-loop
     }
 
     // Controlls if the debouncing time has passed, which means that the SHK state has changed and is stable
-    if ((currentTime - Line[i].lastSHKBounceTime) > SHKDebouncingTime) {
+    if ((currentTime - Line[pinIndex].lastSHKBounceTime) > SHKDebouncingTime) {
       // If the debouncing time has passed, the SHK state has clearly changed and is stable and hook status can be updated
-      if (Line[i].hookStatus == hook_on && Line[i].SHKState == 1) {
-        Line[i].hookStatus = hook_off;
-        hookChange(i, hook_off);
-      } else if (Line[i].hookStatus == hook_off && Line[i].SHKState == 0) {
-        Line[i].hookStatus = hook_on;
-        hookChange(i, hook_on);
+      if (Line[pinIndex].hookStatus == hook_on && Line[pinIndex].SHKState == 1) {
+        Line[pinIndex].hookStatus = hook_off;
+        hookChange(pinIndex, hook_off);
+        
+      } else if (Line[pinIndex].hookStatus == hook_off && Line[pinIndex].SHKState == 0) {
+        Line[pinIndex].hookStatus = hook_on;
+        hookChange(pinIndex, hook_on);
+        
         }
     }
   }

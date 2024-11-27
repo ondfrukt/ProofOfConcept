@@ -12,6 +12,7 @@
 
 // Function to handle changes in hook state
 void hookChange(int i, hookStatuses newHookState) {
+  Serial.print("Line "); Serial.print(i); Serial.print(" Hook state changed to: "); Serial.println(newHookState);
   // ------------- Hook OFF -------------------
   if (newHookState == hook_off) {
     //Serial.print("Line "); Serial.print(line); Serial.println(" Hook OFF");
@@ -33,7 +34,6 @@ void hookChange(int i, hookStatuses newHookState) {
 
   // ------------- Hook ON -------------------
   if (newHookState == hook_on) {
-    //Serial.print("Line "); Serial.print(line); Serial.println(" Hook ON");
     uint32_t currentLineStatus = Line[i].currentLineStatus;
     // ---> Idle
     if (

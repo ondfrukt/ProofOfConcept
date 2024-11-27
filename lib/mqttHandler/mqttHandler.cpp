@@ -11,6 +11,7 @@ MQTTHandler::MQTTHandler() : client(espClient), userActionCallback(nullptr) {
 
 // WiFi connection
 void MQTTHandler::setupWiFi() {
+  Serial.println();
   Serial.print("Connecting to WiFi...");
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
@@ -18,21 +19,38 @@ void MQTTHandler::setupWiFi() {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("Connected to WiFi.");
+  Serial.print("Connected");
+  Serial.print("   IP:"); Serial.println(WiFi.localIP());
 }
 
 // MQTT connection
 void MQTTHandler::setupMQTT() {
   client.setServer(MQTT_SERVER, MQTT_PORT);
-
   // Set the static callback function
   client.setCallback(mqttCallback);
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    if (client.connect("ArduinoClient", MQTT_USER, MQTT_PASSWORD)) {
+      Serial.print("connected  ");
+      client.subscribe("phoneExchange"); // Subscribe to topic
+      Serial.println("Subscribed to phoneExchange");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      delay(5000);
+      }
+  }
 }
 
 // Main loop for MQTT
 void MQTTHandler::loop() {
   if (!client.connected()) {
+    Serial.println("MQTT not connected. Reconnecting...");
     reconnect();
+  }
+  if (WiFi.status() == !WL_CONNECTED) {
+    setupWiFi();
   }
   client.loop();
 }
@@ -43,7 +61,8 @@ void MQTTHandler::reconnect() {
     Serial.print("Attempting MQTT connection...");
     if (client.connect("ArduinoClient", MQTT_USER, MQTT_PASSWORD)) {
       Serial.println("connected");
-      client.subscribe("phoneExchange"); // Subscribe to topic
+      client.subscribe("phoneExchange/setLineStatus"); // Subscribe to topic
+      Serial.println("Subscribed to phoneExchange");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -54,20 +73,22 @@ void MQTTHandler::reconnect() {
 }
 
 // Publish data
-void MQTTHandler::publishMQTT(int line, uint32_t status) {
+void MQTTHandler::publishMQTT(int line, uint8_t status) {
   StaticJsonDocument<JSON_DOC_SIZE> jsonDoc;
   jsonDoc["line"] = line;
-  jsonDoc["status"] = status;
+  jsonDoc["status"] = statusNames[status];
 
   char jsonBuffer[JSON_DOC_SIZE];
   serializeJson(jsonDoc, jsonBuffer);
 
-  client.publish("phoneExchange", jsonBuffer); // Publish to phoneExchange
+  client.publish("phoneExchange/newLineStatus", jsonBuffer); // Publish to phoneExchange
+  Serial.println("Published to phoneExchange");
 }
 
 // Set external callback function for decoded data
-void MQTTHandler::setActionCallback(void (*actionCallback)(int line, uint32_t status)) {
+void MQTTHandler::setActionCallback(void (*actionCallback)(int line, uint8_t status)) {
   userActionCallback = actionCallback;
+  Serial.println("Action callback set");
 }
 
 // Static callback for PubSubClient
@@ -103,4 +124,8 @@ void MQTTHandler::mqttCallback(char* topic, unsigned char* payload, unsigned int
   } else {
     Serial.println("No action callback defined.");
   }
+}
+
+bool MQTTHandler::isConnected() {
+    return client.connected(); // Kontrollera om MQTT är ansluten
 }

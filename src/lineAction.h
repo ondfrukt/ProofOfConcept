@@ -9,41 +9,43 @@ void ring(int line) {
 }
 
 // Function to determine the action to take based on the new line status
-void lineAction(int line, lineStatuses newLineStatus) {
-  
+void lineAction(int line, uint8_t newLineStatus) {
   switch (newLineStatus) {
     case line_idle:
       // Action
+      mqttHandler.publishMQTT(line, line_idle);
       break;
 
     case line_ready:
-      // Action
+      mqttHandler.publishMQTT(line, line_ready);
       break;
 
     case line_tone_dialing:
       // Action
-      Line[line].startLineTimer(statusTimer_toneDialing);
+      mqttHandler.publishMQTT(line, line_tone_dialing);
       break;
 
     case line_pulse_dialing:
       // Action
-      Line[line].startLineTimer(statusTimer_pulsDialing);
+      mqttHandler.publishMQTT(line, line_pulse_dialing);
       break;
 
     case line_connected:
+      mqttHandler.publishMQTT(line, line_connected);
       // Action
       break;
 
     case line_disconnected:
+      mqttHandler.publishMQTT(line, line_disconnected);
       // Action
       break;
 
     case line_incoming:
+      mqttHandler.publishMQTT(line, line_incoming);
       // Action
       break;
 
     case line_ringing:
-      Line[line].startLineTimer(statusTimer_Ringing);
       dialedDigits = Line[line].dialedDigits;
       for (int i = 0; i < activeLines; i++) {
         // Check if the diled digits match a number in the phonebook and the line is idle
@@ -51,27 +53,33 @@ void lineAction(int line, lineStatuses newLineStatus) {
           ring(i);
         }
       }
+      mqttHandler.publishMQTT(line, line_ringing);
       break;
 
     case line_timeout:
+      mqttHandler.publishMQTT(line, line_timeout);
       // Action
       break;
 
     case line_abandoned:
+      mqttHandler.publishMQTT(line, line_abandoned);
       // Action
       break;
 
     case line_busy:
       Line[line].dialedDigits = '\0';
+      mqttHandler.publishMQTT(line, line_busy);
       // Action
       break;
 
     case line_fail:
       Line[line].dialedDigits = '\0';
+      mqttHandler.publishMQTT(line, line_fail);
       // Action
       break;
 
     case line_operator:
+      mqttHandler.publishMQTT(line, line_operator);
       // Action
       break;
 
@@ -83,6 +91,7 @@ void lineAction(int line, lineStatuses newLineStatus) {
 
 // Function to determine the action to take based on the line status due to a timer expiration
 void lineTimerExpired(int line) {
+  Serial.println("Line " + String(line + 1) + " timer expired");
   Line[line].stopLineTimer();
   uint32_t currentStatus = Line[line].currentLineStatus;
 

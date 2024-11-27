@@ -1,9 +1,16 @@
 #ifndef MQTTHANDLER_H
 #define MQTTHANDLER_H
 
+
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include "secrets.h"
+#include "../src/lineStatuses.h"
+
+//enum lineStatuses;
+//enum hookStatuses;
+//String statusNames;
 
 class MQTTHandler {
 public:
@@ -11,15 +18,17 @@ public:
   void setupWiFi();
   void setupMQTT();
   void loop();
-  void publishMQTT(int line, uint32_t status);
-  void setActionCallback(void (*actionCallback)(int line, uint32_t status));
+  void publishMQTT(int line, uint8_t status);
+  void setActionCallback(void (*actionCallback)(int line, uint8_t status));
+  void reconnect();
+  bool isConnected();
 
 private:
   WiFiClient espClient;
   PubSubClient client;
 
-  void reconnect();
-  void (*userActionCallback)(int line, uint32_t status); // Pointer to user-defined callback
+  
+  void (*userActionCallback)(int line, uint8_t status); // Pointer to user-defined callback
 
   // Static callback function for PubSubClient
   static void mqttCallback(char* topic, unsigned char* payload, unsigned int length);

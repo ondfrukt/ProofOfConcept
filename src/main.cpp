@@ -6,6 +6,7 @@
 #include "lineAction.h"
 #include "pulsHandler.h"
 #include "LineHandler.h"
+#include "mqttHandler.h"
 
 void setup() {
   Serial.begin(115200);
@@ -17,6 +18,12 @@ void setup() {
   i2CScanner();
   setupSHKPins();
   setupHookChecker();
+
+  mqttHandler.setupWiFi();
+  mqttHandler.setupMQTT();
+  mqttHandler.setActionCallback(lineAction);
+
+
   Serial.println("Setup complete");
 }
 

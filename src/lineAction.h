@@ -5,11 +5,12 @@
 #include "config.h"
 
 void ring(int line) {
-  Serial.println("Ringing line " + String(line + 1));
+  Serial.println("Ringing line " + String(line));
 }
 
 // Function to determine the action to take based on the new line status
 void lineAction(int line, uint8_t newLineStatus) {
+  Serial.println("Line " + String(line) + " status: " + statusNames[newLineStatus]);
   switch (newLineStatus) {
     case line_idle:
       // Action

@@ -62,7 +62,7 @@ void MQTTHandler::reconnect() {
     if (client.connect("ArduinoClient", MQTT_USER, MQTT_PASSWORD)) {
       Serial.println("connected");
       client.subscribe("phoneExchange/setLineStatus"); // Subscribe to topic
-      Serial.println("Subscribed to phoneExchange");
+      Serial.println("Subscribed to phoneExchangesetLineStatus");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -72,7 +72,7 @@ void MQTTHandler::reconnect() {
   }
 }
 
-// Publish data
+// Publish MQTT message
 void MQTTHandler::publishMQTT(int line, uint8_t status) {
   StaticJsonDocument<JSON_DOC_SIZE> jsonDoc;
   jsonDoc["line"] = line;
@@ -91,16 +91,17 @@ void MQTTHandler::setActionCallback(void (*actionCallback)(int line, uint8_t sta
   Serial.println("Action callback set");
 }
 
-// Static callback for PubSubClient
+// Static callback function for PubSubClient to call
 void MQTTHandler::mqttCallback(char* topic, unsigned char* payload, unsigned int length) {
   // Check that the instance is set
+  Serial.println("MQTT callback called");
   if (!instance) {
     Serial.println("No instance available for handling MQTT messages.");
     return;
   }
 
   // Convert payload to a null-terminated string
-  char message[length + 1];
+  char message[length + 1] = {0};
   memcpy(message, payload, length);
   message[length] = '\0';
 
@@ -116,7 +117,7 @@ void MQTTHandler::mqttCallback(char* topic, unsigned char* payload, unsigned int
 
   // Read JSON content
   int line = jsonDoc["line"];
-  uint32_t status = jsonDoc["status"];
+  uint8_t status = jsonDoc["status"];
 
   // Call the user's callback
   if (instance->userActionCallback) {

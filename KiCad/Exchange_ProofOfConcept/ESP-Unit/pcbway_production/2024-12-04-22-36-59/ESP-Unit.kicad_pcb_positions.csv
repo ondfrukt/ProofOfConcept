@@ -1,0 +1,52 @@
+﻿pos_x,pos_y,rotation,side,designator,mpn,pack,footprint,value,mount_type,place
+172.994,-62.738,0.0,top,C1,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,"0,1uF",tht,True
+174.259,-81.524,180.0,top,C10,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,2n2,tht,True
+175.514,-59.436,180.0,top,C2,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,10uF,tht,True
+171.525,-97.78,0.0,top,C3,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,2n2,tht,True
+209.51,-91.694,180.0,top,C4,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,"0,1uF",tht,True
+184.161401,-64.77,180.0,top,C5,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,"0,1uF",tht,True
+189.21,-79.248,180.0,top,C6,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,"0,1uF",tht,True
+181.907401,-60.706,0.0,top,C7,,,CP_Radial_D4.0mm_P2.00mm,47uF,tht,True
+209.522,-58.3715,-90.0,top,C8,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,"0,1uF",tht,True
+209.55,-68.092,-90.0,top,C9,,,C_Disc_D5.0mm_W2.5mm_P2.50mm,"0,1uF",tht,True
+164.587,-55.372,0.0,top,D1,,,LED_D5.0mm,LED,tht,True
+189.23,-98.552,180.0,top,D2,,,LED_D3.0mm,LED,tht,True
+249.169,-80.518,0.0,top,D3,,,LED_D3.0mm,LED,tht,True
+249.169,-88.9,0.0,top,D4,,,LED_D3.0mm,LED,tht,True
+249.423,-97.819,0.0,top,D5,,,LED_D3.0mm,LED,tht,True
+156.35,-54.61,0.0,top,H1,,,MountingHole_3.2mm_M3_Pad_Via,MountingHole_Pad,tht,False
+249.822,-107.442,0.0,top,H2,,,MountingHole_3.2mm_M3_Pad_Via,MountingHole_Pad,tht,False
+249.508944,-54.944944,0.0,top,H3,,,MountingHole_3.2mm_M3_Pad_Via,MountingHole_Pad,tht,False
+156.464,-107.776944,0.0,top,H4,,,MountingHole_3.2mm_M3_Pad_Via,MountingHole_Pad,tht,False
+201.437,-99.558,180.0,top,IC1,,SOIC-18 Microchip,DIP-18_W7.62mm_LongPads,MT8870DE,tht,True
+167.798,-65.532,0.0,top,J1,,,BarrelJack_Horizontal,Jack-DC,tht,True
+248.153,-61.727,0.0,top,J2,,,PinHeader_2x05_P2.54mm_Vertical,Conn_02x05_Top_Bottom,tht,True
+191.008,-108.433,90.0,top,J3,,,PinSocket_1x07_P2.54mm_Vertical,Conn_01x07,tht,True
+172.72,-66.294,-90.0,top,R1,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,240,tht,True
+207.215,-99.568,0.0,top,R10,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,100K,tht,True
+188.971,-94.234,180.0,top,R11,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,100K,tht,True
+195.58,-61.722,0.0,top,R12,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,"4,7K",tht,True
+195.551,-57.404,0.0,top,R13,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,"4,7K",tht,True
+177.552,-81.524,0.0,top,R14,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,10K,tht,True
+179.613,-78.222,180.0,top,R15,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,10K,tht,True
+245.872,-79.219,-90.0,top,R16,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,220,tht,True
+245.872,-96.52,-90.0,top,R17,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,220,tht,True
+245.872,-87.601,-90.0,top,R18,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,220,tht,True
+176.022,-66.265,-90.0,top,R2,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,720,tht,True
+177.572,-97.78,0.0,top,R3,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,10K,tht,True
+172.466,-55.655,90.0,top,R4,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,470,tht,True
+179.662,-101.082,180.0,top,R5,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,10K,tht,True
+176.022,-53.594,-90.0,top,R6,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,470,tht,True
+181.866401,-68.58,0.0,top,R7,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,470,tht,True
+207.215,-95.758,0.0,top,R8,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,100K,tht,True
+188.996,-82.804,180.0,top,R9,,,R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical,390K,tht,True
+163.322,-84.328,180.0,top,TP1,,,TestPoint_Pad_D1.0mm,TestPoint,tht,True
+159.766,-84.582,0.0,top,TP2,,,TestPoint_Pad_D1.0mm,TestPoint,tht,True
+212.344,-54.356,0.0,top,TP4,,,TestPoint_Pad_D1.0mm,TestPoint,tht,True
+182.626,-54.102,0.0,top,TP5,,,TestPoint_Pad_D1.0mm,TestPoint,tht,True
+229.108,-81.026,0.0,top,U1,,Package,MODULE_ESP32_NODEMCU,ESP32_NODEMCU,tht,True
+157.226,-79.685,0.0,top,U2,,,TO-220-3_Vertical,LM317_TO-220,tht,True
+172.003,-93.477,90.0,top,U3,,PDIP-8 Texas,DIP-8_W7.62mm_LongPads,LM358PE3,tht,True
+204.47,-59.69,90.0,top,U4,,TSSOP-20 Texas Instruments,TSSOP-20_4.4x5mm_P0.5mm,TXS0108EPWR,smt,True
+204.47,-69.596,90.0,top,U5,,TSSOP-20 Texas Instruments,TSSOP-20_4.4x5mm_P0.5mm,TXS0108EPWR,smt,True
+208.28,-86.27,90.0,top,Y1,,,Crystal_HC49-4H_Vertical,3.579546,tht,True

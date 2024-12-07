@@ -1,7 +1,6 @@
 #ifndef MQTTHANDLER_H
 #define MQTTHANDLER_H
 
-
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
@@ -36,7 +35,7 @@ private:
   // Static pointer to an MQTTHandler instance
   static MQTTHandler* instance;
 
-  static const int JSON_DOC_SIZE = 200;
+  static const int JSON_DOC_SIZE = 256;
 };
 
 #endif

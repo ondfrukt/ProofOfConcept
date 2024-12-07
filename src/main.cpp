@@ -17,7 +17,7 @@ void setup() {
   setupHookChecker();
 
   mqttHandler.setupWiFi();
-  mqttHandler.setupMQTT();
+  //mqttHandler.setupMQTT();
 
   // Set the action callback for the MQTTHandler. This function will be called when MQTT message is received 
   mqttHandler.setActionCallback(lineAction);
@@ -52,6 +52,6 @@ void loop() {
   }
 
   // Handle MQTT messages
-  mqttHandler.loop();
+  //mqttHandler.loop();
   delay(1);
 }

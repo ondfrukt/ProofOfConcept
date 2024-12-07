@@ -68,13 +68,13 @@ void lineAction(int line, uint8_t newLineStatus) {
       break;
 
     case line_busy:
-      Line[line].dialedDigits = '\0';
+      Line[line].dialedDigits = "";
       mqttHandler.publishMQTT(line, line_busy);
       // Action
       break;
 
     case line_fail:
-      Line[line].dialedDigits = '\0';
+      Line[line].dialedDigits = "";
       mqttHandler.publishMQTT(line, line_fail);
       // Action
       break;

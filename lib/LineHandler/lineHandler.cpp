@@ -14,7 +14,7 @@ LineHandler::LineHandler(int line) {
     lastSHKBounceTime = 0;      // Last time the SHK pin changed state
     pulsing = false;            // Flag to indicate if the line is currently pulsing
     pulsCount = 0;              // Count number of pulses
-    dialedDigits = '/0';        // String to store the dialed digits
+    dialedDigits = "";        // String to store the dialed digits
     edgeTimestamp = 0;          // Timestamp for the last edge
     lineTimerLimit = 0;         // Current limit for the line timer
     lineTimerStart = 0;         // Start time for the line timer

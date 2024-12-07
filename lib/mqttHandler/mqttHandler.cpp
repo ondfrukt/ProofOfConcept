@@ -74,7 +74,7 @@ void MQTTHandler::reconnect() {
 
 // Publish MQTT message
 void MQTTHandler::publishMQTT(int line, uint8_t status) {
-  StaticJsonDocument<JSON_DOC_SIZE> jsonDoc;
+  DynamicJsonDocument jsonDoc(JSON_DOC_SIZE);
   jsonDoc["line"] = line;
   jsonDoc["status"] = statusNames[status];
 
@@ -106,7 +106,7 @@ void MQTTHandler::mqttCallback(char* topic, unsigned char* payload, unsigned int
   message[length] = '\0';
 
   // Parse JSON
-  StaticJsonDocument<JSON_DOC_SIZE> jsonDoc;
+  DynamicJsonDocument jsonDoc(JSON_DOC_SIZE);
   DeserializationError error = deserializeJson(jsonDoc, message);
 
   if (error) {

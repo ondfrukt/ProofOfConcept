@@ -27,7 +27,7 @@ Adafruit_MCP23X17 mcp_ks083f;
 // MT8816 matrix;
 
 // Variable to store the dialed digits
-char dialedDigits;
+String dialedDigits;
 
 // Defining MCP pins
 const int GPA0 = 0;

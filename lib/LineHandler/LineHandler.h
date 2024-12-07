@@ -17,7 +17,7 @@ enum hookStatuses;
 class LineHandler {
 public:
     int line_number;                    // Identifier for the line (0-7)
-    char phoneNumber;
+    String phoneNumber;
     lineStatuses currentLineStatus;     // Current status of the line
     lineStatuses previousLineStatus;    // Previous status for the line
 
@@ -28,7 +28,7 @@ public:
 
     bool pulsing;                       // Flag to indicate if the line is currently pulsing
     int pulsCount;                      // Count number of pulses
-    char dialedDigits;                  // char to store the dialed digits
+    String dialedDigits;                  // char to store the dialed digits
     unsigned long edgeTimestamp;        // Timestamp for the last edge
     
     unsigned int lineTimerLimit;        // Current limit for the line timer

@@ -5,8 +5,12 @@
 MQTTHandler* MQTTHandler::instance = nullptr;
 
 // Constructor
-MQTTHandler::MQTTHandler() : client(espClient), userActionCallback(nullptr) {
+MQTTHandler::MQTTHandler(int wifiPIN, int mqttPIN) : client(espClient), wifiPIN(wifiPIN), mqttPIN(mqttPIN), userActionCallback(nullptr) {
   instance = this; // Save the pointer to this instance
+  pinMode(wifiPIN, OUTPUT);
+  pinMode(mqttPIN, OUTPUT);
+  digitalWrite(wifiPIN, LOW);
+  digitalWrite(mqttPIN, LOW);
 }
 
 // WiFi connection
@@ -19,6 +23,7 @@ void MQTTHandler::setupWiFi() {
     delay(500);
     Serial.print(".");
   }
+  digitalWrite(wifiPIN, HIGH);
   Serial.print("Connected");
   Serial.print("   IP:"); Serial.println(WiFi.localIP());
 }
@@ -31,6 +36,7 @@ void MQTTHandler::setupMQTT() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     if (client.connect("ArduinoClient", MQTT_USER, MQTT_PASSWORD)) {
+      digitalWrite(mqttPIN, HIGH);
       Serial.print("connected  ");
       client.subscribe("phoneExchange"); // Subscribe to topic
       Serial.println("Subscribed to phoneExchange");
@@ -82,7 +88,7 @@ void MQTTHandler::publishMQTT(int line, uint8_t status) {
   serializeJson(jsonDoc, jsonBuffer);
 
   client.publish("phoneExchange/newLineStatus", jsonBuffer); // Publish to phoneExchange
-  Serial.println("Published to phoneExchange");
+  //Serial.println("Published to phoneExchange");
 }
 
 // Set external callback function for decoded data

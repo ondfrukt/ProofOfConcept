@@ -7,13 +7,9 @@
 #include "secrets.h"
 #include "../src/lineStatuses.h"
 
-//enum lineStatuses;
-//enum hookStatuses;
-//String statusNames;
-
 class MQTTHandler {
 public:
-  MQTTHandler();
+  MQTTHandler(int wifiPIN, int mqttPIN);
   void setupWiFi();
   void setupMQTT();
   void loop();
@@ -25,8 +21,9 @@ public:
 private:
   WiFiClient espClient;
   PubSubClient client;
+  int wifiPIN;
+  int mqttPIN;
 
-  
   void (*userActionCallback)(int line, uint8_t status); // Pointer to user-defined callback
 
   // Static callback function for PubSubClient

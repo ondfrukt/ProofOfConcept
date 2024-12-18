@@ -55,7 +55,7 @@ void pulseHandler::start(){
     pulsing[i] = false;
     pulses[i] = 0;
     edge[i] = 0;
-    lastDebounceTime[i] = millis();
+    lastDebounceTime[i] = Millis();
   }
 }
 
@@ -66,12 +66,12 @@ void pulseHandler::run(){
     // debounce because SHK from SLIC is very noisy
     if(newSHK != lastDebounceValue[i]) {
       lastDebounceValue[i] = newSHK;
-      lastDebounceTime[i] = millis();
+      lastDebounceTime[i] = Millis();
       continue;
     }
-    if((millis() - lastDebounceTime[i]) < pulseGapMin) continue;
+    if((Millis() - lastDebounceTime[i]) < pulseGapMin) continue;
 
-    unsigned gap = edge[i] ? millis() - edge[i] : 0;
+    unsigned gap = edge[i] ? Millis() - edge[i] : 0;
     if(newSHK && SHKs[i] && gap <= pulseGapMax) continue;
     if(!newSHK && !SHKs[i]) continue;
     SHKs[i] = newSHK;
@@ -79,7 +79,7 @@ void pulseHandler::run(){
     // falling edge
     if(!SHKs[i] && !pulsing[i]) {
       pulsing[i] = true;
-      edge[i] = millis();
+      edge[i] = Millis();
       continue;
     }
 
@@ -87,7 +87,7 @@ void pulseHandler::run(){
     if(SHKs[i] && pulsing[i]){
       pulsing[i] = false;
       pulses[i]++;
-      edge[i] = millis();
+      edge[i] = Millis();
       if(!dialing[i]){
         dialing[i] = true;
         dialingStartedCallbacks[i](false);

@@ -19,8 +19,12 @@ LineHandler Line[4] = {
   LineHandler(3) 
 };
 
+const int hookLED = 16;  // LED indicatior to se if a hook i lifted
+const int mqttLED = 17;  // LED indicatior to se if MQTT is connected
+const int wifiLED = 18;  // LED indicator to se if WiFi is connected
+
 // Defining MQTTHandler object including wifi and mqtt settings
-MQTTHandler mqttHandler;
+MQTTHandler mqttHandler(wifiLED, mqttLED);
 
 // Defining MCP23017 objects
 Adafruit_MCP23X17 mcp_ks083f;
@@ -67,7 +71,6 @@ const uint8_t FR_3 = GPB7;
 const uint8_t SHK_4 = GPB2;
 const uint8_t RM_4 = GPB6;
 const uint8_t FR_4 = GPB4;
-
 
 // --------------Timers--------------------------
 
@@ -126,11 +129,14 @@ void i2CScanner() {
 
 // Function to check if all lines are idle
 bool allLinesIdle() {
-  for (int i = 0; i < activeLines; i++) {
-    if (Line[i].currentLineStatus != line_idle) {
-      return false;  // Returnera false om någon linje inte är idle
+  for (int line = 0; line < activeLines; line++) {
+    if (Line[line].currentLineStatus != line_idle) {
+      digitalWrite(hookLED, HIGH); // Turning LED indicator on
+      return false;  // Retursn fals if any line is not idle
+
     }
   }
+  digitalWrite(hookLED, LOW);
   return true;  // Om vi har kommit hit så är alla linjer idle
 }
 

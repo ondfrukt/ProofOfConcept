@@ -45,4 +45,4 @@ void loop() {
   // Handle MQTT messages
   //mqttHandler.loop();
   delay(1);
-  }
+}

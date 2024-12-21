@@ -1,6 +1,7 @@
 #ifndef SHKHandler_h
 #define SHKHandler_h
 
+
 #include <Arduino.h>
 #include "config.h"
 #include "hookChange.h"
@@ -10,7 +11,7 @@ const unsigned pulseGapMin = 10;  // Minimalt tidsintervall för att ignorera st
 const unsigned pulseGapMax = 150; // Maximalt tidsintervall för att räkna en puls
 
 
-// Function to setup SHK pins with the MCP_KS083F
+// Function to setup SHK pins with the MCP_KS083F 
 void setupSHKPins() {
 
   // Initialize MCP for KS830F
@@ -50,14 +51,14 @@ void processSHKState() {
           hookChange(line, hook_off);
           continue;
 
-        // 1.3 Är ändringen stabil och ny SHK status = 0 är luren av
+        // 1.3 Är ändringen stabil och ny SHK status = 0 är luren av 
         } else if (newSHKState == 0 && Line[line].hookStatus == hook_off) {
           Line[line].hookStatus = hook_on;
           hookChange(line, hook_on);
           continue;
         }
       }
-    }
+    
     
     
 

@@ -41,11 +41,14 @@ void hookChange(int line, hookStatuses newHookState) {
       currentLineStatus == line_abandoned || 
       currentLineStatus == line_busy ||
       currentLineStatus == line_fail ||
-      currentLineStatus == line_timeout) {
+      currentLineStatus == line_timeout ||
+      currentLineStatus == line_pulse_dialing){
 
       
       Line[line].setLineStatus(line_idle);
+      Line[line].dialedDigits = ""; // Clear dialed digits if any
       lineAction(line, line_idle);
+      
       return;
     }
 
@@ -60,7 +63,6 @@ void hookChange(int line, hookStatuses newHookState) {
 
 // Function to set correct hook status on boot
 void setupHookChecker(){
-  Serial.println("Initial hook statuses");
   uint16_t mcpState = mcp_ks083f.readGPIOAB();
   for (int line = 0; line < activeLines; line++) {
     bool currentSHKReading = bitRead(mcpState, SHKPins[line]);

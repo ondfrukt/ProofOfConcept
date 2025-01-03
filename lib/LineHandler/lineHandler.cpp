@@ -10,16 +10,17 @@ LineHandler::LineHandler(int line) {
     currentLineStatus = line_idle;  // Current status of the line
     previousLineStatus = line_idle; // Previous status for the line
     hookStatus = hook_on;           // Status of the hook (hook on/off)
-    SHKState = 0;                   // Current state of the SHK pin (0 = hook on, 1 = hook off)
+    SHK = 0;                        // Current state of the SHK pin (0 = hook on, 1 = hook off)
     previousSHKState = 0;           // previous state of the SHK pin (0 = hook on, 1 = hook off)
-    lastSHKBounceTime = 0;      // Last time the SHK pin changed state
-    pulsing = false;            // Flag to indicate if the line is currently pulsing
-    pulsCount = 0;              // Count number of pulses
-    dialedDigits = "";        // String to store the dialed digits
-    edgeTimestamp = 0;          // Timestamp for the last edge
-    lineTimerLimit = 0;         // Current limit for the line timer
-    lineTimerStart = 0;         // Start time for the line timer
-    lineTimerActive = false;    // Flag to indicate if the line timer is active
+    lastDebounceTime = 0;           // Last time the SHK pin changed state
+    gap = 0;                        // Time from last edge
+    pulsing = false;                // Flag to indicate if the line is currently pulsing
+    pulsCount = 0;                  // Count number of pulses
+    dialedDigits = "";              // String to store the dialed digits
+    edge = millis();                // Timestamp for the last edge
+    lineTimerLimit = 0;             // Current limit for the line timer
+    lineTimerStart = 0;             // Start time for the line timer
+    lineTimerActive = false;        // Flag to indicate if the line timer is active
 }
 
 // Change line status

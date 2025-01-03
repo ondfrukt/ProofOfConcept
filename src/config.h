@@ -1,5 +1,5 @@
-#ifndef config_h
-#define config_h
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include <Arduino.h>
 #include <MT8816.h>
@@ -9,14 +9,15 @@
 #include "lineStatuses.h"
 
 
+
 // Number of lines
-const int activeLines = 4;
+const int activeLines = 1;
 // Defining line objects
-LineHandler Line[4] = { 
-  LineHandler(0), 
-  LineHandler(1), 
-  LineHandler(2), 
-  LineHandler(3) 
+LineHandler Line[1] = { 
+    //LineHandler(0), 
+    //LineHandler(1), 
+    LineHandler(2), 
+    //LineHandler(3) 
 };
 
 const int hookLED = 16;  // LED indicatior to se if a hook i lifted
@@ -83,11 +84,8 @@ unsigned long statusTimer_toneDialing = 5000; // 0 seconds
 // -----------------SHK--------------------------
 
 // Array to store the pin numbers for each input
-const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
-
-// Debouncing time in milliseconds
-uint8_t SHKDebouncingTime = 150;
-
+//const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
+const uint8_t SHKPins[activeLines] = { SHK_3};
 // -----------------I2C Scanner------------------
 void i2CScanner() {
   // Scan for I2C devices

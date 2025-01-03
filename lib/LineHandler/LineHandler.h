@@ -22,14 +22,18 @@ public:
     lineStatuses previousLineStatus;    // Previous status for the line
 
     hookStatuses hookStatus;            // Status of the hook (hook on/off)
-    bool SHKState;                      // Current state of the SHK pin (0 = hook on, 1 = hook off)
-    bool previousSHKState;             // Current state of the SHK pin (0 = hook on, 1 = hook off)
-    unsigned long lastSHKBounceTime;    // Last time the SHK pin changed state
+    bool SHK;                      // Current state of the SHK pin (0 = hook on, 1 = hook off)
+    bool previousSHKState;              // Current state of the SHK pin (0 = hook on, 1 = hook off)
+    unsigned long lastDebounceTime;    // Last time the SHK pin changed state
+    bool lastDebounceValue;
 
+    unsigned gap;                       // Time from last edge
+    unsigned long edge;                 // Timestamp for the last edge
     bool pulsing;                       // Flag to indicate if the line is currently pulsing
     int pulsCount;                      // Count number of pulses
-    String dialedDigits;                  // char to store the dialed digits
-    unsigned long edgeTimestamp;        // Timestamp for the last edge
+    bool pulsingFlag;                   // Flag to indicate if pulsing are active
+    String dialedDigits;                // char to store the dialed digits
+
     
     unsigned int lineTimerLimit;        // Current limit for the line timer
     unsigned long lineTimerStart;       // Start time for the line timer

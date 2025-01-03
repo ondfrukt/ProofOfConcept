@@ -1,28 +1,32 @@
 #include <Arduino.h>
 #include "config.h"
 #include "hookChange.h"
-#include "SHKHandler.h"
+
 #include "lineAction.h"
+#include "pulsHandler.h"
+#include "SHKHandler.h"
+
 #include "LineHandler.h"
 #include "mqttHandler.h"
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Setup started");
+  
   Wire.begin();
   i2CScanner();
   setupSHKPins();
   setupHookChecker();
-  mqttHandler.setupWiFi();
-  mqttHandler.setupMQTT();
+  //mqttHandler.setupWiFi();
+  //mqttHandler.setupMQTT();
 
   // Set the action callback for the MQTTHandler. This function will be called when MQTT message is received 
-  mqttHandler.setActionCallback(lineAction);
+  //mqttHandler.setActionCallback(lineAction);
   Serial.println("Setup complete");
+  Serial.println("");
 }
 
 void loop() {
-
 
   processSHKState();
 

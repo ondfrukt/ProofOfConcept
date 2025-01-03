@@ -48,6 +48,7 @@ void SHKRead() {
 
     // Controlls if the debouncing time has passed, which means that the SHK state has changed and is stable
     if ((currentTime - Line[line].lastSHKBounceTime) > SHKDebouncingTime) {
+      
       // If the debouncing time has passed, the SHK state has clearly changed and is stable and hook status can be updated
       if (Line[line].hookStatus == hook_on && Line[line].SHKState == 1) {
         Line[line].hookStatus = hook_off;

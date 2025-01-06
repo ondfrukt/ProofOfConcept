@@ -31,7 +31,8 @@ MT8816::MT8816(uint8_t mcp_address,
 
 void MT8816::begin()
 {
-    Wire.begin();
+    // If the Wire library is not already started in the main sketch, uncomment the following line
+    //Wire.begin();
 
     // Testing MCP address
     if (!mcp_mt8816.begin_I2C(_mcp_address)) {

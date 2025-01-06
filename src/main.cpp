@@ -19,6 +19,11 @@ void setup() {
   setupHookChecker();
   //mqttHandler.setupWiFi();
   //mqttHandler.setupMQTT();
+  mt8816.begin();
+
+  // LED indicator if one ore more lines are not idle
+  pinMode(hookLED, OUTPUT);
+  digitalWrite(hookLED, LOW);
 
   // Set the action callback for the MQTTHandler. This function will be called when MQTT message is received 
   //mqttHandler.setActionCallback(lineAction);
@@ -30,9 +35,7 @@ void loop() {
 
   processSHKState();
 
-  // Check if one or more lines are not idle
   if (allLinesIdle() == false) {
-    digitalWrite(hookLED, true);
     for (int line = 0; line < activeLines; line++) {
       // Check if the line status is not idle
       if (Line[line].currentLineStatus != line_idle) {
@@ -40,12 +43,14 @@ void loop() {
         if (Line[line].lineTimerActive) {
           // if the line timer has expired, trigger lineTimerExpired()
           if (millis() - Line[line].lineTimerStart > Line[line].lineTimerLimit) {
-            //lineTimerExpired(line);
+            lineTimerExpired(line);
             }
           }
         }
       }
     }
+
+
   // Handle MQTT messages
   //mqttHandler.loop();
   delay(1);

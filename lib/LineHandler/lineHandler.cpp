@@ -11,7 +11,6 @@ LineHandler::LineHandler(int line) {
     previousLineStatus = line_idle; // Previous status for the line
     hookStatus = hook_on;           // Status of the hook (hook on/off)
     SHK = 0;                        // Current state of the SHK pin (0 = hook on, 1 = hook off)
-    previousSHKState = 0;           // previous state of the SHK pin (0 = hook on, 1 = hook off)
     lastDebounceTime = 0;           // Last time the SHK pin changed state
     gap = 0;                        // Time from last edge
     pulsing = false;                // Flag to indicate if the line is currently pulsing

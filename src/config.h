@@ -8,31 +8,19 @@
 #include <Adafruit_MCP23X17.h>
 #include "lineStatuses.h"
 
-
-
 // Number of lines
-const int activeLines = 1;
+const int activeLines = 4;
 // Defining line objects
-LineHandler Line[1] = { 
-    //LineHandler(0), 
-    //LineHandler(1), 
+LineHandler Line[4] = { 
+    LineHandler(0), 
+    LineHandler(1), 
     LineHandler(2), 
-    //LineHandler(3) 
+    LineHandler(3) 
 };
 
 const int hookLED = 16;  // LED indicatior to se if a hook i lifted
 const int mqttLED = 17;  // LED indicatior to se if MQTT is connected
 const int wifiLED = 18;  // LED indicator to se if WiFi is connected
-
-// Defining MQTTHandler object including wifi and mqtt settings
-MQTTHandler mqttHandler(wifiLED, mqttLED);
-
-// Defining MCP23017 objects
-Adafruit_MCP23X17 mcp_ks083f;
-// MT8816 matrix;
-
-// Variable to store the dialed digits
-String dialedDigits;
 
 // Defining MCP pins
 const int GPA0 = 0;
@@ -52,10 +40,6 @@ const int GPB5 = 13;
 const int GPB6 = 14;
 const int GPB7 = 15;
 
-// MCP adresses
-uint8_t mcp_mt8816_address = 0x23;
-uint8_t mcp_ks083f_address = 0x26;
-
 // KS083F pins setup
 const uint8_t SHK_1 = GPA3;
 const uint8_t RM_1 = GPA4;
@@ -73,26 +57,59 @@ const uint8_t SHK_4 = GPB2;
 const uint8_t RM_4 = GPB6;
 const uint8_t FR_4 = GPB4;
 
+// MT8816 pins setup
+
+const uint8_t RESET = GPA0;
+const uint8_t DATA = GPA1;
+const uint8_t STROBE = GPA2;
+const uint8_t CS = GPA3;
+
+const uint8_t AX0 = GPB0;
+const uint8_t AX1 = GPB1;
+const uint8_t AX2 = GPB2;
+const uint8_t AX3 = GPB3;
+const uint8_t AY0 = GPB4;
+const uint8_t AY1 = GPB5;
+const uint8_t AY2 = GPB6;
+
+// MCP adresses
+uint8_t mcp_mt8816_address = 0x23;
+uint8_t mcp_ks083f_address = 0x26;
+
+// --------------Classes-------------------------
+
+// Defining MQTTHandler object including wifi and mqtt settings
+MQTTHandler mqttHandler(wifiLED, mqttLED);
+
+// Defining MCP23017 objects
+Adafruit_MCP23X17 mcp_ks083f;
+Adafruit_MCP23X17 mcp_mt8816;
+
+MT8816 mt8816(mcp_mt8816_address, 
+              AX0, AX1, AX2, AX3,
+              AY0, AY1, AY2,
+              STROBE, DATA, RESET, CS);
+
 // --------------Timers--------------------------
 
 unsigned long statusTimer_Ready = 30000; // 30 seconds
 unsigned long statusTimer_Dialing = 5000; // 5 seconds
 unsigned long statusTimer_Ringing = 5000; // 5 seconds
-unsigned long statusTimer_pulsDialing = 5000; // 0 seconds
-unsigned long statusTimer_toneDialing = 5000; // 0 seconds
+unsigned long Timer_pulsDialing = 5000; // 5 seconds
+unsigned long statusTimer_toneDialing = 5000; // 5 seconds
 
 // -----------------SHK--------------------------
 
 // Array to store the pin numbers for each input
-//const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
-const uint8_t SHKPins[activeLines] = { SHK_3};
+const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
+const uint8_t RMPins[activeLines] = {RM_1, RM_2, RM_3, RM_4};
+const uint8_t FRPins[activeLines] = {FR_1, FR_2, FR_3, FR_4};
+
 // -----------------I2C Scanner------------------
 void i2CScanner() {
   // Scan for I2C devices
   byte error, address;
   int nDevices;
-
-  Serial.println("Scanning...");
 
   nDevices = 0;
   for (address = 1; address < 127; address++ ) {

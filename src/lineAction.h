@@ -13,75 +13,80 @@ void lineAction(int line, uint8_t newLineStatus) {
   Serial.println("Line " + String(line) + " status: " + statusNames[newLineStatus]);
   switch (newLineStatus) {
     case line_idle:
-      // Action
+      // Insert Action!
       mqttHandler.publishMQTT(line, line_idle);
       break;
 
     case line_ready:
+      // Insert Action!
       mqttHandler.publishMQTT(line, line_ready);
       break;
 
     case line_tone_dialing:
-      // Action
+      // Insert Action!
+      
       mqttHandler.publishMQTT(line, line_tone_dialing);
       break;
 
     case line_pulse_dialing:
-      // Action
+      // Insert Action!
+      Line[line].startLineTimer(Timer_pulsDialing);
       mqttHandler.publishMQTT(line, line_pulse_dialing);
       break;
 
     case line_connected:
       mqttHandler.publishMQTT(line, line_connected);
-      // Action
+      // Insert Action!
+
+      // No timer needed?
       break;
 
     case line_disconnected:
       mqttHandler.publishMQTT(line, line_disconnected);
-      // Action
+      // Insert Action!
       break;
 
     case line_incoming:
       mqttHandler.publishMQTT(line, line_incoming);
-      // Action
+      // Insert Action!
       break;
 
     case line_ringing:
-      dialedDigits = Line[line].dialedDigits;
       for (int i = 0; i < activeLines; i++) {
         // Check if the diled digits match a number in the phonebook and the line is idle
-        if (dialedDigits == Line[i].phoneNumber && Line[i].currentLineStatus == line_idle) {
+        if (Line[line].dialedDigits == Line[i].phoneNumber && Line[i].currentLineStatus == line_idle) {
           ring(i);
         }
       }
       mqttHandler.publishMQTT(line, line_ringing);
+      // Insert Action!
       break;
 
     case line_timeout:
       mqttHandler.publishMQTT(line, line_timeout);
-      // Action
+      // Insert Action!
       break;
 
     case line_abandoned:
       mqttHandler.publishMQTT(line, line_abandoned);
-      // Action
+      // Insert Action!
       break;
 
     case line_busy:
       Line[line].dialedDigits = "";
       mqttHandler.publishMQTT(line, line_busy);
-      // Action
+      // Insert Action!
       break;
 
     case line_fail:
       Line[line].dialedDigits = "";
       mqttHandler.publishMQTT(line, line_fail);
-      // Action
+      // Insert Action!
       break;
 
     case line_operator:
       mqttHandler.publishMQTT(line, line_operator);
-      // Action
+      // Insert Action!
       break;
 
     default:
@@ -117,6 +122,7 @@ void lineTimerExpired(int line) {
 
     case line_pulse_dialing:
     case line_tone_dialing:
+      
       lineAction(line, line_ringing);
       break;
 

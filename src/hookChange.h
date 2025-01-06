@@ -6,14 +6,11 @@
 #include "lineAction.h"
 
 
-// Read SHK pins and trigger hookChange() if one or more lines are off-hook
-
 // Function to handle changes in hook state
 void hookChange(int line, hookStatuses newHookState) {
-  //Serial.print("Line "); Serial.print(line); Serial.print(" Hook state changed to: "); Serial.println(newHookState);
+
   // ------------- Hook OFF -------------------
   if (newHookState == hook_off) {
-    //Serial.print("Line "); Serial.print(line); Serial.println(" Hook OFF");
 
     // ---> Ready
     if (Line[line].currentLineStatus == line_idle) {
@@ -63,7 +60,11 @@ void hookChange(int line, hookStatuses newHookState) {
 
 // Function to set correct hook status on boot
 void setupHookChecker(){
+
+  // Read all GPIO pins from the MCP
   uint16_t mcpState = mcp_ks083f.readGPIOAB();
+
+  // Loops through all SHK pins and sets the hook status
   for (int line = 0; line < activeLines; line++) {
     bool currentSHKReading = bitRead(mcpState, SHKPins[line]);
     if (currentSHKReading == 0) {

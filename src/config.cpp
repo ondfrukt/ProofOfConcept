@@ -10,6 +10,8 @@ const int wifiLED = 18;
 // Testknapp
 const int testButton1 = 19;
 
+int ringLength = 1000; // Längd på ringningssignal i millisekunder
+
 // MCP23017-pinnar
 const uint8_t GPA0 = 0;
 const uint8_t GPA1 = 1;
@@ -69,7 +71,7 @@ Adafruit_MCP23X17 mcp_mt8816;
 MQTTHandler mqttHandler(wifiLED, mqttLED);
 
 MT8816 mt8816(mcp_mt8816, (uint8_t[]){AX0, AX1, AX2, AX3}, (uint8_t[]){AY0, AY1, AY2}, STROBE, DATA, RESET, CS);
-RingHandler ringHandler(mcp_ks083f, activeLines, RMPins, FRPins);
+RingHandler ringHandler(mcp_ks083f, activeLines, RMPins, FRPins, ringLength);
 
 // ------------------ Timers ------------------
 
@@ -116,12 +118,20 @@ void setupMCPPins() {
     Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
     return;
   }
-  Serial.println("MCP for KSF083f initialized successfully.");
 
   // Set all SHK pins as inputs with internal pull-up resistors
   for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
     mcp_ks083f.pinMode(SHKPins[pinIndex], INPUT_PULLUP);
   }
+
+  for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
+    mcp_ks083f.pinMode(RMPins[pinIndex], OUTPUT);
+  }
+
+  for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
+    mcp_ks083f.pinMode(FRPins[pinIndex], OUTPUT);
+  }
+  Serial.println("MCP for KSF083f initialized successfully.");
 
   //--------------------MT8816---------------------
   if (!mcp_mt8816.begin_I2C(mcp_mt8816_address)) {

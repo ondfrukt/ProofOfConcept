@@ -59,10 +59,11 @@ void loop() {
 
 
   if (digitalRead(testButton1) == LOW) {
-    Serial.println("Button pressed");
-    ringHandler.generateRingSignal(3);
 
+    Serial.println("Test Ring");
+    ringHandler.generateRingSignal(3);
   }
+
 
   // Handle MQTT messages
   //mqttHandler.loop();

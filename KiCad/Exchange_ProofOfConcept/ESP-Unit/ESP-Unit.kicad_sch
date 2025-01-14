@@ -5814,6 +5814,16 @@
 	)
 	(wire
 		(pts
+			(xy 30.48 77.47) (xy 30.48 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "78df40ca-6b9a-403b-9a89-5f62bc3373df")
+	)
+	(wire
+		(pts
 			(xy 104.14 31.75) (xy 107.95 31.75)
 		)
 		(stroke
@@ -6081,6 +6091,16 @@
 			(type default)
 		)
 		(uuid "96474037-cbe6-4c97-811d-ee8666894825")
+	)
+	(wire
+		(pts
+			(xy 30.48 90.17) (xy 38.1 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "965905c8-2bab-4372-8814-2c3fe0b3e069")
 	)
 	(wire
 		(pts
@@ -6651,6 +6671,16 @@
 			(type default)
 		)
 		(uuid "e7360d70-a03d-4b19-8e76-185fe3a3c342")
+	)
+	(wire
+		(pts
+			(xy 30.48 88.9) (xy 30.48 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e834b7c2-2ff3-4d98-9652-95526d8d6a57")
 	)
 	(wire
 		(pts
@@ -7269,6 +7299,17 @@
 			(justify left bottom)
 		)
 		(uuid "a9dfb2c3-65b0-40f4-b6e6-aa4ebda3df86")
+	)
+	(label "3V3"
+		(at 30.48 77.47 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ac3c349b-e7c3-429c-8176-1c6a878c1e5d")
 	)
 	(label "5V"
 		(at 182.88 35.56 180)
@@ -9049,6 +9090,75 @@
 			(project ""
 				(path "/2411d7b8-ed2d-41a6-b5ea-3554d7cee414"
 					(reference "U4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Polarized_US")
+		(at 30.48 85.09 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3e95fd83-f9ed-4ed9-a5e0-9d88ba243887")
+		(property "Reference" "C?"
+			(at 30.734 82.804 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "2,2uF"
+			(at 30.988 87.884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:CP_Radial_D4.0mm_P2.00mm"
+			(at 30.48 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 30.48 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor, US symbol"
+			(at 30.48 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d90d1f3e-3df9-4b12-91fd-703adad27ccd")
+		)
+		(pin "2"
+			(uuid "72e427c4-7156-4fff-98d2-6e35c56adcc1")
+		)
+		(instances
+			(project "ESP-Unit"
+				(path "/2411d7b8-ed2d-41a6-b5ea-3554d7cee414"
+					(reference "C?")
 					(unit 1)
 				)
 			)

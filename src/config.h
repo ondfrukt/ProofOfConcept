@@ -2,158 +2,91 @@
 #define CONFIG_H
 
 #include <Arduino.h>
+#include <Adafruit_MCP23X17.h>
 #include <MT8816.h>
 #include <LineHandler.h>
 #include <MQTTHandler.h>
-#include <Adafruit_MCP23X17.h>
+#include <RingHandler.h>
 #include "lineStatuses.h"
 
-// Number of lines
-const int activeLines = 4;
-// Defining line objects
-LineHandler Line[4] = { 
-    LineHandler(0), 
-    LineHandler(1), 
-    LineHandler(2), 
-    LineHandler(3) 
-};
+// ------------------ Globala konstanter ------------------
 
-const int hookLED = 16;  // LED indicatior to se if a hook i lifted
-const int mqttLED = 17;  // LED indicatior to se if MQTT is connected
-const int wifiLED = 18;  // LED indicator to se if WiFi is connected
+const uint8_t activeLines = 4; // Antal aktiva linjer
 
-// Defining MCP pins
-const int GPA0 = 0;
-const int GPA1 = 1;
-const int GPA2 = 2;
-const int GPA3 = 3;
-const int GPA4 = 4;
-const int GPA5 = 5;
-const int GPA6 = 6;
-const int GPA7 = 7;
-const int GPB0 = 8;
-const int GPB1 = 9;
-const int GPB2 = 10;
-const int GPB3 = 11;
-const int GPB4 = 12;
-const int GPB5 = 13;
-const int GPB6 = 14;
-const int GPB7 = 15;
+// LED-pinnar
+extern const int hookLED;
+extern const int mqttLED;
+extern const int wifiLED;
 
-// KS083F pins setup
-const uint8_t SHK_1 = GPA3;
-const uint8_t RM_1 = GPA4;
-const uint8_t FR_1 = GPA5;
+// Testknapp
+extern const int testButton1;
 
-const uint8_t SHK_2 = GPA0;
-const uint8_t RM_2 = GPA1;
-const uint8_t FR_2 = GPA2;
+// MCP23017-pinnar
+extern const uint8_t GPA0;
+extern const uint8_t GPA1;
+extern const uint8_t GPA2;
+extern const uint8_t GPA3;
+extern const uint8_t GPA4;
+extern const uint8_t GPA5;
+extern const uint8_t GPA6;
+extern const uint8_t GPA7;
+extern const uint8_t GPB0;
+extern const uint8_t GPB1;
+extern const uint8_t GPB2;
+extern const uint8_t GPB3;
+extern const uint8_t GPB4;
+extern const uint8_t GPB5;
+extern const uint8_t GPB6;
+extern const uint8_t GPB7;
 
-const uint8_t SHK_3 = GPB5;
-const uint8_t RM_3 = GPB3;
-const uint8_t FR_3 = GPB7;
+// KS083F-konfiguration
+extern const uint8_t SHKPins[activeLines];
+extern const uint8_t RMPins[activeLines];
+extern const uint8_t FRPins[activeLines];
 
-const uint8_t SHK_4 = GPB2;
-const uint8_t RM_4 = GPB6;
-const uint8_t FR_4 = GPB4;
+// MT8816-konfiguration
 
-// MT8816 pins setup
+extern const uint8_t ax_pins[4];
+extern const uint8_t ay_pins[3];
 
-const uint8_t RESET = GPA0;
-const uint8_t DATA = GPA1;
-const uint8_t STROBE = GPA2;
-const uint8_t CS = GPA3;
+extern const uint8_t RESET;
+extern const uint8_t DATA;
+extern const uint8_t STROBE;
+extern const uint8_t CS;
 
-const uint8_t AX0 = GPB0;
-const uint8_t AX1 = GPB1;
-const uint8_t AX2 = GPB2;
-const uint8_t AX3 = GPB3;
-const uint8_t AY0 = GPB4;
-const uint8_t AY1 = GPB5;
-const uint8_t AY2 = GPB6;
+extern const uint8_t AX0;
+extern const uint8_t AX1;
+extern const uint8_t AX2;
+extern const uint8_t AX3;
+extern const uint8_t AY0;
+extern const uint8_t AY1;
+extern const uint8_t AY2;
 
-// MCP adresses
-uint8_t mcp_mt8816_address = 0x23;
-uint8_t mcp_ks083f_address = 0x26;
+// MCP-adresser
+extern const uint8_t mcp_mt8816_address;
+extern const uint8_t mcp_ks083f_address;
 
-// --------------Classes-------------------------
+// ------------------ Globala objekt ------------------
 
-// Defining MQTTHandler object including wifi and mqtt settings
-MQTTHandler mqttHandler(wifiLED, mqttLED);
+extern LineHandler Line[activeLines];
+extern Adafruit_MCP23X17 mcp_ks083f;
+extern Adafruit_MCP23X17 mcp_mt8816;
+extern MQTTHandler mqttHandler;
+extern MT8816 mt8816;
+extern RingHandler ringHandler;
 
-// Defining MCP23017 objects
-Adafruit_MCP23X17 mcp_ks083f;
-Adafruit_MCP23X17 mcp_mt8816;
+// ------------------ Timers ------------------
 
-MT8816 mt8816(mcp_mt8816_address, 
-              AX0, AX1, AX2, AX3,
-              AY0, AY1, AY2,
-              STROBE, DATA, RESET, CS);
+extern unsigned long statusTimer_Ready;
+extern unsigned long statusTimer_Dialing;
+extern unsigned long statusTimer_Ringing;
+extern unsigned long Timer_pulsDialing;
+extern unsigned long statusTimer_toneDialing;
 
-// --------------Timers--------------------------
+// ------------------ Funktioner ------------------
 
-unsigned long statusTimer_Ready = 30000; // 30 seconds
-unsigned long statusTimer_Dialing = 5000; // 5 seconds
-unsigned long statusTimer_Ringing = 5000; // 5 seconds
-unsigned long Timer_pulsDialing = 5000; // 5 seconds
-unsigned long statusTimer_toneDialing = 5000; // 5 seconds
-
-// -----------------SHK--------------------------
-
-// Array to store the pin numbers for each input
-const uint8_t SHKPins[activeLines] = {SHK_1, SHK_2, SHK_3, SHK_4};
-const uint8_t RMPins[activeLines] = {RM_1, RM_2, RM_3, RM_4};
-const uint8_t FRPins[activeLines] = {FR_1, FR_2, FR_3, FR_4};
-
-// -----------------I2C Scanner------------------
-void i2CScanner() {
-  // Scan for I2C devices
-  byte error, address;
-  int nDevices;
-
-  nDevices = 0;
-  for (address = 1; address < 127; address++ ) {
-    // The i2c_scanner uses the return value of
-    // the Write.endTransmisstion to see if
-    // a device did acknowledge to the address.
-    Wire.beginTransmission(address);
-    error = Wire.endTransmission();
-
-    if (error == 0) {
-      Serial.print("I2C device found at address 0x");
-      if (address < 16) {
-        Serial.print("0");
-      }
-      Serial.print(address, HEX);
-      Serial.println("  !");
-      nDevices++;
-    } else if (error == 4) {
-      Serial.print("Unknown error at address 0x");
-      if (address < 16) {
-        Serial.print("0");
-      }
-      Serial.println(address, HEX);
-    }
-  }
-  if (nDevices == 0) {
-    Serial.println("No I2C devices found\n");
-  } else {
-    Serial.println("Scanning done\n");
-  }
-}
-
-// Function to check if all lines are idle
-bool allLinesIdle() {
-  for (int line = 0; line < activeLines; line++) {
-    if (Line[line].currentLineStatus != line_idle) {
-      digitalWrite(hookLED, HIGH); // Turning LED indicator on
-      return false;  // Retursn fals if any line is not idle
-
-    }
-  }
-  digitalWrite(hookLED, LOW);
-  return true;  // Om vi har kommit hit så är alla linjer idle
-}
-
+void i2CScanner();
+bool allLinesIdle();
+void setupMCPPins();
 
 #endif

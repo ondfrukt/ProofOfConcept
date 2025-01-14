@@ -1,0 +1,165 @@
+#include "config.h"
+
+// ------------------ Globala konstanter ------------------
+
+// LED-pinnar
+const int hookLED = 16;
+const int mqttLED = 17;
+const int wifiLED = 18;
+
+// Testknapp
+const int testButton1 = 19;
+
+// MCP23017-pinnar
+const uint8_t GPA0 = 0;
+const uint8_t GPA1 = 1;
+const uint8_t GPA2 = 2;
+const uint8_t GPA3 = 3;
+const uint8_t GPA4 = 4;
+const uint8_t GPA5 = 5;
+const uint8_t GPA6 = 6;
+const uint8_t GPA7 = 7;
+const uint8_t GPB0 = 8;
+const uint8_t GPB1 = 9;
+const uint8_t GPB2 = 10;
+const uint8_t GPB3 = 11;
+const uint8_t GPB4 = 12;
+const uint8_t GPB5 = 13;
+const uint8_t GPB6 = 14;
+const uint8_t GPB7 = 15;
+
+// KS083F-konfiguration
+const uint8_t SHKPins[activeLines] = {GPA3, GPA0, GPB5, GPB2};
+const uint8_t RMPins[activeLines] = {GPA4, GPA1, GPB3, GPB6};
+const uint8_t FRPins[activeLines] = {GPA5, GPA2, GPB7, GPB4};
+
+// MT8816-konfiguration
+const uint8_t RESET = GPA0;
+const uint8_t DATA = GPA1;
+const uint8_t STROBE = GPA2;
+const uint8_t CS = GPA3;
+
+const uint8_t AX0 = GPB0;
+const uint8_t AX1 = GPB1;
+const uint8_t AX2 = GPB2;
+const uint8_t AX3 = GPB3;
+const uint8_t AY0 = GPB4;
+const uint8_t AY1 = GPB5;
+const uint8_t AY2 = GPB6;
+
+const uint8_t ax_pins[4] = {AX0, AX1, AX2, AX3};
+const uint8_t ay_pins[3] = {AY0, AY1, AY2};
+
+// MCP-adresser
+const uint8_t mcp_mt8816_address = 0x23;
+const uint8_t mcp_ks083f_address = 0x26;
+
+// ------------------ Globala objekt ------------------
+
+LineHandler Line[activeLines] = {
+    LineHandler(0),
+    LineHandler(1),
+    LineHandler(2),
+    LineHandler(3)
+};
+
+Adafruit_MCP23X17 mcp_ks083f;
+Adafruit_MCP23X17 mcp_mt8816;
+
+MQTTHandler mqttHandler(wifiLED, mqttLED);
+
+MT8816 mt8816(mcp_mt8816, (uint8_t[]){AX0, AX1, AX2, AX3}, (uint8_t[]){AY0, AY1, AY2}, STROBE, DATA, RESET, CS);
+RingHandler ringHandler(mcp_ks083f, activeLines, RMPins, FRPins);
+
+// ------------------ Timers ------------------
+
+unsigned long statusTimer_Ready = 30000;
+unsigned long statusTimer_Dialing = 5000;
+unsigned long statusTimer_Ringing = 5000;
+unsigned long Timer_pulsDialing = 5000;
+unsigned long statusTimer_toneDialing = 5000;
+
+// ------------------ Funktioner ------------------
+
+void i2CScanner() {
+    byte error, address;
+    int nDevices = 0;
+
+    for (address = 1; address < 127; address++) {
+        Wire.beginTransmission(address);
+        error = Wire.endTransmission();
+
+        if (error == 0) {
+            Serial.print("I2C device found at address 0x");
+            if (address < 16) Serial.print("0");
+            Serial.print(address, HEX);
+            Serial.println("  !");
+            nDevices++;
+        } else if (error == 4) {
+            Serial.print("Unknown error at address 0x");
+            if (address < 16) Serial.print("0");
+            Serial.println(address, HEX);
+        }
+    }
+    
+    if (nDevices == 0) {
+        Serial.println("No I2C devices found\n");
+    } else {
+        Serial.println("Scanning done\n");
+    }
+}
+
+void setupMCPPins() {
+
+  //--------------------KS830F---------------------
+  if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
+    Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
+    return;
+  }
+  Serial.println("MCP for KSF083f initialized successfully.");
+
+  // Set all SHK pins as inputs with internal pull-up resistors
+  for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
+    mcp_ks083f.pinMode(SHKPins[pinIndex], INPUT_PULLUP);
+  }
+
+  //--------------------MT8816---------------------
+  if (!mcp_mt8816.begin_I2C(mcp_mt8816_address)) {
+    Serial.println("MCP for MT8816 initialization failed. Check connections and address.");
+    return;
+
+    // Configure address pins
+    for (int i = 0; i < 4; ++i) {
+        mcp_mt8816.pinMode(ax_pins[i], OUTPUT);
+    }
+    for (int i = 0; i < 3; ++i) {
+        mcp_mt8816.pinMode(ay_pins[i], OUTPUT);
+    }
+
+    // Configure programming pins 
+    mcp_mt8816.pinMode(STROBE, OUTPUT);
+    mcp_mt8816.pinMode(DATA, OUTPUT);
+    mcp_mt8816.pinMode(RESET, OUTPUT);
+    mcp_mt8816.pinMode(CS, OUTPUT);
+
+    // Set initial values
+    mcp_mt8816.digitalWrite(STROBE, LOW);
+    mcp_mt8816.digitalWrite(DATA, LOW);
+    mcp_mt8816.digitalWrite(RESET, HIGH);
+    mcp_mt8816.digitalWrite(CS, HIGH);
+  
+  }
+
+  Serial.println("MCP for MT8816 initialized successfully.");
+}
+
+bool allLinesIdle() {
+    for (int line = 0; line < activeLines; line++) {
+        if (Line[line].currentLineStatus != line_idle) {
+            digitalWrite(hookLED, HIGH);
+            return false;
+        }
+    }
+    digitalWrite(hookLED, LOW);
+    return true;
+}

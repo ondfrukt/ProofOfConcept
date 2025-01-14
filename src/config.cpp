@@ -12,23 +12,23 @@ const int testButton1 = 19;
 
 int ringLength = 1000; // Längd på ringningssignal i millisekunder
 
-// MCP23017-pinnar
-const uint8_t GPA0 = 0;
-const uint8_t GPA1 = 1;
-const uint8_t GPA2 = 2;
-const uint8_t GPA3 = 3;
-const uint8_t GPA4 = 4;
-const uint8_t GPA5 = 5;
-const uint8_t GPA6 = 6;
-const uint8_t GPA7 = 7;
-const uint8_t GPB0 = 8;
-const uint8_t GPB1 = 9;
-const uint8_t GPB2 = 10;
-const uint8_t GPB3 = 11;
-const uint8_t GPB4 = 12;
-const uint8_t GPB5 = 13;
-const uint8_t GPB6 = 14;
-const uint8_t GPB7 = 15;
+// MCP23017 logic GPIO-pinns
+const uint8_t GPA0 = 0;   //Pin 21 
+const uint8_t GPA1 = 1;   //Pin 22
+const uint8_t GPA2 = 2;   //Pin 23
+const uint8_t GPA3 = 3;   //Pin 24
+const uint8_t GPA4 = 4;   //Pin 25
+const uint8_t GPA5 = 5;   //Pin 26
+const uint8_t GPA6 = 6;   //Pin 27
+const uint8_t GPA7 = 7;   //Pin 28
+const uint8_t GPB0 = 8;   //Pin 1
+const uint8_t GPB1 = 9;   //Pin 2
+const uint8_t GPB2 = 10;  //Pin 3
+const uint8_t GPB3 = 11;  //Pin 4
+const uint8_t GPB4 = 12;  //Pin 5
+const uint8_t GPB5 = 13;  //Pin 6
+const uint8_t GPB6 = 14;  //Pin 7
+const uint8_t GPB7 = 15;  //Pin 8
 
 // KS083F-konfiguration
 const uint8_t SHKPins[activeLines] = {GPA3, GPA0, GPB5, GPB2};

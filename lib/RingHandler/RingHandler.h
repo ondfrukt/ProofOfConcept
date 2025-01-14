@@ -12,11 +12,11 @@ class RingHandler {
 
   private:
     Adafruit_MCP23X17& mcp_ks083f;  // MCP23017 object
-    int activeLines;                // number of active lines
-    const uint8_t* RMPins;          // array of ring mode pins
-    const uint8_t* FRPins;          // array of forward/reverse pins
-    int ringLength;                 // length of ring signal in milliseconds
-    int iterations;                 // number of iterations to generate 20 Hz ring signal
+    int activeLines;                // Number of active lines
+    const uint8_t* RMPins;          // Array of ring mode pins
+    const uint8_t* FRPins;          // Array of forward/reverse pins
+    int ringLength;                 // Length of ring signal in milliseconds
+    int iterations;                 // Number of iterations to generate 20 Hz ring signal
 };
 
 #endif

@@ -10,7 +10,7 @@ const int wifiLED = 18;
 // Testknapp
 const int testButton1 = 19;
 
-int ringLength = 1000; // Längd på ringningssignal i millisekunder
+int ringLength = 200; // Längd på ringningssignal i millisekunder
 
 // MCP23017 logic GPIO-pinns
 const uint8_t GPA0 = 0;   //Pin 21 

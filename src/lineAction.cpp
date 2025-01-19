@@ -38,6 +38,7 @@ void lineAction(int line, uint8_t newLineStatus) {
       Line[Line[line].incomingFrom].setLineStatus(line_connected);
       mqttHandler.publishMQTT(Line[line].incomingFrom, line_connected);
 
+
       break;
 
     case line_disconnected:
@@ -64,6 +65,7 @@ void lineAction(int line, uint8_t newLineStatus) {
           
           Line[line].setLineStatus(line_ringing);
           mqttHandler.publishMQTT(line, line_ringing);
+
           Line[line].outgoingTo = i;
 
 

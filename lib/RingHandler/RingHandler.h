@@ -3,27 +3,20 @@
 
 #include "Arduino.h"
 #include <Adafruit_MCP23X17.h>
+#include "LineHandler.h"
 
-class ringHandler {
+class RingHandler {
   public:
-    void setPins(uint8_t RMPins, uint8_t FRPins);
-    void init(unsigned pinRM, unsigned pinFR, unsigned channelFR);
-    void start(int freq, int* cadence);
-    void run();
-    void stop();
-    int ringCount = 0;
+    RingHandler(Adafruit_MCP23X17& mcp, const uint8_t _activeLines, const uint8_t* _RMpins, const uint8_t* _FRpins, int _ringLength);
+    void generateRingSignal(int line);
 
   private:
-    unsigned RMpin;
-    unsigned FRch;
-    unsigned RING_FREQ;
-    int* ringCadence; // expects cadence array, first element count of timings in the array, then the timings
-    int cadenceCount = 0;
-    int cadenceIndex = 0;
-    unsigned long cadenceSince = 0;
-    void on();
-    void off();
-    void (*counterCallback)(const int);
+    Adafruit_MCP23X17& mcp_ks083f;  // MCP23017 object
+    int activeLines;                // Number of active lines
+    const uint8_t* RMPins;          // Array of ring mode pins
+    const uint8_t* FRPins;          // Array of forward/reverse pins
+    int ringLength;                 // Length of ring signal in milliseconds
+    int iterations;                 // Number of iterations to generate 20 Hz ring signal
 };
 
 #endif

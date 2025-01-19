@@ -39,9 +39,11 @@ void hookChange(int line, hookStatuses newHookState) {
 
     if (currentLineStatus == line_connected){
       Serial.println("OutgingTo = " + String(Line[line].outgoingTo));
-      lineAction(Line[line].outgoingTo, line_disconnected);
 
+      lineAction(Line[line].outgoingTo, line_disconnected);
       lineAction(line, line_idle);
+
+
     }
   }
 }

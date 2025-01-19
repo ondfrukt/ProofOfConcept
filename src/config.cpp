@@ -75,13 +75,15 @@ RingHandler ringHandler(mcp_ks083f, activeLines, RMPins, FRPins, ringLength);
 
 // ------------------ Timers ------------------
 
-unsigned long statusTimer_Ready = 120000;
+unsigned long statusTimer_Ready = 240000;
 unsigned long statusTimer_Dialing = 5000;
-unsigned long statusTimer_Ringing = 5000;
+unsigned long statusTimer_Ringing = 10000;
 unsigned long statusTimer_pulsDialing = 3000;
 unsigned long statusTimer_toneDialing = 5000;
 unsigned long statusTimer_fail = 30000;
 unsigned long statusTimer_disconnected = 60000;
+unsigned long statusTimer_timeout = 60000;
+unsigned long statusTimer_busy = 1000;
 
 
 uint8_t SHKDebouncingTime = 10;       // Debounce time for SHK signals

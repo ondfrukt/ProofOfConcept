@@ -29,47 +29,49 @@ LineHandler::LineHandler(int line) {
 
 // Change line status
 void LineHandler::setLineStatus(lineStatuses newStatus) {
-    stopLineTimer();
-    previousLineStatus = currentLineStatus;
-    currentLineStatus = newStatus;
-    if (newStatus == line_idle) lineIdle();
-    Serial.println("Line " + String(lineNumber) + " status: " + statusNames[newStatus]);
+  stopLineTimer();
+  previousLineStatus = currentLineStatus;
+  currentLineStatus = newStatus;
+  incomingFrom = 255;
+  outgoingTo = 255;
+  if (newStatus == line_idle) lineIdle();
 
+  Serial.println("Line " + String(lineNumber) + " status: " + statusNames[newStatus]);
 }
 
 // Start line timer
 void LineHandler::startLineTimer(unsigned int limit) {
-    lineTimerStart = millis();
-    lineTimerLimit = limit;
-    lineTimerActive = true;
+  lineTimerStart = millis();
+  lineTimerLimit = limit;
+  lineTimerActive = true;
 }
 
 // Stops and clears line timer
 void LineHandler::stopLineTimer() {
-    lineTimerActive = false;
-    lineTimerStart = 0;
-    lineTimerLimit = 0;
+  lineTimerActive = false;
+  lineTimerStart = 0;
+  lineTimerLimit = 0;
 }
 
 // Process a new digit for a specific line
 void LineHandler::newDigitReceived(char digit) {
-    dialedDigits += digit;
-    Serial.println("Digit received: " + String(digit));
-    lineTimerStart = millis();
+  dialedDigits += digit;
+  Serial.println("Digit received: " + String(digit));
+  lineTimerStart = millis();
 }
 void LineHandler::resetDialedDigits() {
-    dialedDigits = "";
+  dialedDigits = "";
 } 
 void LineHandler::lineIdle() {
-    dialedDigits = "";
-    pulsing = false;
-    pulsCount = 0;                  
-    dialedDigits = "";              
-    edge = 0;                       
-    lineTimerLimit = 0;             
-    lineTimerStart = 0;             
-    lineTimerActive = false;
+  dialedDigits = "";
+  pulsing = false;
+  pulsCount = 0;
+  dialedDigits = "";
+  edge = 0; 
+  lineTimerLimit = 0;
+  lineTimerStart = 0;
+  lineTimerActive = false;
 
-    incomingFrom = 255;         
-    outgoingTo = 255;                  
+  incomingFrom = 255;
+  outgoingTo = 255;
 }

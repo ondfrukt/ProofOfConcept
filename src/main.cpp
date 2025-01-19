@@ -9,34 +9,27 @@
 #include "LineHandler.h"
 #include "mqttHandler.h"
 
-
 void setup() {
   Serial.begin(115200);
   Serial.println("Setup started");
   
   Wire.begin();
   i2CScanner();
-  setupMCPPins();
-  mt8816.begin();
-
-
+  setupSHKPins();
   setupHookChecker();
   //mqttHandler.setupWiFi();
   //mqttHandler.setupMQTT();
-  
+  mt8816.begin();
 
-  // Pin modes
+  // LED indicator if one ore more lines are not idle
   pinMode(hookLED, OUTPUT);
   digitalWrite(hookLED, LOW);
-
-  pinMode(testButton1, INPUT_PULLUP);
 
   // Set the action callback for the MQTTHandler. This function will be called when MQTT message is received 
   //mqttHandler.setActionCallback(lineAction);
   Serial.println("Setup complete");
   Serial.println("");
 }
-
 
 void loop() {
 
@@ -56,13 +49,6 @@ void loop() {
         }
       }
     }
-
-
-  if (digitalRead(testButton1) == LOW) {
-
-    Serial.println("Test Ring");
-    ringHandler.generateRingSignal(3);
-  }
 
 
   // Handle MQTT messages

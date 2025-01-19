@@ -1,4 +1,27 @@
-#include "SHKhandler.h"
+#ifndef SHKHandler_h
+#define SHKHandler_h
+
+#include <Arduino.h>
+#include "config.h"
+
+// Debouncing time in milliseconds
+uint8_t SHKDebouncingTime = 10;
+
+// Function to setup SHK pins with the MCP_KS083F 
+void setupSHKPins() {
+
+  // Initialize MCP for KS830F
+  if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
+    Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
+    return;
+  }
+  Serial.println("MCP for KSF083f initialized successfully.");
+
+  // Set all SHK pins as inputs with internal pull-up resistors
+  for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
+    mcp_ks083f.pinMode(SHKPins[pinIndex], INPUT_PULLUP);
+  }
+}
 
 void processSHKState() {
   // Läs GPIO-tillstånd från MCP-enheten
@@ -34,3 +57,6 @@ void processSHKState() {
       }
     }
   }
+
+
+#endif

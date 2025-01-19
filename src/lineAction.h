@@ -1,4 +1,8 @@
-#include "lineAction.h"
+#ifndef lineAction_h
+#define lineAction_h
+
+#include <Arduino.h>
+#include "config.h"
 
 void ring(int line) {
   Serial.println("Ringing line " + String(line));
@@ -127,3 +131,6 @@ void lineTimerExpired(int line) {
       break;
   }
 }
+
+
+#endif

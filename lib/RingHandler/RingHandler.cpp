@@ -1,43 +1,49 @@
 #include <Arduino.h>
-#include <Wire.h>
 #include "ringHandler.h"
-
-RingHandler::RingHandler(Adafruit_MCP23X17& mcp, const uint8_t _activeLines, const uint8_t* _RMpins, const uint8_t* _FRpins, int _ringLength) 
-    : mcp_ks083f(mcp) {
-  activeLines = _activeLines;
-  RMPins = _RMpins;
-  FRPins = _FRpins;
-  ringLength = _ringLength;
-  iterations = ringLength / (2 * 25);  // 25 mS = half of 20 Hz period
-
-  for (int i = 0; i < activeLines; i++) {
-    mcp_ks083f.pinMode(RMPins[i], OUTPUT);
-    mcp_ks083f.pinMode(FRPins[i], OUTPUT);
-  }
+#include <Wire.h>
 
 
+
+void ringHandler::init(unsigned pinRM, unsigned pinFR, unsigned channelFR) {
+  RMpin = pinRM;
+  FRch = channelFR;
+  pinMode(pinRM, OUTPUT);
+  ledcSetup(channelFR, 20, 8); // this freq will get replaced by start(), so it's fairly arbitrary
+  ledcAttachPin(pinFR, channelFR);
 }
 
-// generate a test ring signal
-void RingHandler::generateRingSignal(int line) {
-  // check if phone is on-hook before ringing, then generate a short ring at 20 Hz
-  // this should be implemented better, maybe with interrupts so that as soon as the
-  // phone is picked up, ring generation stops but this is ok for testing
-  
-  if (line < 0 || line >= activeLines) {
-    Serial.println("Fel: Ogiltigt linjeindex!");
-    return;
+void ringHandler::start(int freq, int* cadence){
+  RING_FREQ = freq;
+  ringCadence = cadence;
+  cadenceCount = cadence[0];
+  cadenceIndex = 0;
+  cadenceSince = 0;
+  ringCount = 0;
+  run();
+}
+
+void ringHandler::run(){
+  if(cadenceIndex > 0 && (millis() - cadenceSince) < ringCadence[cadenceIndex]) return;
+  cadenceSince = millis();
+  cadenceIndex++;
+  if(cadenceIndex > cadenceCount) cadenceIndex = 1;
+  if(cadenceIndex == 1) {
+    ringCount++;
+    counterCallback(ringCount);
   }
+  if(cadenceIndex % 2 == 1) on(); else off();
+}
 
-  Serial.println("Ringing line " + String(line));
-  mcp_ks083f.digitalWrite(RMPins[line], HIGH);        // enable ring mode
+void ringHandler::stop(){
+  off();
+}
 
+void ringHandler::on(){
+  digitalWrite(RMpin, HIGH);
+  ledcWriteTone(FRch, RING_FREQ);
+}
 
-  for (int i = 0; i < iterations; i++) {
-    mcp_ks083f.digitalWrite(FRPins[line], HIGH);      // toggle fwd/rev pin to generate ring
-    delay(25);  // 25 mS = half of 20 Hz period
-    mcp_ks083f.digitalWrite(FRPins[line], LOW);
-    delay(25);  // 25 mS = half of 20 Hz period
-  }
-  mcp_ks083f.digitalWrite(RMPins[line], LOW);         // disable ring mode
-};
+void ringHandler::off(){
+  ledcWriteTone(FRch, 0);
+  digitalWrite(RMpin, LOW);
+}

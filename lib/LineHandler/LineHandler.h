@@ -17,10 +17,13 @@ class LineHandler {
 public:
 
     // Line variables
-    int line_number;                    // Identifier for the line (0-7)
+    int lineNumber;                     // Identifier for the line (0-7)
     String phoneNumber;
     lineStatuses currentLineStatus;     // Current status of the line
     lineStatuses previousLineStatus;    // Previous status for the line
+
+    uint8_t incomingFrom;               // Incoming call from
+    uint8_t outgoingTo;                 // Outgoing call to
 
     // SHK variables
     hookStatuses hookStatus;            // Status of the hook (hook on/off)
@@ -42,11 +45,13 @@ public:
     bool lineTimerActive;               // Flag to indicate if the line timer is active
 
     LineHandler(int line);
-    void setLineStatus(lineStatuses new_status);
+    void setLineStatus(lineStatuses newStatus);
     void startLineTimer(unsigned int limit);
     void stopLineTimer();
     void newDigitReceived(char digit);
+    void resetDialedDigits();
     void setNewPhoneNumber(String newNumber);
+    void lineIdle();
 };
 
 #endif

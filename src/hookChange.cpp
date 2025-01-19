@@ -8,14 +8,12 @@ void hookChange(int line, hookStatuses newHookState) {
 
     // ---> Ready
     if (Line[line].currentLineStatus == line_idle) {
-      Line[line].setLineStatus(line_ready);
       lineAction(line, line_ready);
       return;
     }
 
     // ---> Connected
     if (Line[line].currentLineStatus == line_incoming) {
-      Line[line].setLineStatus(line_connected);
       lineAction(line, line_connected);
       return;
     }
@@ -27,27 +25,21 @@ void hookChange(int line, hookStatuses newHookState) {
     // ---> Idle
     if (
       currentLineStatus == line_ready || 
-      currentLineStatus == line_connected || 
       currentLineStatus == line_disconnected || 
       currentLineStatus == line_abandoned || 
       currentLineStatus == line_busy ||
       currentLineStatus == line_fail ||
       currentLineStatus == line_timeout ||
-      currentLineStatus == line_pulse_dialing){
+      currentLineStatus == line_pulse_dialing ||
+      currentLineStatus == line_ringing){
 
-      
-      Line[line].setLineStatus(line_idle);
-      Line[line].dialedDigits = ""; // Clear dialed digits if any
       lineAction(line, line_idle);
-      
       return;
     }
-
-    // ---> Disconnected
-    if (currentLineStatus == line_ringing) {
-      Line[line].setLineStatus(line_disconnected);
-      lineAction(line, line_disconnected);
-      return;
+    
+    if (currentLineStatus == line_connected){
+      lineAction(line, line_idle);
+      lineAction(Line[line].outgoingTo, line_disconnected);
     }
   }
 }

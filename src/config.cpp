@@ -81,6 +81,14 @@ unsigned long statusTimer_Ringing = 5000;
 unsigned long Timer_pulsDialing = 5000;
 unsigned long statusTimer_toneDialing = 5000;
 
+
+
+uint8_t SHKDebouncingTime = 10;       // Debounce time for SHK signals
+
+const unsigned pulseGapMax = 80;      // Max time between digit pulses 
+unsigned long edge = 0;               // Timestamp for the last puls edge
+const unsigned long gapTimeout = 100; // Timeout for pulsing
+
 // ------------------ Funktioner ------------------
 
 void i2CScanner() {
@@ -111,6 +119,8 @@ void i2CScanner() {
     }
 }
 
+
+// Function to setup MCP pins
 void setupMCPPins() {
 
   //--------------------KS830F---------------------
@@ -163,6 +173,7 @@ void setupMCPPins() {
   Serial.println("MCP for MT8816 initialized successfully.");
 }
 
+// Function to check if all lines are idle
 bool allLinesIdle() {
     for (int line = 0; line < activeLines; line++) {
         if (Line[line].currentLineStatus != line_idle) {

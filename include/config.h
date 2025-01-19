@@ -83,6 +83,12 @@ extern unsigned long statusTimer_Ringing;
 extern unsigned long Timer_pulsDialing;
 extern unsigned long statusTimer_toneDialing;
 
+
+extern uint8_t SHKDebouncingTime;
+extern const unsigned pulseGapMax;
+extern unsigned long edge;
+extern const unsigned long gapTimeout;
+
 // ------------------ Funktioner ------------------
 
 void i2CScanner();

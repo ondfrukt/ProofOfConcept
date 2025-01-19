@@ -1,11 +1,4 @@
-#ifndef SHKHandler_h
-#define SHKHandler_h
-
-#include <Arduino.h>
-#include "config.h"
-
-// Debouncing time in milliseconds
-uint8_t SHKDebouncingTime = 10;
+#include "SHKhandler.h"
 
 void processSHKState() {
   // Läs GPIO-tillstånd från MCP-enheten
@@ -41,6 +34,3 @@ void processSHKState() {
       }
     }
   }
-
-
-#endif

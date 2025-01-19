@@ -1,14 +1,4 @@
-
-#ifndef PulsHandler_h
-#define PulsHandler_h
-
-#include <Arduino.h>
-#include "config.h"
-
-const unsigned pulseGapMax = 80;      // Max time between digit pulses 
-unsigned long edge = 0;               // Timestamp for the last puls edge
-const unsigned long gapTimeout = 100; // Timeout for pulsing
-
+#include "pulsHandler.h"
 
 void pulsHandler(int line, bool newSHK){
 
@@ -59,6 +49,3 @@ void pulsHandler(int line, bool newSHK){
     return;
   }
 }
-
-
-#endif

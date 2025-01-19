@@ -4737,10 +4737,6 @@
 		(uuid "d1911d2a-b934-4b93-a6e8-3244f88bb0bb")
 	)
 	(no_connect
-		(at 78.74 110.49)
-		(uuid "d4263f88-95ac-4e59-bd3f-661d85ce83b5")
-	)
-	(no_connect
 		(at 191.77 68.58)
 		(uuid "db213635-d2f0-44dc-9d32-f821e628859c")
 	)
@@ -5571,6 +5567,16 @@
 			(type default)
 		)
 		(uuid "5dbf3785-3191-459a-9a99-e0a413be03fe")
+	)
+	(wire
+		(pts
+			(xy 78.74 110.49) (xy 82.55 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5f9a7fa0-f17e-4011-b525-d8876280dc8d")
 	)
 	(wire
 		(pts
@@ -7563,6 +7569,17 @@
 			(justify right bottom)
 		)
 		(uuid "feb53186-9da7-408f-881e-be3b4c58a872")
+	)
+	(label "Test_button"
+		(at 82.55 110.49 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "fed65e81-6905-4973-b719-6606b68fdf00")
 	)
 	(label "SLIC_INT"
 		(at 248.92 66.04 0)

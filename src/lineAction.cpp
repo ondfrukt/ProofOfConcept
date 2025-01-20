@@ -27,7 +27,7 @@ void lineAction(int line, uint8_t newLineStatus) {
     case line_tone_dialing:
       Line[line].setLineStatus(line_tone_dialing);
       mqttHandler.publishMQTT(line, line_tone_dialing);
-      Line[line].startLineTimer(statusTimer_tone_dialing);
+      Line[line].startLineTimer(statusTimer_toneDialing);
       break;
     
     case line_busy:
@@ -43,7 +43,7 @@ void lineAction(int line, uint8_t newLineStatus) {
       Line[line].resetDialedDigits();
       Line[line].startLineTimer(statusTimer_fail);
       break;
-
+    
     case line_ringing:
 
     Serial.println("Line " + String(line) + " dialed digits: " + Line[line].dialedDigits);

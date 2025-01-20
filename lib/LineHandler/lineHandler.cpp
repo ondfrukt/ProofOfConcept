@@ -59,11 +59,15 @@ void LineHandler::newDigitReceived(char digit) {
   Serial.println("Digit received: " + String(digit));
   lineTimerStart = millis();
 }
+
+// Reset dialed digits
 void LineHandler::resetDialedDigits() {
   dialedDigits = "";
 } 
+
+// Reset variables when idel is set as new status
 void LineHandler::lineIdle() {
-  dialedDigits = "";
+  resetDialedDigits();
   pulsing = false;
   pulsCount = 0;
   dialedDigits = "";

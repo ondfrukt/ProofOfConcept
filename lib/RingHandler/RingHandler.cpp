@@ -30,9 +30,8 @@ void RingHandler::generateRingSignal(int line) {
   }
 
   Serial.println("Ringing line " + String(line));
+  
   mcp_ks083f.digitalWrite(RMPins[line], HIGH);        // enable ring mode
-
-
   for (int i = 0; i < iterations; i++) {
     mcp_ks083f.digitalWrite(FRPins[line], HIGH);      // toggle fwd/rev pin to generate ring
     delay(25);  // 25 mS = half of 20 Hz period

@@ -17,96 +17,19 @@ void lineAction(int line, uint8_t newLineStatus) {
       mqttHandler.publishMQTT(line, line_ready);
       Line[line].startLineTimer(statusTimer_Ready);
       break;
-
-    case line_tone_dialing:
-      Line[line].setLineStatus(line_tone_dialing);
-      mqttHandler.publishMQTT(line, line_tone_dialing);
-      Line[line].startLineTimer(statusTimer_tone_dialing);
-      break;
-
+    
     case line_pulse_dialing:
       Line[line].setLineStatus(line_pulse_dialing);
       mqttHandler.publishMQTT(line, line_pulse_dialing);
       Line[line].startLineTimer(statusTimer_pulsDialing);
       break;
-
-    case line_connected:
-      Line[line].setLineStatus(line_connected);
-      mqttHandler.publishMQTT(line, line_connected);
-
-      Line[Line[line].incomingFrom].setLineStatus(line_connected);
-      mqttHandler.publishMQTT(Line[line].incomingFrom, line_connected);
-
-      mt8816.connect(line, Line[line].incomingFrom);
-
-
+    
+    case line_tone_dialing:
+      Line[line].setLineStatus(line_tone_dialing);
+      mqttHandler.publishMQTT(line, line_tone_dialing);
+      Line[line].startLineTimer(statusTimer_tone_dialing);
       break;
-
-    case line_disconnected:
-      Line[line].setLineStatus(line_disconnected);
-      mqttHandler.publishMQTT(line, line_disconnected);
-      Line[line].startLineTimer(statusTimer_disconnected);
-      
-      // Oklart om detta fungerar?
-      for (int i = 0; i < activeLines; i++){
-        mt8816.disconnect(line, i);
-        mt8816.disconnect(i, line);
-      }
-
-      break;
-
-    case line_incoming:
-      Line[line].setLineStatus(line_incoming);
-      mqttHandler.publishMQTT(line, line_incoming);
-      break;
-
-    case line_ringing:
-
-      Serial.println("Line " + String(line) + " dialed digits: " + Line[line].dialedDigits);
-      for (int i = 0; i < activeLines; i++) {
-
-        // Check if the diled digits match a number in the phonebook ant its not the same line as ringing
-        if (Line[line].dialedDigits == Line[i].phoneNumber && Line[i].lineNumber != line) {
-          
-          // Checking if the line is idle
-          if (Line[i].currentLineStatus != line_idle){
-            lineAction(line, line_busy);
-            return;
-          } 
-
-          Line[line].setLineStatus(line_ringing);
-          mqttHandler.publishMQTT(line, line_ringing);
-
-          Line[line].outgoingTo = i;
-
-          Line[i].setLineStatus(line_incoming);
-          mqttHandler.publishMQTT(i, line_incoming);
-          Line[i].incomingFrom = line;
-
-          Line[line].resetDialedDigits();
-
-          ringHandler.generateRingSignal(i);
-          Line[line].startLineTimer(statusTimer_Ringing);
-          return;
-        }
-      }
-      // If no match is found in the loop, the line status is set to fail
-      Serial.println("Line " + String(line) + " failed to connect. Wrong number?");
-      Line[line].resetDialedDigits();
-      lineAction(line, line_fail);
-      break;
-
-    case line_timeout:
-      Line[line].setLineStatus(line_timeout);
-      mqttHandler.publishMQTT(line, line_timeout);
-      Line[line].startLineTimer(statusTimer_timeout);
-      break;
-
-    case line_abandoned:
-      Line[line].setLineStatus(line_abandoned);
-      mqttHandler.publishMQTT(line, line_abandoned);
-      break;
-
+    
     case line_busy:
       Line[line].setLineStatus(line_busy);
       mqttHandler.publishMQTT(line, line_busy);
@@ -121,11 +44,85 @@ void lineAction(int line, uint8_t newLineStatus) {
       Line[line].startLineTimer(statusTimer_fail);
       break;
 
+    case line_ringing:
+
+    Serial.println("Line " + String(line) + " dialed digits: " + Line[line].dialedDigits);
+    for (int i = 0; i < activeLines; i++) {
+
+      // Check if the diled digits match a number in the phonebook ant its not the same line as ringing
+      if (Line[line].dialedDigits == Line[i].phoneNumber && Line[i].lineNumber != line) {
+        
+        // Checking if the line is idle
+        if (Line[i].currentLineStatus != line_idle){
+          lineAction(line, line_busy);
+          return;
+        } 
+
+        Line[line].setLineStatus(line_ringing);
+        mqttHandler.publishMQTT(line, line_ringing);
+
+        Line[line].outgoingTo = i;
+
+        Line[i].setLineStatus(line_incoming);
+        mqttHandler.publishMQTT(i, line_incoming);
+        Line[i].incomingFrom = line;
+
+        Line[line].resetDialedDigits();
+
+        ringHandler.generateRingSignal(i);
+        Line[line].startLineTimer(statusTimer_Ringing);
+        return;
+      }
+    }
+    // If no match is found in the loop, the line status is set to fail
+    Serial.println("Line " + String(line) + " failed to connect. Wrong number?");
+    Line[line].resetDialedDigits();
+    lineAction(line, line_fail);
+    break;
+    
+    case line_connected:
+      Line[line].setLineStatus(line_connected);
+      mqttHandler.publishMQTT(line, line_connected);
+
+      Line[Line[line].incomingFrom].setLineStatus(line_connected);
+      mqttHandler.publishMQTT(Line[line].incomingFrom, line_connected);
+
+      mt8816.connect(line, Line[line].incomingFrom);
+      break;
+
+    case line_disconnected:
+      Line[line].setLineStatus(line_disconnected);
+      mqttHandler.publishMQTT(line, line_disconnected);
+      Line[line].startLineTimer(statusTimer_disconnected);
+      
+      // Oklart om detta fungerar?
+      for (int i = 0; i < activeLines; i++){
+        mt8816.disconnect(line, i);
+        mt8816.disconnect(i, line);
+      }
+      break;
+    
+    case line_timeout:
+      Line[line].setLineStatus(line_timeout);
+      mqttHandler.publishMQTT(line, line_timeout);
+      Line[line].startLineTimer(statusTimer_timeout);
+      break;
+    
+    case line_abandoned:
+    Line[line].setLineStatus(line_abandoned);
+    mqttHandler.publishMQTT(line, line_abandoned);
+    break;
+    
+    case line_incoming:
+      Line[line].setLineStatus(line_incoming);
+      mqttHandler.publishMQTT(line, line_incoming);
+      break;
+    
     case line_operator:
       mqttHandler.publishMQTT(line, line_operator);
       // Insert Action!
       break;
-
+    
     default:
       // Handle unexpected status
       break;

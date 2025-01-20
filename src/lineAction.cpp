@@ -26,6 +26,7 @@ void lineAction(int line, uint8_t newLineStatus) {
     case line_pulse_dialing:
       Line[line].setLineStatus(line_pulse_dialing);
       mqttHandler.publishMQTT(line, line_pulse_dialing);
+      Line[line].startLineTimer(statusTimer_pulsDialing);
       break;
 
     case line_connected:

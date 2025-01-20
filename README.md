@@ -30,10 +30,9 @@ Every phone is assigned a status for each moment, depending on how the phone is 
 | busy          | Receiving busy signal                 | OFF  | Yes   |
 | fail          | Line failed to connect                | OFF  | Yes   |
 | ringing       | Line is ringing (outgoing call)       | OFF  | Yes   |
-| connected     | Call is active                        | OFF  | Yes   |
+| connected     | Call is active                        | OFF  | No    |
 | disconnected  | Call has ended, but line not yet idle | OFF  | Yes   |
 | timeout       | Line timed out                        | OFF  | Yes   |
 | abandoned     | Line was abandoned                    | OFF  | Yes   |
 | incoming      | Incoming call                         | ON   | No    |
 | operator      | Connected to operator                 | -    | No    |
-| system_config | Line is in configuration mode         | -    | No    |

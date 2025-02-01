@@ -22,6 +22,10 @@ extern const int wifiLED;
 // Testknapp
 extern const int testButton1;
 
+// DAC-pins
+extern const int DAC_CH1;
+extern const int DAC_CH2;
+
 // MCP23017-pinnar
 extern const uint8_t GPA0;
 extern const uint8_t GPA1;

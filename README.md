@@ -21,18 +21,18 @@ Every phone is assigned a status for each moment, depending on how the phone is 
 - Tone - if a tone is played to the line due to the status (might not be implemented)
 
 
-| Phone status  | Function                              | Hook | Timer | Audio | Tone |
-| ------------- | ------------------------------------- | ---- | ----- |-------|------| 
-| idle          | Line is not in use                    | ON   | No    |
-| ready         | Line is ready, waiting for inputs     | OFF  | Yes   |
-| puls_dialing  | Rotary dialing in progress            | OFF  | Yes   |
-| tone_dialing  | Tuch-tone dialing in progress         | OFF  | Yes   |
-| busy          | Receiving busy signal                 | OFF  | Yes   |
-| fail          | Line failed to connect                | OFF  | Yes   |
-| ringing       | Line is ringing (outgoing call)       | OFF  | Yes   |
-| connected     | Call is active                        | OFF  | No    |
-| disconnected  | Call has ended, but line not yet idle | OFF  | Yes   |
-| timeout       | Line timed out                        | OFF  | Yes   |
-| abandoned     | Line was abandoned                    | OFF  | Yes   |
-| incoming      | Incoming call                         | ON   | No    |
-| operator      | Connected to operator                 | -    | No    |
+| Phone status | Function                              | Hook | Timer | Audio | Tone              |
+| ------------ | ------------------------------------- | ---- | ----- | ----- | ----------------- |
+| idle         | Line is not in use                    | ON   | No    |       | -                 |
+| ready        | Line is ready, waiting for inputs     | OFF  | Yes   |       | Dial Tone         |
+| puls_dialing | Rotary dialing in progress            | OFF  | Yes   |       | -                 |
+| tone_dialing | Tuch-tone dialing in progress         | OFF  | Yes   |       | -                 |
+| busy         | Receiving busy signal                 | OFF  | Yes   |       | Busy Tone         |
+| fail         | Line failed to connect                | OFF  | Yes   |       | Unobtainable Tone |
+| ringing      | Line is ringing (outgoing call)       | OFF  | Yes   |       | Ring Tone         |
+| connected    | Call is active                        | OFF  | No    |       | -                 |
+| disconnected | Call has ended, but line not yet idle | OFF  | Yes   |       | -                 |
+| timeout      | Line timed out                        | OFF  | Yes   |       | -                 |
+| abandoned    | Line was abandoned                    | OFF  | Yes   |       | -                 |
+| incoming     | Incoming call                         | ON   | No    |       | -                 |
+| operator     | Connected to operator                 | -    | No    |       | -                 |

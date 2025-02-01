@@ -10,6 +10,10 @@ const int wifiLED = 18;
 // Testknapp
 const int testButton1 = 19;
 
+// DAC-pins
+const int DAC_CH1 = 25;
+const int DAC_CH2 = 26;
+
 // Pin modes
 void configLEDPins(){
   pinMode(hookLED, OUTPUT);
@@ -93,7 +97,7 @@ Adafruit_MCP23X17 mcp_mt8816;
 MQTTHandler mqttHandler(wifiLED, mqttLED);
 MT8816 mt8816(mcp_mt8816, (uint8_t[]){AX0, AX1, AX2, AX3}, (uint8_t[]){AY0, AY1, AY2}, STROBE, DATA, RESET, CS);
 RingHandler ringHandler(mcp_ks083f, activeLines, RMPins, FRPins, ringLength);
-toneGen ToneGen(25);
+toneGen ToneGen(DAC_CH1);
 
 // ---------------SHK variables--------------------
 

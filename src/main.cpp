@@ -33,6 +33,11 @@ void setup() {
 
   // Set the action callback for the MQTTHandler. This function will be called when MQTT message is received 
   //mqttHandler.setActionCallback(lineAction);
+
+  mt8816.connect(0, 1);
+  mt8816.connect(1, 0);
+
+
   Serial.println("Setup complete");
   Serial.println("");
 }

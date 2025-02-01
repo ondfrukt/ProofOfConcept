@@ -520,7 +520,11 @@
       "Net-(U2-ADJ)": "Power",
       "Net-(U2-VI)": "Power",
       "Net-(U3-1IN-)": "Signal",
-      "Net-(U3-2IN-)": "Signal"
+      "Net-(U3-2IN-)": "Signal",
+      "unconnected-(IC1-Q1-Pad11)": "Signal",
+      "unconnected-(IC1-Q2-Pad12)": "Signal",
+      "unconnected-(IC1-Q3-Pad13)": "Signal",
+      "unconnected-(IC1-Q4-Pad14)": "Signal"
     },
     "netclass_patterns": [
       {

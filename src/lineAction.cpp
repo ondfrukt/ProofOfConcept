@@ -84,10 +84,21 @@ void lineAction(int line, uint8_t newLineStatus) {
       Line[line].setLineStatus(line_connected);
       mqttHandler.publishMQTT(line, line_connected);
 
+
+      // Setting for the calling line
       Line[Line[line].incomingFrom].setLineStatus(line_connected);
+      Line[Line[line].incomingFrom].outgoingTo = line;
+
+      // Setting for the called line
+      Line[line].outgoingTo = Line[line].incomingFrom;
+
+      // Publinshing the status for the calling line
       mqttHandler.publishMQTT(Line[line].incomingFrom, line_connected);
 
+      //Connectiong 
+      Serial.println("Line " + String(line) + " connected to line " + String(Line[line].incomingFrom));
       mt8816.connect(line, Line[line].incomingFrom);
+      mt8816.connect(Line[line].incomingFrom, line);
       break;
 
     case line_disconnected:

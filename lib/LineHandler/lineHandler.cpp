@@ -32,11 +32,11 @@ void LineHandler::setLineStatus(lineStatuses newStatus) {
   stopLineTimer();
   previousLineStatus = currentLineStatus;
   currentLineStatus = newStatus;
-  incomingFrom = 255;
-  outgoingTo = 255;
-  if (newStatus == line_idle) lineIdle();
 
+  if (newStatus == line_idle) lineIdle();
+  
   Serial.println("Line " + String(lineNumber) + " status: " + statusNames[newStatus]);
+
 }
 
 // Start line timer

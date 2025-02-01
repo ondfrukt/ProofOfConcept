@@ -99,6 +99,11 @@ const unsigned pulseGapMax = 80;      // Max time between digit pulses
 unsigned long edge = 0;               // Timestamp for the last puls edge
 const unsigned long gapTimeout = 100; // Timeout for pulsing
 
+
+// ---------------System variables ---------------
+
+bool error = false; // Error flag
+
 // ------------------ Funktions ------------------
 
 void i2CScanner() {
@@ -135,9 +140,8 @@ void setupMCPPins() {
   //KS830F
   if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
     Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
-    return;
-  }
-
+    error = true;
+  } else {
   // Set all SHK pins as inputs with internal pull-up resistors
   for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
     mcp_ks083f.pinMode(SHKPins[pinIndex], INPUT_PULLUP);
@@ -151,12 +155,15 @@ void setupMCPPins() {
     mcp_ks083f.pinMode(FRPins[pinIndex], OUTPUT);
   }
   Serial.println("MCP for KSF083f initialized successfully.");
+  }
+
 
   //MT8816
   if (!mcp_mt8816.begin_I2C(mcp_mt8816_address)) {
     Serial.println("MCP for MT8816 initialization failed. Check connections and address.");
-    return;
+    error = true;
 
+  } else {
     // Configure address pins
     for (int i = 0; i < 4; ++i) {
         mcp_mt8816.pinMode(ax_pins[i], OUTPUT);}
@@ -168,13 +175,23 @@ void setupMCPPins() {
     mcp_mt8816.pinMode(DATA, OUTPUT);
     mcp_mt8816.pinMode(RESET, OUTPUT);
     mcp_mt8816.pinMode(CS, OUTPUT);
+    
     // Set initial values
     mcp_mt8816.digitalWrite(STROBE, LOW);
     mcp_mt8816.digitalWrite(DATA, LOW);
     mcp_mt8816.digitalWrite(RESET, HIGH);
     mcp_mt8816.digitalWrite(CS, HIGH);
+
+    Serial.println("MCP for MT8816 initialized successfully.");
   }
-  Serial.println("MCP for MT8816 initialized successfully.");
+  
+    // Om något gick fel, stoppa programmet
+  if (error) {
+    Serial.println("One or more I2C devices failed to initialize. Stopping execution.");
+    while (true) {
+      delay(1000);
+    }
+  }
 }
 
 // Function to check if all lines are idle

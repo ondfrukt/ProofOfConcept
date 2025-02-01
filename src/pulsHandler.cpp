@@ -33,7 +33,6 @@ void pulsHandler(int line, bool newSHK){
     Line[line].edge = millis();
     
     if(Line[line].currentLineStatus != line_pulse_dialing) {
-      Line[line].setLineStatus(line_pulse_dialing);
       lineAction(line, line_pulse_dialing);
     }
     return;

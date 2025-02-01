@@ -36,10 +36,9 @@ void hookChange(int line, hookStatuses newHookState) {
       lineAction(line, line_idle);
       return;
     }
-
+    
     if (currentLineStatus == line_connected){
-      Serial.println("OutgingTo = " + String(Line[line].outgoingTo));
-
+      Serial.println("Line " + String(line) + "   OutgingTo = " + String(Line[line].outgoingTo) + "   IncomingFrom = " + String(Line[line].incomingFrom));
       lineAction(Line[line].outgoingTo, line_disconnected);
       lineAction(line, line_idle);
 

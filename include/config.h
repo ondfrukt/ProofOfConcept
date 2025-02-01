@@ -97,6 +97,7 @@ extern const unsigned pulseGapMax;
 extern unsigned long edge;
 extern const unsigned long gapTimeout;
 
+
 // ------------------ Funktioner ------------------
 
 void i2CScanner();

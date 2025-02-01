@@ -86,6 +86,9 @@ bool MT8816::getConnection(int x, int y) {
 
 void MT8816::setAddress(uint8_t x, uint8_t y)
 {
+    // Converting y value due to an connection misstake at the PCB
+    y = 7 - y;
+
     for (int i = 0; i < 4; ++i) {
         bool bit = (x >> i) & 0x01;
         mcp_mt8816.digitalWrite(ax_pins[i], bit);
@@ -103,4 +106,32 @@ void MT8816::strobe()
     delayMicroseconds(5);
     mcp_mt8816.digitalWrite(strobe_pin, LOW);
     delayMicroseconds(5);
+}
+
+void MT8816::printConnections() {
+  // Skriv ut kolumnrubrikerna
+  Serial.print("     ");  // Något extra utrymme för radnummerkolumnen
+  for (int j = 0; j < 8; j++) {
+    Serial.print(j);
+    Serial.print(" ");
+  }
+  Serial.println(); // Avsluta kolumnrubrikraden
+  
+  // Skriv ut varje rad med radnummer först
+  for (int i = 0; i < 8; i++) {
+    // Skriv ut radnumret
+    if (i < 10) {
+      // Lägg till ett extra mellanslag för enhetliga avstånd, om du har en- och tvåsiffriga tal
+      Serial.print(" ");
+    }
+    Serial.print(i);
+    Serial.print(" | ");  // Avgränsare mellan radnumret och själva matrisdata
+    
+    // Skriv ut värdena i raden
+    for (int j = 0; j < 8; j++) {
+      Serial.print((int)connections[i][j]);
+      Serial.print(" ");
+    }
+    Serial.println(); // Ny rad efter varje rad i matrisen
+  }
 }

@@ -30,23 +30,29 @@ void hookChange(int line, hookStatuses newHookState) {
       currentLineStatus == line_busy ||
       currentLineStatus == line_fail ||
       currentLineStatus == line_timeout ||
-      currentLineStatus == line_pulse_dialing ||
-      currentLineStatus == line_ringing){
+      currentLineStatus == line_pulse_dialing){
 
       lineAction(line, line_idle);
       return;
     }
     
+    // Disconnect the line if it is connected
     if (currentLineStatus == line_connected){
-      Serial.println("Line " + String(line) + "   OutgingTo = " + String(Line[line].outgoingTo) + "   IncomingFrom = " + String(Line[line].incomingFrom));
-      lineAction(Line[line].outgoingTo, line_disconnected);
+      Serial.println("Connection between line " + String(line) + " and " + String(Line[line].connectedTo) + " disconnected");
+      lineAction(Line[line].connectedTo, line_disconnected);
       lineAction(line, line_idle);
-      
-
+      return;
+    }
+    // Resets the status for the called and the calling line
+    if (currentLineStatus == line_ringing){
+      Serial.println("Connection between line " + String(line) + " and " + String(Line[line].connectedTo) + " disconnected");
+      if (Line[Line[line].connectedTo].currentLineStatus == line_incoming){
+        lineAction(Line[line].connectedTo, line_idle);
+      }
+      lineAction(line, line_idle);
     }
   }
 }
-
 // Function to set correct hook status on boot
 void setupHookChecker(){
 

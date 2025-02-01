@@ -10,8 +10,7 @@ LineHandler::LineHandler(int line) {
     currentLineStatus = line_idle;  // Current status of the line
     previousLineStatus = line_idle; // Previous status for the line
 
-    incomingFrom = 255;             // Incoming call from
-    outgoingTo = 255;               // Outgoing call to
+    connectedTo = 255;              // Connected to line
     
     hookStatus = hook_on;           // Status of the hook (hook on/off)
     SHK = 0;                        // Current state of the SHK pin (0 = hook on, 1 = hook off)
@@ -75,7 +74,5 @@ void LineHandler::lineIdle() {
   lineTimerLimit = 0;
   lineTimerStart = 0;
   lineTimerActive = false;
-
-  incomingFrom = 255;
-  outgoingTo = 255;
+  connectedTo = 255;
 }

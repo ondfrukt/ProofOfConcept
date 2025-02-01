@@ -22,9 +22,8 @@ public:
     lineStatuses currentLineStatus;     // Current status of the line
     lineStatuses previousLineStatus;    // Previous status for the line
 
-    int incomingFrom;                   // Incoming call from
-    int outgoingTo;                     // Outgoing call to
-
+    int connectedTo;                    // Connected to line
+    
     // SHK variables
     hookStatuses hookStatus;            // Status of the hook (hook on/off)
     bool SHK;                           // Current state of the SHK pin (0 = hook on, 1 = hook off)

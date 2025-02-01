@@ -59,6 +59,8 @@ const uint8_t AY2 = GPB6;
 const uint8_t ax_pins[4] = {AX0, AX1, AX2, AX3};
 const uint8_t ay_pins[3] = {AY0, AY1, AY2};
 
+const uint8_t Aout_x = 3;
+
 // MCP-adresses
 const uint8_t mcp_mt8816_address = 0x23;
 const uint8_t mcp_ks083f_address = 0x26;
@@ -91,6 +93,7 @@ Adafruit_MCP23X17 mcp_mt8816;
 MQTTHandler mqttHandler(wifiLED, mqttLED);
 MT8816 mt8816(mcp_mt8816, (uint8_t[]){AX0, AX1, AX2, AX3}, (uint8_t[]){AY0, AY1, AY2}, STROBE, DATA, RESET, CS);
 RingHandler ringHandler(mcp_ks083f, activeLines, RMPins, FRPins, ringLength);
+toneGen ToneGen(25);
 
 // ---------------SHK variables--------------------
 
@@ -204,4 +207,16 @@ bool allLinesIdle() {
     }
     digitalWrite(hookLED, LOW);
     return true;
+}
+
+
+void silenceRing() {
+    Serial.println("Silence Ring");
+
+    for (int i = 0; i < 10; i++) {
+    digitalWrite(wifiLED, HIGH);
+    delay(50);
+    digitalWrite(wifiLED, LOW);
+    delay(50);
+    }
 }

@@ -3,7 +3,9 @@
 
 // Function to determine the action to take based on the new line status
 void lineAction(int line, uint8_t newLineStatus) {
-
+  
+  ToneGen.stopTone();
+  mt8816.disconnect(line, Aout_x);
   switch (newLineStatus) {
 
     case line_idle:
@@ -15,6 +17,10 @@ void lineAction(int line, uint8_t newLineStatus) {
     case line_ready:
       Line[line].setLineStatus(line_ready);
       mqttHandler.publishMQTT(line, line_ready);
+
+      ToneGen.dialTone();
+      mt8816.connect(line, Aout_x);
+
       Line[line].startLineTimer(statusTimer_Ready);
       break;
     
@@ -33,43 +39,50 @@ void lineAction(int line, uint8_t newLineStatus) {
     case line_busy:
       Line[line].setLineStatus(line_busy);
       mqttHandler.publishMQTT(line, line_busy);
+      ToneGen.busyTone();
+      mt8816.connect(line, Aout_x);
       Line[line].startLineTimer(statusTimer_busy);
       break;
 
     case line_fail:
       Line[line].setLineStatus(line_fail);
       mqttHandler.publishMQTT(line, line_fail);
-      
+
+      ToneGen.unobtainableTone();
+      mt8816.connect(line, Aout_x);
+
       Line[line].resetDialedDigits();
       Line[line].startLineTimer(statusTimer_fail);
       break;
     
     case line_ringing:
-
     Serial.println("Line " + String(line) + " dialed digits: " + Line[line].dialedDigits);
     for (int i = 0; i < activeLines; i++) {
 
       // Check if the diled digits match a number in the phonebook ant its not the same line as ringing
       if (Line[line].dialedDigits == Line[i].phoneNumber && Line[i].lineNumber != line) {
         
-        // Checking if the line is idle
+        // Checking if the called line is idle
         if (Line[i].currentLineStatus != line_idle){
           lineAction(line, line_busy);
           return;
         } 
 
+        ToneGen.ringTone();
+        mt8816.connect(line, Aout_x);
+
         Line[line].setLineStatus(line_ringing);
         mqttHandler.publishMQTT(line, line_ringing);
 
-        Line[line].outgoingTo = i;
+        Line[line].connectedTo = i;
 
         Line[i].setLineStatus(line_incoming);
         mqttHandler.publishMQTT(i, line_incoming);
-        Line[i].incomingFrom = line;
+        Line[i].connectedTo = line;
 
         Line[line].resetDialedDigits();
-
-        ringHandler.generateRingSignal(i);
+        silenceRing();
+        //ringHandler.generateRingSignal(i);
         Line[line].startLineTimer(statusTimer_Ringing);
         return;
       }
@@ -86,18 +99,15 @@ void lineAction(int line, uint8_t newLineStatus) {
 
 
       // Setting for the calling line
-      Line[Line[line].incomingFrom].setLineStatus(line_connected);
-      Line[Line[line].incomingFrom].outgoingTo = line;
-
-      // Setting for the called line
-      Line[line].outgoingTo = Line[line].incomingFrom;
+      Line[Line[line].connectedTo].setLineStatus(line_connected);
+      Line[Line[line].connectedTo].connectedTo = line;
 
       // Publinshing the status for the calling line
-      mqttHandler.publishMQTT(Line[line].incomingFrom, line_connected);
+      mqttHandler.publishMQTT(Line[line].connectedTo, line_connected);
 
       //Connectiong 
-      mt8816.connect(line, Line[line].incomingFrom );
-      mt8816.connect(Line[line].incomingFrom, line);
+      mt8816.connect(line, Line[line].connectedTo );
+      mt8816.connect(Line[line].connectedTo, line);
       break;
 
     case line_disconnected:
@@ -143,6 +153,7 @@ void lineAction(int line, uint8_t newLineStatus) {
 void lineTimerExpired(int line) {
   Serial.println("Line " + String(line) + " timer expired");
   Line[line].stopLineTimer();
+  mt8816.disconnect(line, Aout_x);
   uint32_t currentStatus = Line[line].currentLineStatus;
 
   switch (currentStatus) {

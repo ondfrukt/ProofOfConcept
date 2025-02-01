@@ -7,6 +7,7 @@
 #include <LineHandler.h>
 #include <MQTTHandler.h>
 #include <RingHandler.h>
+#include <toneGen.h>
 #include "lineStatuses.h"
 
 // ------------------ Globala konstanter ------------------
@@ -62,6 +63,8 @@ extern const uint8_t AY0;
 extern const uint8_t AY1;
 extern const uint8_t AY2;
 
+extern const uint8_t Aout_x;
+
 // MCP-adresser
 extern const uint8_t mcp_mt8816_address;
 extern const uint8_t mcp_ks083f_address;
@@ -74,6 +77,7 @@ extern Adafruit_MCP23X17 mcp_mt8816;
 extern MQTTHandler mqttHandler;
 extern MT8816 mt8816;
 extern RingHandler ringHandler;
+extern toneGen ToneGen;
 
 // ------------------ Timers ------------------
 
@@ -103,5 +107,5 @@ extern const unsigned long gapTimeout;
 void i2CScanner();
 bool allLinesIdle();
 void setupMCPPins();
-
+void silenceRing();
 #endif

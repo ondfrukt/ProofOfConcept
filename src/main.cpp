@@ -19,6 +19,7 @@ void setup() {
   setupMCPPins();
   mt8816.begin();
 
+  ToneGen.begin(50000);
 
   setupHookChecker();
   //mqttHandler.setupWiFi();
@@ -33,14 +34,6 @@ void setup() {
   // Set the action callback for the MQTTHandler. This function will be called when MQTT message is received 
   //mqttHandler.setActionCallback(lineAction);
 
-  // for (int x = 0; x < 8; x++) {
-  //   for (int y = 0; y < 8; y++) {
-  //     mt8816.connect(x, y);
-  //   }
-  // }
-  mt8816.connect(2, 3);
-
-
   Serial.println("Setup complete");
   Serial.println("");
 }
@@ -48,6 +41,7 @@ void setup() {
 
 void loop() {
 
+  ToneGen.update();
   processSHKState();
 
   if (allLinesIdle() == false) {
@@ -64,23 +58,13 @@ void loop() {
         }
       }
     }
-
-
+  // Test button. Generates a call from line 2 to line 3 if line 3 is ready (Hook is off)
   if (digitalRead(testButton1) == LOW) {
-
-    Serial.println("Test Ring");
-    
-    for (int i = 0; i < 10; i++) {
-    digitalWrite(wifiLED, HIGH);
-    delay(50);
-    digitalWrite(wifiLED, LOW);
-    delay(50);
+    if (Line[2].currentLineStatus == line_ready){
+         Line[2].dialedDigits = String(3);
+        lineAction(2, line_ringing);
     }
-    mt8816.connect(0, 1);
-    
   }
-
-
   // Handle MQTT messages
   //mqttHandler.loop();
   delay(1);

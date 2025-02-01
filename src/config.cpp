@@ -1,6 +1,6 @@
 #include "config.h"
 
-// ------------------ Globala konstanter ------------------
+//------------------ ESP32 GPIO pins ------------------
 
 // LED-pinnar
 const int hookLED = 16;
@@ -10,7 +10,14 @@ const int wifiLED = 18;
 // Testknapp
 const int testButton1 = 19;
 
-int ringLength = 1000; // Längd på ringningssignal i millisekunder
+// Pin modes
+void configLEDPins(){
+  pinMode(hookLED, OUTPUT);
+  digitalWrite(hookLED, LOW);
+  pinMode(testButton1, INPUT_PULLUP);
+}
+
+//---------------- MCP23017 GPIO pins ----------------
 
 // MCP23017 logic GPIO-pinns
 const uint8_t GPA0 = 0;   //Pin 21 
@@ -30,12 +37,12 @@ const uint8_t GPB5 = 13;  //Pin 6
 const uint8_t GPB6 = 14;  //Pin 7
 const uint8_t GPB7 = 15;  //Pin 8
 
-// KS083F-konfiguration
+// KS083F konstants
 const uint8_t SHKPins[activeLines] = {GPA3, GPA0, GPB5, GPB2};
 const uint8_t RMPins[activeLines] = {GPA4, GPA1, GPB3, GPB6};
 const uint8_t FRPins[activeLines] = {GPA5, GPA2, GPB7, GPB4};
 
-// MT8816-konfiguration
+// MT8816 konstants
 const uint8_t RESET = GPA0;
 const uint8_t DATA = GPA1;
 const uint8_t STROBE = GPA2;
@@ -52,9 +59,23 @@ const uint8_t AY2 = GPB6;
 const uint8_t ax_pins[4] = {AX0, AX1, AX2, AX3};
 const uint8_t ay_pins[3] = {AY0, AY1, AY2};
 
-// MCP-adresser
+// MCP-adresses
 const uint8_t mcp_mt8816_address = 0x23;
 const uint8_t mcp_ks083f_address = 0x26;
+
+// ------------------ Timers ----------------------
+
+unsigned long statusTimer_Ready = 240000;
+unsigned long statusTimer_Dialing = 5000;
+unsigned long statusTimer_Ringing = 10000;
+unsigned long statusTimer_pulsDialing = 3000;
+unsigned long statusTimer_toneDialing = 5000;
+unsigned long statusTimer_fail = 30000;
+unsigned long statusTimer_disconnected = 60000;
+unsigned long statusTimer_timeout = 60000;
+unsigned long statusTimer_busy = 1000;
+
+int ringLength = 200; // Ring signal lenght in miliseconds
 
 // ------------------ Globala objekt ------------------
 
@@ -67,29 +88,23 @@ LineHandler Line[activeLines] = {
 
 Adafruit_MCP23X17 mcp_ks083f;
 Adafruit_MCP23X17 mcp_mt8816;
-
 MQTTHandler mqttHandler(wifiLED, mqttLED);
-
 MT8816 mt8816(mcp_mt8816, (uint8_t[]){AX0, AX1, AX2, AX3}, (uint8_t[]){AY0, AY1, AY2}, STROBE, DATA, RESET, CS);
 RingHandler ringHandler(mcp_ks083f, activeLines, RMPins, FRPins, ringLength);
 
-// ------------------ Timers ------------------
-
-unsigned long statusTimer_Ready = 30000;
-unsigned long statusTimer_Dialing = 5000;
-unsigned long statusTimer_Ringing = 5000;
-unsigned long Timer_pulsDialing = 5000;
-unsigned long statusTimer_toneDialing = 5000;
-
-
+// ---------------SHK variables--------------------
 
 uint8_t SHKDebouncingTime = 10;       // Debounce time for SHK signals
-
 const unsigned pulseGapMax = 80;      // Max time between digit pulses 
 unsigned long edge = 0;               // Timestamp for the last puls edge
 const unsigned long gapTimeout = 100; // Timeout for pulsing
 
-// ------------------ Funktioner ------------------
+
+// ---------------System variables ---------------
+
+bool error = false; // Error flag
+
+// ------------------ Funktions ------------------
 
 void i2CScanner() {
     byte error, address;
@@ -119,16 +134,14 @@ void i2CScanner() {
     }
 }
 
-
 // Function to setup MCP pins
 void setupMCPPins() {
 
-  //--------------------KS830F---------------------
+  //KS830F
   if (!mcp_ks083f.begin_I2C(mcp_ks083f_address)) {
     Serial.println("MCP for KSF083f initialization failed. Check connections and address.");
-    return;
-  }
-
+    error = true;
+  } else {
   // Set all SHK pins as inputs with internal pull-up resistors
   for (int pinIndex = 0; pinIndex < activeLines; pinIndex++) {
     mcp_ks083f.pinMode(SHKPins[pinIndex], INPUT_PULLUP);
@@ -142,35 +155,43 @@ void setupMCPPins() {
     mcp_ks083f.pinMode(FRPins[pinIndex], OUTPUT);
   }
   Serial.println("MCP for KSF083f initialized successfully.");
+  }
 
-  //--------------------MT8816---------------------
+
+  //MT8816
   if (!mcp_mt8816.begin_I2C(mcp_mt8816_address)) {
     Serial.println("MCP for MT8816 initialization failed. Check connections and address.");
-    return;
+    error = true;
 
+  } else {
     // Configure address pins
     for (int i = 0; i < 4; ++i) {
-        mcp_mt8816.pinMode(ax_pins[i], OUTPUT);
-    }
+        mcp_mt8816.pinMode(ax_pins[i], OUTPUT);}
     for (int i = 0; i < 3; ++i) {
-        mcp_mt8816.pinMode(ay_pins[i], OUTPUT);
-    }
+        mcp_mt8816.pinMode(ay_pins[i], OUTPUT);}
 
     // Configure programming pins 
     mcp_mt8816.pinMode(STROBE, OUTPUT);
     mcp_mt8816.pinMode(DATA, OUTPUT);
     mcp_mt8816.pinMode(RESET, OUTPUT);
     mcp_mt8816.pinMode(CS, OUTPUT);
-
+    
     // Set initial values
     mcp_mt8816.digitalWrite(STROBE, LOW);
     mcp_mt8816.digitalWrite(DATA, LOW);
     mcp_mt8816.digitalWrite(RESET, HIGH);
     mcp_mt8816.digitalWrite(CS, HIGH);
-  
-  }
 
-  Serial.println("MCP for MT8816 initialized successfully.");
+    Serial.println("MCP for MT8816 initialized successfully.");
+  }
+  
+    // Om något gick fel, stoppa programmet
+  if (error) {
+    Serial.println("One or more I2C devices failed to initialize. Stopping execution.");
+    while (true) {
+      delay(1000);
+    }
+  }
 }
 
 // Function to check if all lines are idle

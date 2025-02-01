@@ -80,14 +80,23 @@ extern RingHandler ringHandler;
 extern unsigned long statusTimer_Ready;
 extern unsigned long statusTimer_Dialing;
 extern unsigned long statusTimer_Ringing;
-extern unsigned long Timer_pulsDialing;
+extern unsigned long statusTimer_pulsDialing;
 extern unsigned long statusTimer_toneDialing;
+extern unsigned long statusTimer_timeout;
+extern unsigned long statusTimer_abandoned;
+extern unsigned long statusTimer_incoming;
+extern unsigned long statusTimer_operator;
+extern unsigned long statusTimer_fail;
+extern unsigned long statusTimer_busy;
+extern unsigned long statusTimer_connected;
+extern unsigned long statusTimer_disconnected;
 
 
 extern uint8_t SHKDebouncingTime;
 extern const unsigned pulseGapMax;
 extern unsigned long edge;
 extern const unsigned long gapTimeout;
+
 
 // ------------------ Funktioner ------------------
 

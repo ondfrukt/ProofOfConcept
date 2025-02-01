@@ -31,21 +31,22 @@ void pulsHandler(int line, bool newSHK){
     Line[line].pulsing = false;
     Line[line].pulsCount++;
     Line[line].edge = millis();
-    if(Line[line].currentLineStatus != line_pulse_dialing) { 
-      Line[line].currentLineStatus = line_pulse_dialing;
+    
+    if(Line[line].currentLineStatus != line_pulse_dialing) {
+      lineAction(line, line_pulse_dialing);
     }
     return;
   }
 
   // Summarize the pulses after a long positive edge gap
   if(Line[line].SHK && !Line[line].pulsing && Line[line].gap > pulseGapMax){
-    char digit = String(Line[line].pulsCount - 1 % 10)[0]; // "-1" due to Sweden has "0" as first digit
+    char digit = String(Line[line].pulsCount -1 % 10)[0];  // "-1" due to Sweden has "0" as first digit
     Line[line].pulsing = false;
     Line[line].pulsCount = 0;
     Line[line].edge = 0;
-    Line[line].pulsingFlag = false;
-    void newDigitReceived(char digit);
-    Serial.println("Digit received: " + String(digit));
+    Line[line].pulsingFlag = false;                     
+    Line[line].newDigitReceived(digit);                     // Store the digit in the line object
+    Line[line].startLineTimer(statusTimer_pulsDialing);     // Start timer for the line or reset it for every new digit
     return;
   }
 }

@@ -28,11 +28,19 @@ void setup() {
   // Pin modes
   pinMode(hookLED, OUTPUT);
   digitalWrite(hookLED, LOW);
-
   pinMode(testButton1, INPUT_PULLUP);
 
   // Set the action callback for the MQTTHandler. This function will be called when MQTT message is received 
   //mqttHandler.setActionCallback(lineAction);
+
+  // for (int x = 0; x < 8; x++) {
+  //   for (int y = 0; y < 8; y++) {
+  //     mt8816.connect(x, y);
+  //   }
+  // }
+  mt8816.connect(2, 3);
+
+
   Serial.println("Setup complete");
   Serial.println("");
 }
@@ -61,7 +69,15 @@ void loop() {
   if (digitalRead(testButton1) == LOW) {
 
     Serial.println("Test Ring");
-    ringHandler.generateRingSignal(3);
+    
+    for (int i = 0; i < 10; i++) {
+    digitalWrite(wifiLED, HIGH);
+    delay(50);
+    digitalWrite(wifiLED, LOW);
+    delay(50);
+    }
+    mt8816.connect(0, 1);
+    
   }
 
 

@@ -4,7 +4,6 @@
 #include <Arduino.h>
 #include "config.h"
 
-void ring(int line);
 void lineAction(int line, uint8_t newLineStatus);
 void lineTimerExpired(int line);
 

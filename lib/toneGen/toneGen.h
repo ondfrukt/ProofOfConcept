@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 
-#define TWO_PI 6.28318530718
 #define MODE_NORMAL 0
 #define MODE_UNOBTAINABLE 1
 
@@ -31,6 +30,7 @@ private:
     int _mode;
     int _unobtainableIndex;
 
+    TaskHandle_t _taskHandle; // Unik task-handle för varje instans
     static void _toneTask(void *pvParameters);
     void _updateDAC();
 };

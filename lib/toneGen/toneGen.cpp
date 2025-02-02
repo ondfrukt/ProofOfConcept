@@ -2,12 +2,6 @@
 #include <math.h>
 #include "Arduino.h"
 
-// Initiera statisk instanspekare
-static toneGen* _instance = nullptr;
-
-// FreeRTOS-task handle
-TaskHandle_t toneTaskHandle = NULL;
-
 // Konstruktor
 toneGen::toneGen(int dacPin)
   : _dacPin(dacPin),
@@ -20,31 +14,30 @@ toneGen::toneGen(int dacPin)
     _offTime(0),
     _lastToggleTime(0),
     _mode(MODE_NORMAL),
-    _unobtainableIndex(0) {}
+    _unobtainableIndex(0),
+    _taskHandle(NULL) {}
 
 void toneGen::begin(uint32_t sampleRate) {
     _sampleRate = sampleRate;
-    _instance = this;
 
     // Skapa FreeRTOS-task som kör på kärna 0
     xTaskCreatePinnedToCore(
-        _toneTask,       // Funktion att köra
-        "ToneTask",     // Task-namn
-        10000,           // Stackstorlek
-        NULL,            // Parametrar
-        1,               // Prioritet
-        &toneTaskHandle, // Task-handle
-        0                // Kör på kärna 0
+        _toneTask,
+        "ToneTask",
+        10000,
+        this,
+        1,
+        &_taskHandle,
+        0
     );
 }
 
 void toneGen::_toneTask(void *pvParameters) {
+    toneGen *instance = static_cast<toneGen *>(pvParameters);
     while (true) {
-        if (_instance) {
-            _instance->update();
-            _instance->_updateDAC();
-        }
-        vTaskDelay(1); // Förhindra att tasken låser CPU
+        instance->update();
+        instance->_updateDAC();
+        vTaskDelay(1);
     }
 }
 
@@ -110,32 +103,11 @@ void toneGen::stopTone() {
 
 void toneGen::update() {
     uint32_t currentMillis = millis();
-
     if (_mode == MODE_NORMAL && _usePulse) {
         if (_toneActive && (currentMillis - _lastToggleTime >= _onTime)) {
             _toneActive = false;
             _lastToggleTime = currentMillis;
         } else if (!_toneActive && (currentMillis - _lastToggleTime >= _offTime)) {
-            _toneActive = true;
-            _lastToggleTime = currentMillis;
-        }
-    } else if (_mode == MODE_UNOBTAINABLE) {
-        if (_toneActive && (currentMillis - _lastToggleTime >= 330)) {
-            _toneActive = false;
-            _lastToggleTime = currentMillis;
-        } else if (!_toneActive && (currentMillis - _lastToggleTime >= 1000)) {
-            _unobtainableIndex = (_unobtainableIndex + 1) % 3;
-            if (_unobtainableIndex == 0) {
-                _f1 = 950.0; _f2 = 950.0;
-            } else if (_unobtainableIndex == 1) {
-                _f1 = 1400.0; _f2 = 1400.0;
-            } else if (_unobtainableIndex == 2) {
-                _f1 = 1800.0; _f2 = 1800.0;
-            }
-            _phase1 = 0;
-            _phase2 = 0;
-            _phaseInc1 = TWO_PI * _f1 / _sampleRate;
-            _phaseInc2 = TWO_PI * _f2 / _sampleRate;
             _toneActive = true;
             _lastToggleTime = currentMillis;
         }

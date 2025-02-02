@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <Adafruit_MCP23X17.h>
-#include <DacESP32.h>
 #include <MT8816.h>
 #include <LineHandler.h>
 #include <MQTTHandler.h>

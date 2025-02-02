@@ -97,7 +97,9 @@ Adafruit_MCP23X17 mcp_mt8816;
 MQTTHandler mqttHandler(wifiLED, mqttLED);
 MT8816 mt8816(mcp_mt8816, (uint8_t[]){AX0, AX1, AX2, AX3}, (uint8_t[]){AY0, AY1, AY2}, STROBE, DATA, RESET, CS);
 RingHandler ringHandler(mcp_ks083f, activeLines, RMPins, FRPins, ringLength);
-toneGen ToneGen(DAC_CH1);
+
+toneGen tone1(DAC_CH1); // DAC1 på pin 25
+toneGen tone2(DAC_CH2); // DAC2 på pin 26
 
 // ---------------SHK variables--------------------
 

@@ -19,7 +19,9 @@ void setup() {
   setupMCPPins();
   mt8816.begin();
 
-  ToneGen.begin(50000);
+  // Initiera båda instanserna med en samplingsfrekvens på 50 kHz
+  tone1.begin(50000);
+  tone2.begin(50000);
 
   setupHookChecker();
   //mqttHandler.setupWiFi();
@@ -41,7 +43,6 @@ void setup() {
 
 void loop() {
 
-  ToneGen.update();
   processSHKState();
 
   if (allLinesIdle() == false) {

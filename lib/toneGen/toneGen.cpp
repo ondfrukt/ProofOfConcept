@@ -35,7 +35,6 @@ void toneGen::begin(uint32_t sampleRate) {
 void toneGen::_toneTask(void *pvParameters) {
     toneGen *instance = static_cast<toneGen *>(pvParameters);
     while (true) {
-        instance->update();
         instance->_updateDAC();
         vTaskDelay(1);
     }
@@ -99,19 +98,6 @@ void toneGen::unobtainableTone() {
 void toneGen::stopTone() {
     _toneActive = false;
     dacWrite(_dacPin, 128);
-}
-
-void toneGen::update() {
-    uint32_t currentMillis = millis();
-    if (_mode == MODE_NORMAL && _usePulse) {
-        if (_toneActive && (currentMillis - _lastToggleTime >= _onTime)) {
-            _toneActive = false;
-            _lastToggleTime = currentMillis;
-        } else if (!_toneActive && (currentMillis - _lastToggleTime >= _offTime)) {
-            _toneActive = true;
-            _lastToggleTime = currentMillis;
-        }
-    }
 }
 
 void toneGen::_updateDAC() {

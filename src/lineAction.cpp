@@ -4,7 +4,6 @@
 // Function to determine the action to take based on the new line status
 void lineAction(int line, uint8_t newLineStatus) {
   
-  ToneGen.stopTone();
   mt8816.disconnect(line, Aout_x);
   switch (newLineStatus) {
 
@@ -18,7 +17,6 @@ void lineAction(int line, uint8_t newLineStatus) {
       Line[line].setLineStatus(line_ready);
       mqttHandler.publishMQTT(line, line_ready);
 
-      ToneGen.dialTone();
       mt8816.connect(line, Aout_x);
 
       Line[line].startLineTimer(statusTimer_Ready);
@@ -39,7 +37,7 @@ void lineAction(int line, uint8_t newLineStatus) {
     case line_busy:
       Line[line].setLineStatus(line_busy);
       mqttHandler.publishMQTT(line, line_busy);
-      ToneGen.busyTone();
+
       mt8816.connect(line, Aout_x);
       Line[line].startLineTimer(statusTimer_busy);
       break;
@@ -48,7 +46,6 @@ void lineAction(int line, uint8_t newLineStatus) {
       Line[line].setLineStatus(line_fail);
       mqttHandler.publishMQTT(line, line_fail);
 
-      ToneGen.unobtainableTone();
       mt8816.connect(line, Aout_x);
 
       Line[line].resetDialedDigits();
@@ -68,7 +65,6 @@ void lineAction(int line, uint8_t newLineStatus) {
           return;
         } 
 
-        ToneGen.ringTone();
         mt8816.connect(line, Aout_x);
 
         Line[line].setLineStatus(line_ringing);

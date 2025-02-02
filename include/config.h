@@ -81,7 +81,8 @@ extern Adafruit_MCP23X17 mcp_mt8816;
 extern MQTTHandler mqttHandler;
 extern MT8816 mt8816;
 extern RingHandler ringHandler;
-extern toneGen ToneGen;
+extern toneGen tone1;
+extern toneGen tone2;
 
 // ------------------ Timers ------------------
 

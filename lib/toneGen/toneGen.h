@@ -15,7 +15,6 @@ public:
     void busyTone();
     void unobtainableTone();
     void stopTone();
-    void update();
 
 private:
     int _dacPin;

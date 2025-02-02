@@ -1721,7 +1721,6 @@
 	)
 	(label "5V"
 		(at 60.96 87.63 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1733,7 +1732,6 @@
 	(hierarchical_label "Ain_2"
 		(shape input)
 		(at 77.47 77.47 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1745,7 +1743,6 @@
 	(hierarchical_label "Aout_2"
 		(shape output)
 		(at 77.47 80.01 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1757,7 +1754,6 @@
 	(hierarchical_label "TIP_2"
 		(shape passive)
 		(at 133.35 48.26 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1769,7 +1765,6 @@
 	(hierarchical_label "RM_2"
 		(shape input)
 		(at 77.47 63.5 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1781,7 +1776,6 @@
 	(hierarchical_label "RING_2"
 		(shape passive)
 		(at 133.35 45.72 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1793,7 +1787,6 @@
 	(hierarchical_label "5V"
 		(shape input)
 		(at 78.74 87.63 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1805,7 +1798,6 @@
 	(hierarchical_label "SHK_2"
 		(shape output)
 		(at 77.47 66.04 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1817,7 +1809,6 @@
 	(hierarchical_label "FR_2"
 		(shape input)
 		(at 77.47 60.96 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1829,7 +1820,6 @@
 	(hierarchical_label "GND"
 		(shape input)
 		(at 92.71 85.09 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)

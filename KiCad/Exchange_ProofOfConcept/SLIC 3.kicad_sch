@@ -1696,7 +1696,6 @@
 	(hierarchical_label "RING_3"
 		(shape passive)
 		(at 134.62 60.96 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1708,7 +1707,6 @@
 	(hierarchical_label "Aout_3"
 		(shape output)
 		(at 78.74 95.25 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1720,7 +1718,6 @@
 	(hierarchical_label "5V"
 		(shape input)
 		(at 80.01 102.87 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1732,7 +1729,6 @@
 	(hierarchical_label "Ain_3"
 		(shape input)
 		(at 78.74 92.71 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1744,7 +1740,6 @@
 	(hierarchical_label "TIP_3"
 		(shape passive)
 		(at 134.62 63.5 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1756,7 +1751,6 @@
 	(hierarchical_label "GND"
 		(shape input)
 		(at 80.01 100.33 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1768,7 +1762,6 @@
 	(hierarchical_label "SHK_3"
 		(shape output)
 		(at 78.74 81.28 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1780,7 +1773,6 @@
 	(hierarchical_label "RM_3"
 		(shape input)
 		(at 78.74 78.74 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1792,7 +1784,6 @@
 	(hierarchical_label "FR_3"
 		(shape input)
 		(at 78.74 76.2 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)

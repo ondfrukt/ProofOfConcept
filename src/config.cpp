@@ -37,12 +37,12 @@ const uint8_t GPB5 = 13;  //Pin 6
 const uint8_t GPB6 = 14;  //Pin 7
 const uint8_t GPB7 = 15;  //Pin 8
 
-// KS083F konstants
+// KS083F constatns
 const uint8_t SHKPins[activeLines] = {GPA3, GPA0, GPB5, GPB2};
 const uint8_t RMPins[activeLines] = {GPA4, GPA1, GPB3, GPB6};
 const uint8_t FRPins[activeLines] = {GPA5, GPA2, GPB7, GPB4};
 
-// MT8816 konstants
+// MT8816 constants
 const uint8_t RESET = GPA0;
 const uint8_t DATA = GPA1;
 const uint8_t STROBE = GPA2;
@@ -58,6 +58,15 @@ const uint8_t AY2 = GPB6;
 
 const uint8_t ax_pins[4] = {AX0, AX1, AX2, AX3};
 const uint8_t ay_pins[3] = {AY0, AY1, AY2};
+
+bool Aout_x = false;
+
+// MT8870 constants
+const int Q1 = 26;   // Pin för Q1
+const int Q2 = 25;   // Pin för Q2
+const int Q3 = 33;   // Pin för Q3
+const int Q4 = 32;   // Pin för Q4
+const int STD = 27;  // Signal detect (StD)
 
 // MCP-adresses
 const uint8_t mcp_mt8816_address = 0x23;
@@ -204,4 +213,14 @@ bool allLinesIdle() {
     }
     digitalWrite(hookLED, LOW);
     return true;
+}
+
+
+// MT8870 Setup
+void setupMT8870() {
+    pinMode(Q1, INPUT);
+    pinMode(Q2, INPUT);
+    pinMode(Q3, INPUT);
+    pinMode(Q4, INPUT);
+    pinMode(STD, INPUT);
 }

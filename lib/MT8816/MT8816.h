@@ -13,6 +13,8 @@ class MT8816 {
     void disconnect(uint8_t x, uint8_t y);
     bool getConnection(int x, int y);
     void printConnections();
+    void disconnectAout_x();
+    void connectAout_x();
   private:
     Adafruit_MCP23X17& mcp_mt8816; 
     uint8_t ax_pins[4];            // AX0-AX3
@@ -21,7 +23,7 @@ class MT8816 {
     uint8_t data_pin;
     uint8_t reset_pin;
     uint8_t cs_pin;
-    bool connections[8][8];
+    bool connections[16][8];
     void setAddress(uint8_t x, uint8_t y);
     void strobe();
 };

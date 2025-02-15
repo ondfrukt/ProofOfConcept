@@ -18,7 +18,7 @@ void setup() {
   i2CScanner();
   setupMCPPins();
   mt8816.begin();
-
+  setupMT8870();
 
   setupHookChecker();
   //mqttHandler.setupWiFi();
@@ -33,13 +33,8 @@ void setup() {
   // Set the action callback for the MQTTHandler. This function will be called when MQTT message is received 
   //mqttHandler.setActionCallback(lineAction);
 
-  // for (int x = 0; x < 8; x++) {
-  //   for (int y = 0; y < 8; y++) {
-  //     mt8816.connect(x, y);
-  //   }
-  // }
-  mt8816.connect(2, 3);
-
+  // connect all Aout_x to the X-line
+  mt8816.connectAout_x();
 
   Serial.println("Setup complete");
   Serial.println("");
@@ -51,6 +46,8 @@ void loop() {
   processSHKState();
 
   if (allLinesIdle() == false) {
+
+    // Line timer Check
     for (int line = 0; line < activeLines; line++) {
       // Check if the line status is not idle
       if (Line[line].currentLineStatus != line_idle) {
@@ -64,20 +61,45 @@ void loop() {
         }
       }
     }
+    
+    if (digitalRead(STD) == HIGH) {  // Om en DTMF-signal detekteras
+      int q1 = digitalRead(Q1);
+      int q2 = digitalRead(Q2);
+      int q3 = digitalRead(Q3);
+      int q4 = digitalRead(Q4);
+
+      int dtmf_value = (q4 << 3) | (q3 << 2) | (q2 << 1) | q1; // Kombinera bitarna till en siffra
+
+      Serial.print("Mottagen DTMF-siffra: ");
+      Serial.println(dtmf_value);
+      
+      delay(300); // Vänta en stund för att undvika flera avläsningar av samma signal
+  }
 
 
   if (digitalRead(testButton1) == LOW) {
 
-    Serial.println("Test Ring");
-    
-    for (int i = 0; i < 10; i++) {
-    digitalWrite(wifiLED, HIGH);
-    delay(50);
-    digitalWrite(wifiLED, LOW);
-    delay(50);
-    }
-    mt8816.connect(0, 1);
-    
+    // Test Ring
+    // Serial.println("Test Ring");
+    // for (int i = 0; i < 10; i++) {
+    // digitalWrite(wifiLED, HIGH);
+    // delay(50);
+    // digitalWrite(wifiLED, LOW);
+    // delay(50);
+    // }
+
+
+    // Test Aout_x Connections
+    // if (!Aout_x){
+    //   mt8816.connectAout_x();
+    //   Aout_x = true;
+    // } else {
+    //   mt8816.disconnectAout_x();
+    //   Aout_x = false;
+    // }
+
+
+    mt8816.printConnections();
   }
 
 

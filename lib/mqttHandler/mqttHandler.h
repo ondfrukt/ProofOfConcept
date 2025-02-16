@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "secrets.h"
-#include "../src/lineStatuses.h"
+#include "lineStatuses.h"
 
 class MQTTHandler {
 public:

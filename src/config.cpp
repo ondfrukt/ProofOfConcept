@@ -1,5 +1,6 @@
 #include "config.h"
 #include "lineAction.h"
+#include "lineStatuses.h"
 
 //------------------ ESP32 GPIO pins ------------------
 

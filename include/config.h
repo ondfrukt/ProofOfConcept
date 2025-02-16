@@ -4,10 +4,11 @@
 #include <Arduino.h>
 #include <Adafruit_MCP23X17.h>
 #include <MT8816.h>
+#include "lineStatuses.h"
 #include <LineHandler.h>
 #include <MQTTHandler.h>
 #include <RingHandler.h>
-#include "lineStatuses.h"
+
 
 // ------------------ Globala konstanter ------------------
 

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <string.h>
-#include "../src/lineStatuses.h"
+#include "lineStatuses.h"
 
 // Maximum number of lines
 #define MAX_LINES 8

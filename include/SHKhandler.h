@@ -4,8 +4,10 @@
 #include <Arduino.h>
 #include "config.h"
 #include "pulsHandler.h"
-#include "hookChange.h"
 
 void SHKHandler();
+
+void hookChange(int line, hookStatuses newHookState);
+void setupHookChecker();
 
 #endif

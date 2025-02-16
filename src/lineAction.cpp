@@ -1,20 +1,20 @@
 #include "lineAction.h"
 
-
 // Function to determine the action to take based on the new line status
 void lineAction(int line, uint8_t newLineStatus) {
-
   switch (newLineStatus) {
-
     case line_idle:
-      // Insert Action!
       Line[line].setLineStatus(line_idle);
+      mt8816.disconnect(15, line);
       mqttHandler.publishMQTT(line, line_idle);
       break;
 
     case line_ready:
       Line[line].setLineStatus(line_ready);
       mqttHandler.publishMQTT(line, line_ready);
+      mt8816.connect(15, line);
+      lastLineReady = line;
+      Serial.println("Last line ready: " + String(lastLineReady));
       Line[line].startLineTimer(statusTimer_Ready);
       break;
     

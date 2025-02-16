@@ -37,8 +37,7 @@ void MT8816::reset()
     Serial.println("MT8816 reset performed.");
 }
 
-void MT8816::connect(uint8_t x, uint8_t y)
-{
+void MT8816::connect(uint8_t x, uint8_t y){
     setAddress(x, y);
     mcp_mt8816.digitalWrite(data_pin, HIGH);
     delay(10);  // Short delay to ensure data pin is stable
@@ -50,16 +49,14 @@ void MT8816::connect(uint8_t x, uint8_t y)
     delay(10);  // Short delay to ensure data pin is stable
     strobe();
     connections[y][x] = true;
-
 }
 
-void MT8816::disconnect(uint8_t x, uint8_t y)
-{
+void MT8816::disconnect(uint8_t x, uint8_t y){
     setAddress(x, y);
     mcp_mt8816.digitalWrite(data_pin, LOW);
     delay(10);  // Short delay to ensure data pin is stable
     strobe();
-    connections[x][y] = false;
+    connections[x][7-y] = false;
 
     setAddress(y, x);
     mcp_mt8816.digitalWrite(data_pin, LOW);
@@ -88,7 +85,6 @@ void MT8816::setAddress(uint8_t x, uint8_t y)
 {
     // Converting y value due to an connection misstake at the PCB
     y = 7 - y;
-
     for (int i = 0; i < 4; ++i) {
         bool bit = (x >> i) & 0x01;
         mcp_mt8816.digitalWrite(ax_pins[i], bit);
@@ -118,7 +114,7 @@ void MT8816::printConnections() {
   Serial.println(); // Avsluta kolumnrubrikraden
   
   // Skriv ut varje rad med radnummer först
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 16; i++) {
     // Skriv ut radnumret
     if (i < 10) {
       // Lägg till ett extra mellanslag för enhetliga avstånd, om du har en- och tvåsiffriga tal
@@ -134,4 +130,28 @@ void MT8816::printConnections() {
     }
     Serial.println(); // Ny rad efter varje rad i matrisen
   }
+  Serial.println(); // Extra radbrytning för att skilja från annan output
+}
+
+
+// This function is temporary due to an misstake in the PCB design. Aout_x should be connected to an X-line not Y-line
+void MT8816::connectAout_x() {
+    uint8_t x_bridge = 15; // X-line as a connection bridge
+    uint8_t Aout_x = 4; // Y-line to connect to
+    setAddress(x_bridge, Aout_x);
+    mcp_mt8816.digitalWrite(data_pin, HIGH);
+    delay(10);  // Short delay to ensure data pin is stable
+    strobe();
+    connections[x_bridge][Aout_x] = true;
+}
+
+// This function is temporary due to an misstake in the PCB design. Aout_x should be connected to an X-line not Y-line
+void MT8816::disconnectAout_x() {
+    uint8_t x_bridge = 15; // X-line as a connection bridge
+    uint8_t Aout_x = 4; // Y-line to connect to
+    setAddress(x_bridge, Aout_x);
+    mcp_mt8816.digitalWrite(data_pin, LOW);
+    delay(10);  // Short delay to ensure data pin is stable
+    strobe();
+    connections[x_bridge][Aout_x] = false;
 }

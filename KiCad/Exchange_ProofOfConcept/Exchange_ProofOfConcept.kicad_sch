@@ -5765,6 +5765,16 @@
 		)
 		(uuid a08027a5-4bf7-4dc9-9627-4ec6d8c130cc)
 	)
+	(text "Linjerna behöver byta namn och förskjutas 1 steg så att line 1 istället blir line 0 osv. \nDetta linjerar bättre med koden"
+		(exclude_from_sim no)
+		(at 64.77 5.588 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "0acafb30-b2ba-410e-b303-132e6c0e1862")
+	)
 	(text "Mounting holes\n"
 		(exclude_from_sim no)
 		(at 121.158 179.832 0)
@@ -5784,6 +5794,16 @@
 			)
 		)
 		(uuid "605854f8-0287-47bc-ba2e-cca8115718cc")
+	)
+	(text "Aout_X borde döpas om och läggas bland en utav X-ingångarna"
+		(exclude_from_sim no)
+		(at 320.548 62.738 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "c4e66452-7c1d-441a-8563-646a601aee7f")
 	)
 	(label "Ain_3"
 		(at 87.63 81.28 180)

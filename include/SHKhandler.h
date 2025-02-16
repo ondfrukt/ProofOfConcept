@@ -6,6 +6,6 @@
 #include "pulsHandler.h"
 #include "hookChange.h"
 
-void processSHKState();
+void SHKHandler();
 
 #endif

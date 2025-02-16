@@ -52,6 +52,9 @@ public:
     void resetDialedDigits();
     void setNewPhoneNumber(String newNumber);
     void lineIdle();
+
+private:
+    bool firstDigitFlag = true;
 };
 
 #endif

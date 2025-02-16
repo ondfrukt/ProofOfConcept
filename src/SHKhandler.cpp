@@ -1,6 +1,6 @@
-#include "SHKhandler.h"
+#include "SHKHandler.h"
 
-void processSHKState() {
+void SHKHandler() {
   // Läs GPIO-tillstånd från MCP-enheten
   uint16_t mcpState = mcp_ks083f.readGPIOAB();
 

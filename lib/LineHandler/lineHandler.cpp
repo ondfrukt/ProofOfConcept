@@ -56,13 +56,18 @@ void LineHandler::stopLineTimer() {
 // Process a new digit for a specific line
 void LineHandler::newDigitReceived(char digit) {
   dialedDigits += digit;
-  Serial.println("Digit received: " + String(digit));
+  if (firstDigitFlag == true) {
+    firstDigitFlag = false;
+    Serial.print("Digits received: ");
+  }
+  Serial.print(String(digit));
   lineTimerStart = millis();
 }
 
 // Reset dialed digits
 void LineHandler::resetDialedDigits() {
   dialedDigits = "";
+  firstDigitFlag = true;
 } 
 
 // Reset variables when idel is set as new status

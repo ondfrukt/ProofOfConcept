@@ -47,8 +47,7 @@ void loop() {
   // Handle MQTT messages
   //mqttHandler.loop();
 
-  processSHKState();
-
+  SHKHandler();
 
   if (allLinesIdle() == false) {
     timerHandler();
@@ -59,27 +58,6 @@ void loop() {
   if (digitalRead(testButton1) == LOW) {
 
     mt8816.printConnections();
-
-    // Test Ring
-    // Serial.println("Test Ring");
-    // for (int i = 0; i < 10; i++) {
-    // digitalWrite(wifiLED, HIGH);
-    // delay(50);
-    // digitalWrite(wifiLED, LOW);
-    // delay(50);
-    // }
-
-
-    // Test Aout_x Connections
-    // if (!Aout_x){
-    //   mt8816.connectAout_x();
-    //   Aout_x = true;
-    // } else {
-    //   mt8816.disconnectAout_x();
-    //   Aout_x = false;
-    // }
-
-
     
   }
   delay(1);

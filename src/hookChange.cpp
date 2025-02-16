@@ -31,7 +31,6 @@ void hookChange(int line, hookStatuses newHookState) {
       currentLineStatus == line_fail ||
       currentLineStatus == line_timeout ||
       currentLineStatus == line_pulse_dialing ||
-      currentLineStatus == line_tone_dialing ||
       currentLineStatus == line_ringing){
 
       lineAction(line, line_idle);
@@ -42,6 +41,8 @@ void hookChange(int line, hookStatuses newHookState) {
       Serial.println("Line " + String(line) + "   OutgingTo = " + String(Line[line].outgoingTo) + "   IncomingFrom = " + String(Line[line].incomingFrom));
       lineAction(Line[line].outgoingTo, line_disconnected);
       lineAction(line, line_idle);
+      
+
     }
   }
 }

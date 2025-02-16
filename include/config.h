@@ -62,18 +62,6 @@ extern const uint8_t AY0;
 extern const uint8_t AY1;
 extern const uint8_t AY2;
 
-extern bool Aout_x;
-
-
-// MT8870 configuration
-extern const int Q1;
-extern const int Q2;
-extern const int Q3;
-extern const int Q4;
-extern const int STD;
-
-extern const char dtmf_map[16];
-
 // MCP-adresser
 extern const uint8_t mcp_mt8816_address;
 extern const uint8_t mcp_ks083f_address;
@@ -109,16 +97,11 @@ extern const unsigned pulseGapMax;
 extern unsigned long edge;
 extern const unsigned long gapTimeout;
 
-// ---------------System variables ---------------
-extern bool error; // Error flag
-extern int lastLineReady; // Last line that was ready
 
 // ------------------ Funktioner ------------------
 
 void i2CScanner();
 bool allLinesIdle();
 void setupMCPPins();
-void setupMT8870();
-void timerHandler();
 
 #endif

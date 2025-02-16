@@ -1,4 +1,5 @@
 #include "config.h"
+#include "lineAction.h"
 
 //------------------ ESP32 GPIO pins ------------------
 
@@ -62,11 +63,20 @@ const uint8_t ay_pins[3] = {AY0, AY1, AY2};
 bool Aout_x = false;
 
 // MT8870 constants
-const int Q1 = 26;   // Pin för Q1
-const int Q2 = 25;   // Pin för Q2
-const int Q3 = 33;   // Pin för Q3
-const int Q4 = 32;   // Pin för Q4
-const int STD = 27;  // Signal detect (StD)
+const int Q1 = 26;  // Pin för Q1
+const int Q2 = 23;  // Pin för Q2
+const int Q3 = 4;   // Pin för Q3
+const int Q4 = 5;   // Pin för Q4
+const int STD = 33; // Signal detect (StD)
+
+// DTMF-tabell för att mappa binärvärde till rätt tecken
+const char dtmf_map[16] = {
+  ' ', 
+  '1', '2', '3',
+  '4', '5', '6', 
+  '7', '8', '9',
+  '0', '*', '#',
+};
 
 // MCP-adresses
 const uint8_t mcp_mt8816_address = 0x23;
@@ -78,7 +88,7 @@ unsigned long statusTimer_Ready = 240000;
 unsigned long statusTimer_Dialing = 5000;
 unsigned long statusTimer_Ringing = 10000;
 unsigned long statusTimer_pulsDialing = 3000;
-unsigned long statusTimer_toneDialing = 5000;
+unsigned long statusTimer_toneDialing = 3000;
 unsigned long statusTimer_fail = 30000;
 unsigned long statusTimer_disconnected = 60000;
 unsigned long statusTimer_timeout = 60000;
@@ -111,7 +121,8 @@ const unsigned long gapTimeout = 100; // Timeout for pulsing
 
 // ---------------System variables ---------------
 
-bool error = false; // Error flag
+bool error = false;       // Error flag
+int lastLineReady = -1;   // Last line that was ready. Used to guess witch line thats sends dtmf tones.
 
 // ------------------ Funktions ------------------
 
@@ -215,6 +226,22 @@ bool allLinesIdle() {
     return true;
 }
 
+void timerHandler() {
+
+  // Line timer Check
+  for (int line = 0; line < activeLines; line++) {
+    // Check if the line status is not idle
+    if (Line[line].currentLineStatus != line_idle) {
+      // Check if the line timer is active
+      if (Line[line].lineTimerActive) {
+        // if the line timer has expired, trigger lineTimerExpired()
+        if (millis() - Line[line].lineTimerStart > Line[line].lineTimerLimit) {
+          lineTimerExpired(line);
+          }
+        }
+      }
+    }
+  }
 
 // MT8870 Setup
 void setupMT8870() {

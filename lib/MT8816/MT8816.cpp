@@ -43,6 +43,12 @@ void MT8816::connect(uint8_t x, uint8_t y){
     delay(10);  // Short delay to ensure data pin is stable
     strobe();
     connections[x][y] = true;
+
+    setAddress(y, x);
+    mcp_mt8816.digitalWrite(data_pin, HIGH);
+    delay(10);  // Short delay to ensure data pin is stable
+    strobe();
+    connections[y][x] = true;
 }
 
 void MT8816::disconnect(uint8_t x, uint8_t y){
@@ -51,6 +57,12 @@ void MT8816::disconnect(uint8_t x, uint8_t y){
     delay(10);  // Short delay to ensure data pin is stable
     strobe();
     connections[x][7-y] = false;
+
+    setAddress(y, x);
+    mcp_mt8816.digitalWrite(data_pin, LOW);
+    delay(10);  // Short delay to ensure data pin is stable
+    strobe();
+    connections[y][x] = false;
 }
 
 bool MT8816::getConnection(int x, int y) {

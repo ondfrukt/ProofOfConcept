@@ -4,8 +4,9 @@
 
 #include "lineAction.h"
 #include "pulsHandler.h"
-#include "SHKHandler.h"
+#include "toneHandler.h"
 
+#include "SHKHandler.h"
 #include "LineHandler.h"
 #include "mqttHandler.h"
 
@@ -43,41 +44,21 @@ void setup() {
 
 void loop() {
 
+  // Handle MQTT messages
+  //mqttHandler.loop();
+
   processSHKState();
 
+
   if (allLinesIdle() == false) {
-
-    // Line timer Check
-    for (int line = 0; line < activeLines; line++) {
-      // Check if the line status is not idle
-      if (Line[line].currentLineStatus != line_idle) {
-        // Check if the line timer is active
-        if (Line[line].lineTimerActive) {
-          // if the line timer has expired, trigger lineTimerExpired()
-          if (millis() - Line[line].lineTimerStart > Line[line].lineTimerLimit) {
-            lineTimerExpired(line);
-            }
-          }
-        }
-      }
-    }
-    
-    if (digitalRead(STD) == HIGH) {  // Om en DTMF-signal detekteras
-      int q1 = digitalRead(Q1);
-      int q2 = digitalRead(Q2);
-      int q3 = digitalRead(Q3);
-      int q4 = digitalRead(Q4);
-
-      int dtmf_value = (q4 << 3) | (q3 << 2) | (q2 << 1) | q1; // Kombinera bitarna till en siffra
-
-      Serial.print("Mottagen DTMF-siffra: ");
-      Serial.println(dtmf_value);
-      
-      delay(300); // Vänta en stund för att undvika flera avläsningar av samma signal
+    timerHandler();
   }
 
+  toneHandler();
 
   if (digitalRead(testButton1) == LOW) {
+
+    mt8816.printConnections();
 
     // Test Ring
     // Serial.println("Test Ring");
@@ -99,11 +80,7 @@ void loop() {
     // }
 
 
-    mt8816.printConnections();
+    
   }
-
-
-  // Handle MQTT messages
-  //mqttHandler.loop();
   delay(1);
 }

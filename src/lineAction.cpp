@@ -1,6 +1,5 @@
 #include "lineAction.h"
 
-
 // Function to determine the action to take based on the new line status
 void lineAction(int line, uint8_t newLineStatus) {
   switch (newLineStatus) {
@@ -14,6 +13,8 @@ void lineAction(int line, uint8_t newLineStatus) {
       Line[line].setLineStatus(line_ready);
       mqttHandler.publishMQTT(line, line_ready);
       mt8816.connect(15, line);
+      lastLineReady = line;
+      Serial.println("Last line ready: " + String(lastLineReady));
       Line[line].startLineTimer(statusTimer_Ready);
       break;
     
